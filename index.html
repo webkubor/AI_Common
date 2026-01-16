@@ -4,32 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Common Knowledge Base</title>
-    <!-- 引入 GitHub Markdown 样式 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
-    <!-- 引入 Marked 解析器 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+    <!-- GitHub Markdown Style -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css">
+    <!-- Marked.js (Use specific version that supports UMD) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <style>
         :root {
             --bg-color: #ffffff;
             --text-color: #24292f;
             --sidebar-bg: #f6f8fa;
             --sidebar-border: #d0d7de;
-            --hover-bg: #eaeef2;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #0d1117;
-                --text-color: #c9d1d9;
-                --sidebar-bg: #010409;
-                --sidebar-border: #30363d;
-                --hover-bg: #161b22;
-            }
+            --header-height: 50px;
+            --accent-color: #0969da;
         }
 
         body {
             margin: 0;
             display: flex;
+            flex-direction: column;
             height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
@@ -37,9 +29,30 @@
             overflow: hidden;
         }
 
-        /* Sidebar - File Tree */
+        /* Header */
+        header {
+            height: var(--header-height);
+            border-bottom: 1px solid var(--sidebar-border);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            background: #fff;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        .brand { font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+        .tag { font-size: 12px; background: #eee; padding: 2px 6px; border-radius: 4px; color: #666; font-weight: normal; }
+
+        /* Layout */
+        #container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
         #sidebar {
-            width: 280px;
+            width: 260px;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--sidebar-border);
             display: flex;
@@ -47,18 +60,9 @@
             flex-shrink: 0;
         }
 
-        #repo-header {
-            padding: 16px;
-            font-weight: bold;
-            border-bottom: 1px solid var(--sidebar-border);
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
         #shortcuts {
-            padding: 8px 0;
+            padding: 12px 0;
             border-bottom: 1px solid var(--sidebar-border);
-            flex-shrink: 0;
         }
 
         #tree-container {
@@ -67,76 +71,42 @@
             padding: 8px 0;
         }
 
+        /* Sidebar Items */
+        .nav-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-color);
+            transition: background 0.1s;
+        }
+        .nav-item:hover { background-color: #eaeef2; }
+        .nav-item.active { background-color: #f1f8ff; color: var(--accent-color); border-right: 3px solid var(--accent-color); }
+        .nav-item.header { font-size: 12px; color: #6e7781; font-weight: 600; padding: 16px 16px 8px; cursor: default; }
+        .nav-item.header:hover { background: none; }
+
+        /* Footer */
         #sidebar-footer {
             padding: 16px;
             border-top: 1px solid var(--sidebar-border);
-            background-color: var(--bg-color);
+            background: #fff;
             font-size: 12px;
-            color: #57606a;
-            flex-shrink: 0;
         }
-        
         #sidebar-footer code {
             display: block;
-            background: var(--hover-bg);
-            padding: 4px;
-            border-radius: 4px;
-            margin-top: 4px;
+            background: #f6f8fa;
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 6px;
             cursor: pointer;
-            word-break: break-all;
+            border: 1px solid #d0d7de;
+            color: #d63384;
         }
+        #sidebar-footer code:hover { border-color: #bbb; }
 
-        .file-tree {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .file-item {
-            padding: 6px 16px;
-            cursor: pointer;
-            font-size: 13px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--text-color);
-            text-decoration: none;
-        }
-
-        .file-item:hover {
-            background-color: var(--hover-bg);
-        }
-        
-        .shortcut-item {
-            padding: 6px 16px;
-            font-size: 13px;
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        .shortcut-item:hover { background-color: var(--hover-bg); }
-        .shortcut-icon { width: 16px; text-align: center; }
-
-        .file-item.active, .shortcut-item.active {
-            background-color: #388bfd26; /* Blue tint */
-            color: #0969da;
-            font-weight: 500;
-        }
-        
-        .folder-item {
-            font-weight: 600;
-            padding-top: 10px;
-            padding-bottom: 4px;
-            color: #57606a;
-        }
-
-        /* Main Content - Markdown Viewer */
+        /* Main Content */
         #main {
             flex: 1;
             overflow-y: auto;
@@ -145,79 +115,76 @@
         }
 
         .markdown-body {
-            max-width: 900px;
+            max-width: 850px;
             margin: 0 auto;
-            box-sizing: border-box;
+            padding-bottom: 50px;
         }
 
-        /* Loading / Error States */
-        #status {
-            padding: 20px;
-            text-align: center;
-            color: #57606a;
-        }
-
-        /* Input for manual repo entry (local dev) */
-        #config-bar {
-            padding: 10px;
-            border-bottom: 1px solid var(--sidebar-border);
-            display: none;
-        }
-        #config-bar input {
-            width: 100%;
-            padding: 4px;
-            box-sizing: border-box;
-        }
+        /* Config Bar (Localhost only) */
+        #config-bar { display: none; padding: 10px; border-bottom: 1px solid #ddd; }
+        #config-bar input { width: 100%; padding: 4px; }
     </style>
 </head>
 <body>
 
-<div id="sidebar">
-    <div id="config-bar">
-        <input type="text" id="repo-input" placeholder="user/repo (Enter to load)">
+<header>
+    <div class="brand">
+        📚 AI Knowledge Base
+        <span class="tag" id="repo-tag">Loading...</span>
     </div>
-    <div id="repo-header" class="repo-header">Loading...</div>
-    
-    <div id="shortcuts">
-        <!-- Shortcuts will be injected here -->
+</header>
+
+<div id="container">
+    <div id="sidebar">
+        <!-- Config for Localhost -->
+        <div id="config-bar">
+            <input type="text" id="repo-input" placeholder="user/repo (Enter to load)">
+        </div>
+
+        <div id="shortcuts">
+            <div class="nav-item header">快捷访问</div>
+            <!-- Injected via JS -->
+        </div>
+
+        <div class="nav-item header">文件浏览</div>
+        <div id="tree-container">
+            <!-- Injected via JS -->
+        </div>
+
+        <div id="sidebar-footer">
+            <strong>🚀 新项目初始化</strong>
+            <div style="margin-top:4px; opacity:0.8;">复制命令到终端:</div>
+            <code onclick="navigator.clipboard.writeText(this.innerText); alert('已复制!')">~/Documents/AI_Common/init_vibe.sh</code>
+        </div>
     </div>
 
-    <div id="tree-container"></div>
-    
-    <div id="sidebar-footer">
-        <strong>🚀 新项目初始化</strong>
-        <div style="margin-top:4px; opacity:0.8;">在项目根目录运行:</div>
-        <code onclick="navigator.clipboard.writeText(this.innerText); alert('已复制!')">~/Documents/AI_Common/init_vibe.sh</code>
+    <div id="main">
+        <article id="content" class="markdown-body">
+            <h3 style="text-align:center; color:#666; margin-top: 50px;">正在连接 GitHub API...</h3>
+        </article>
     </div>
-</div>
-
-<div id="main">
-    <article id="content" class="markdown-body">
-        <!-- Content will be rendered here -->
-    </article>
 </div>
 
 <script>
     // Configuration
     const STATE = {
-        owner: 'webkubor',    // Default fallback
-        repo: 'AI_Common',    // Default fallback
+        owner: 'webkubor',
+        repo: 'AI_Common', 
         branch: 'main', 
         tree: []
     };
 
-    const IGNORE_FILES = ['.DS_Store', '.gitignore', '.git', 'LICENSE', 'index.html'];
+    const IGNORE_FILES = ['.DS_Store', '.gitignore', '.git', 'LICENSE', 'index.html', 'project_index.md'];
     
-    // Shortcuts Configuration
     const SHORTCUTS = [
-        { name: '🏠 路由总览', path: 'index.md' },
-        { name: '📝 错误复盘', path: 'retrospective.md' },
-        { name: '🛠 技术栈偏好', path: 'tech_stack.md' }
+        { name: '🏠 路由总览', icon: '🧭', path: 'index.md' },
+        { name: '📝 错误复盘', icon: '🔥', path: 'retrospective_example.md' },
+        { name: '🛠 技术栈偏好', icon: '⚙️', path: 'tech_stack.md' }
     ];
 
     // DOM Elements
     const els = {
-        repoName: document.getElementById('repo-header'),
+        repoTag: document.getElementById('repo-tag'),
         tree: document.getElementById('tree-container'),
         shortcuts: document.getElementById('shortcuts'),
         content: document.getElementById('content'),
@@ -225,161 +192,145 @@
         repoInput: document.getElementById('repo-input')
     };
 
-    /**
-     * 1. Initialize: Auto-detect or use defaults
-     */
+    // --- Init ---
     async function init() {
+        // Check Marked Library
+        if (typeof marked === 'undefined') {
+            els.content.innerHTML = `<div style="color:red; text-align:center;">
+                ❌ Marked.js 库加载失败。<br>可能是网络问题，请刷新重试。
+            </div>`;
+            return;
+        }
+
         const hostname = window.location.hostname;
         const pathParts = window.location.pathname.split('/').filter(p => p);
 
-        // Scenario 1: GitHub Pages (username.github.io/repo)
+        // Scenario 1: GitHub Pages
         if (hostname.endsWith('github.io') && pathParts.length > 0) {
             STATE.owner = hostname.split('.')[0];
             STATE.repo = pathParts[0]; 
         } 
-        // Scenario 2: Localhost (Show config bar for debugging)
+        // Scenario 2: Localhost
         else if (hostname === 'localhost' || hostname === '127.0.0.1') {
             els.configBar.style.display = 'block';
-            // Don't return, allow it to try loading default STATE
         }
-        // Scenario 3: Custom Domain (docs.webkubor.com)
-        // It will naturally use the defaults defined in STATE (webkubor/AI_Common)
 
         await loadRepo();
     }
 
-    els.repoInput.addEventListener('keypress', async (e) => {
-        if (e.key === 'Enter') {
-            const val = els.repoInput.value.trim();
-            if (val.includes('/')) {
-                [STATE.owner, STATE.repo] = val.split('/');
-                await loadRepo();
-            }
-        }
-    });
-
-    /**
-     * 2. Load Repository Structure
-     */
+    // --- Core Logic ---
     async function loadRepo() {
-        els.repoName.innerText = `${STATE.owner}/${STATE.repo}`;
-        els.content.innerHTML = '<div id="status">正在加载目录结构...</div>';
+        els.repoTag.innerText = `${STATE.owner}/${STATE.repo}`;
         
         try {
-            // Fetch default branch sha first to be safe, or just use recursive tree on main/master
-            // Shortcut: Try 'main' first
             const apiUrl = `https://api.github.com/repos/${STATE.owner}/${STATE.repo}/git/trees/${STATE.branch}?recursive=1`;
-            
             const res = await fetch(apiUrl);
-            if (!res.ok) throw new Error(`GitHub API Error: ${res.status}`);
+            
+            if (!res.ok) {
+                if (res.status === 403) throw new Error("API 访问过快，请稍后再试 (Rate Limit)");
+                if (res.status === 404) throw new Error("仓库不存在或私有");
+                throw new Error(`API Error: ${res.status}`);
+            }
             
             const data = await res.json();
             STATE.tree = data.tree.filter(item => {
-                // Filter out hidden files and folders
                 const name = item.path.split('/').pop();
                 if (name.startsWith('.')) return false;
                 if (IGNORE_FILES.includes(name)) return false;
-                // Only show markdown files or specific folders
                 return true;
             });
 
             renderSidebar();
             
-            // Auto load index.md or README.md
-            const readme = STATE.tree.find(f => f.path.toLowerCase() === 'index.md' || f.path.toLowerCase() === 'readme.md');
+            // Auto load index.md
+            const readme = STATE.tree.find(f => f.path.toLowerCase() === 'index.md');
             if (readme) loadFile(readme.path);
 
         } catch (err) {
-            els.content.innerHTML = `<div id="status">❌ 加载失败<br>${err.message}<br><br>可能原因：API 速率限制或仓库不存在。</div>`;
+            els.content.innerHTML = `
+                <div style="text-align:center; padding: 40px;">
+                    <h2>⚠️ 无法加载仓库</h2>
+                    <p style="color:red;">${err.message}</p>
+                    <p>如果这是私有仓库，此页面无法直接访问（API需要Token）。</p>
+                    <p>请确保仓库是 <strong>Public</strong> 的。</p>
+                </div>
+            `;
         }
     }
 
-    /**
-     * 3. Render Sidebar
-     */
     function renderSidebar() {
-        // Render Shortcuts
-        els.shortcuts.innerHTML = '';
+        // Shortcuts
+        const shortcutContainer = document.createElement('div');
         SHORTCUTS.forEach(s => {
             const div = document.createElement('div');
-            div.className = 'shortcut-item';
-            div.innerText = s.name;
+            div.className = 'nav-item';
+            div.innerHTML = `<span>${s.icon}</span> ${s.name}`;
             div.onclick = () => {
                 loadFile(s.path);
-                document.querySelectorAll('.file-item, .shortcut-item').forEach(el => el.classList.remove('active'));
-                div.classList.add('active');
+                setActive(div);
             };
             els.shortcuts.appendChild(div);
         });
 
-        // Render Tree
-        const ul = document.createElement('ul');
-        ul.className = 'file-tree';
-
-        // Sort: Folders first, then files
+        // Tree
+        const ul = document.createElement('div');
         STATE.tree.sort((a, b) => {
             if (a.type === b.type) return a.path.localeCompare(b.path);
             return a.type === 'tree' ? -1 : 1;
         });
-
-        // Simple grouping by top-level folder for cleaner view
-        // For a deep tree, a recursive component is better, but here we just list paths indented
         
         STATE.tree.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'file-item';
-            
-            // Visual indentation based on slashes
+            const div = document.createElement('div');
+            div.className = 'nav-item';
             const depth = item.path.split('/').length - 1;
-            li.style.paddingLeft = `${16 + depth * 12}px`;
+            div.style.paddingLeft = `${16 + depth * 12}px`;
             
-            // Icon
             const icon = item.type === 'tree' ? '📁' : '📄';
-            li.innerText = `${icon} ${item.path.split('/').pop()}`;
-
-            li.onclick = () => {
-                document.querySelectorAll('.file-item, .shortcut-item').forEach(el => el.classList.remove('active'));
-                li.classList.add('active');
+            div.innerHTML = `${icon} ${item.path.split('/').pop()}`;
+            div.onclick = () => {
                 if (item.type === 'blob') {
                     loadFile(item.path);
+                    setActive(div);
                 }
             };
-            
-            ul.appendChild(li);
+            els.tree.appendChild(div);
         });
-
-        els.tree.innerHTML = '';
-        els.tree.appendChild(ul);
     }
 
-    /**
-     * 4. Fetch and Render File Content
-     */
+    function setActive(el) {
+        document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+    }
+
     async function loadFile(path) {
-        els.content.innerHTML = '<div id="status">加载中...</div>';
-        
-        // Use raw.githubusercontent.com for content
+        els.content.innerHTML = '<p style="color:#888;">🚀 正在加载文档...</p>';
         const rawUrl = `https://raw.githubusercontent.com/${STATE.owner}/${STATE.repo}/${STATE.branch}/${path}`;
         
         try {
             const res = await fetch(rawUrl);
-            if (!res.ok) throw new Error('Failed to fetch file');
+            if (!res.ok) throw new Error('Fetch failed');
             const text = await res.text();
             
-            // Check extension
             if (path.endsWith('.md')) {
+                // Marked.js parsing
                 els.content.innerHTML = marked.parse(text);
             } else {
                 els.content.innerHTML = `<pre><code>${text}</code></pre>`;
             }
         } catch (err) {
-            els.content.innerHTML = `<div id="status">无法加载文件内容</div>`;
+            els.content.innerHTML = `<p style="color:red;">无法加载文件内容 (${err.message})</p>`;
         }
     }
 
-    // Start
-    init();
+    // Input handler
+    els.repoInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && els.repoInput.value.includes('/')) {
+            [STATE.owner, STATE.repo] = els.repoInput.value.trim().split('/');
+            loadRepo();
+        }
+    });
 
+    init();
 </script>
 </body>
 </html>
