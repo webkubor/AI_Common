@@ -22,7 +22,10 @@ _test_context.md
 tmp/
 temp/
 project_index.md
+
 # --- Local Database Context ---
-extensions/milvus_*.md
+# 统一的 Milvus 工具箱配置
+extensions/milvus-toolkit.md
+
 # --- Personal Writer Context ---
 extensions/juejin-writer.md
