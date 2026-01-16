@@ -90,7 +90,7 @@
 
 *   **自动复盘**: 使用 `/retro` 或提到 "复盘"。
 
-    -> 加载: `extensions/auto-retro/GEMINI.md`
+    -> 加载: `extensions/auto-retro.md`
 
 *   **Milvus（向量数据库 UI）**: 提到 "milvus" / "向量数据库" / "打开 Milvus" / "看 Milvus UI"。
 

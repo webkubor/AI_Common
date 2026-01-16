@@ -67,6 +67,11 @@
      ```
    - **iOS 特配**: 检测 iOS 环境，显示“添加到主屏幕”的手动引导（iOS Safari 不支持自动安装事件）。
 2. **全局注入**: 将组件挂载到应用的最顶层（`App.tsx` 或 `App.vue`）。
+3. **版本生效检验**:
+   - 在 `vite.config.ts` 中通过 `define` 注入构建版本常量：`__APP_VERSION__: JSON.stringify(pkg.version)`
+   - 应用启动时在入口文件（`main.tsx` 或 `main.ts`）对比当前版本与 `localStorage.getItem('pwa_last_version')`
+   - 若版本不同，弹出提示：`已更新到新版本 vX.X.X（之前 vY.Y.Y）`
+   - 更新 `localStorage.setItem('pwa_last_version', __APP_VERSION__)`
 
 ## 4. 关键技术规范
 - **框架无关性**: 代码逻辑应适配当前项目的技术栈。
