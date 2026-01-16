@@ -54,12 +54,12 @@
 建议追加到 `retrospective.md` 末尾：
 
 ```markdown
-- **[YYYY-MM-DD] {Title}**: {症状与根因} -> {解决方案}。💡 {一句话教训}
+- [YYYY-MM-DD] **{Title}**: {症状与根因} -> {解决方案}。
 ```
 
 ### 3.3 /retro 自动复盘
 
-- 使用 `/retro`：走“快速、轻量”的追加模式（见 `extensions/auto-retro/GEMINI.md`）。
+- 使用 `/retro`：走“快速、轻量”的追加模式（见 `extensions/auto-retro.md`）。
 - 使用 `/retro --full`：触发深度复盘与维护（如归档/提炼）。
 
 ## 4. 相关规范文档（已拆分）
