@@ -24,3 +24,5 @@ temp/
 project_index.md
 # --- Local Database Context ---
 extensions/milvus_*.md
+# --- Personal Writer Context ---
+extensions/juejin-writer.md
