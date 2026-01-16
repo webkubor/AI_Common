@@ -28,4 +28,6 @@ project_index.md
 extensions/milvus-toolkit.md
 
 # --- Personal Writer Context ---
-extensions/juejin-writer.md
+extensions/juejin-writer.md# --- Private Snippets ---
+snippets/
+extensions/snippet_master.md
