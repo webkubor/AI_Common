@@ -42,22 +42,53 @@
             width: 280px;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--sidebar-border);
-            overflow-y: auto;
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
         }
 
-        .repo-header {
+        #repo-header {
             padding: 16px;
             font-weight: bold;
             border-bottom: 1px solid var(--sidebar-border);
             font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        #shortcuts {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--sidebar-border);
+            flex-shrink: 0;
+        }
+
+        #tree-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        #sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--sidebar-border);
+            background-color: var(--bg-color);
+            font-size: 12px;
+            color: #57606a;
+            flex-shrink: 0;
+        }
+        
+        #sidebar-footer code {
+            display: block;
+            background: var(--hover-bg);
+            padding: 4px;
+            border-radius: 4px;
+            margin-top: 4px;
+            cursor: pointer;
+            word-break: break-all;
         }
 
         .file-tree {
             list-style: none;
-            padding: 10px 0;
+            padding: 0;
             margin: 0;
         }
 
@@ -78,8 +109,21 @@
         .file-item:hover {
             background-color: var(--hover-bg);
         }
+        
+        .shortcut-item {
+            padding: 6px 16px;
+            font-size: 13px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .shortcut-item:hover { background-color: var(--hover-bg); }
+        .shortcut-icon { width: 16px; text-align: center; }
 
-        .file-item.active {
+        .file-item.active, .shortcut-item.active {
             background-color: #388bfd26; /* Blue tint */
             color: #0969da;
             font-weight: 500;
@@ -132,8 +176,19 @@
     <div id="config-bar">
         <input type="text" id="repo-input" placeholder="user/repo (Enter to load)">
     </div>
-    <div class="repo-header" id="repo-name">Loading...</div>
+    <div id="repo-header" class="repo-header">Loading...</div>
+    
+    <div id="shortcuts">
+        <!-- Shortcuts will be injected here -->
+    </div>
+
     <div id="tree-container"></div>
+    
+    <div id="sidebar-footer">
+        <strong>🚀 新项目初始化</strong>
+        <div style="margin-top:4px; opacity:0.8;">在项目根目录运行:</div>
+        <code onclick="navigator.clipboard.writeText(this.innerText); alert('已复制!')">~/Documents/AI_Common/init_vibe.sh</code>
+    </div>
 </div>
 
 <div id="main">
@@ -152,11 +207,19 @@
     };
 
     const IGNORE_FILES = ['.DS_Store', '.gitignore', '.git', 'LICENSE', 'index.html'];
+    
+    // Shortcuts Configuration
+    const SHORTCUTS = [
+        { name: '🏠 路由总览', path: 'index.md' },
+        { name: '📝 错误复盘', path: 'retrospective.md' },
+        { name: '🛠 技术栈偏好', path: 'tech_stack.md' }
+    ];
 
     // DOM Elements
     const els = {
-        repoName: document.getElementById('repo-name'),
+        repoName: document.getElementById('repo-header'),
         tree: document.getElementById('tree-container'),
+        shortcuts: document.getElementById('shortcuts'),
         content: document.getElementById('content'),
         configBar: document.getElementById('config-bar'),
         repoInput: document.getElementById('repo-input')
@@ -235,6 +298,21 @@
      * 3. Render Sidebar
      */
     function renderSidebar() {
+        // Render Shortcuts
+        els.shortcuts.innerHTML = '';
+        SHORTCUTS.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'shortcut-item';
+            div.innerText = s.name;
+            div.onclick = () => {
+                loadFile(s.path);
+                document.querySelectorAll('.file-item, .shortcut-item').forEach(el => el.classList.remove('active'));
+                div.classList.add('active');
+            };
+            els.shortcuts.appendChild(div);
+        });
+
+        // Render Tree
         const ul = document.createElement('ul');
         ul.className = 'file-tree';
 
@@ -260,7 +338,7 @@
             li.innerText = `${icon} ${item.path.split('/').pop()}`;
 
             li.onclick = () => {
-                document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.file-item, .shortcut-item').forEach(el => el.classList.remove('active'));
                 li.classList.add('active');
                 if (item.type === 'blob') {
                     loadFile(item.path);
