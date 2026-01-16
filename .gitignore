@@ -1,0 +1,23 @@
+# --- OS & Editor ---
+.DS_Store
+.idea/
+.vscode/
+
+# --- Private Environment Context (敏感环境信息) ---
+# 包含本机路径、用户名、详细版本快照
+env_profile.md
+
+# --- Private Logs & Data (私有日志与数据) ---
+# 包含具体业务 Bug、复盘记录和可能的敏感逻辑
+retrospective.md
+archives/
+
+# --- Config & Excludes (配置与排除项) ---
+# 隐私排除清单本身
+privacy_excludes.md
+# 测试上下文
+_test_context.md
+
+# --- Temporary ---
+tmp/
+temp/
