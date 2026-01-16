@@ -145,13 +145,13 @@
 <script>
     // Configuration
     const STATE = {
-        owner: '',
-        repo: '',
-        branch: 'main', // default fallback
+        owner: 'webkubor',    // Default fallback
+        repo: 'AI_Common',    // Default fallback
+        branch: 'main', 
         tree: []
     };
 
-    const IGNORE_FILES = ['.DS_Store', '.gitignore', '.git', 'LICENSE'];
+    const IGNORE_FILES = ['.DS_Store', '.gitignore', '.git', 'LICENSE', 'index.html'];
 
     // DOM Elements
     const els = {
@@ -163,27 +163,26 @@
     };
 
     /**
-     * 1. Initialize: Try to detect GitHub Pages context or ask user
+     * 1. Initialize: Auto-detect or use defaults
      */
     async function init() {
         const hostname = window.location.hostname;
         const pathParts = window.location.pathname.split('/').filter(p => p);
 
-        // Heuristic: github.io deployment
+        // Scenario 1: GitHub Pages (username.github.io/repo)
         if (hostname.endsWith('github.io') && pathParts.length > 0) {
             STATE.owner = hostname.split('.')[0];
-            STATE.repo = pathParts[0]; // First path segment is usually repo name
-            await loadRepo();
-        } else {
-            // Localhost or custom domain -> Show Input
+            STATE.repo = pathParts[0]; 
+        } 
+        // Scenario 2: Localhost (Show config bar for debugging)
+        else if (hostname === 'localhost' || hostname === '127.0.0.1') {
             els.configBar.style.display = 'block';
-            els.repoName.innerText = '请配置仓库';
-            els.content.innerHTML = `<div id="status">
-                <h3>🛠️ 本地开发模式 / Custom Domain</h3>
-                <p>无法从 URL 自动识别仓库。</p>
-                <p>请在左上角输入 <code>username/repo</code> (例如 <code>webkubor/AI_Common</code>) 并回车。</p>
-            </div>`;
+            // Don't return, allow it to try loading default STATE
         }
+        // Scenario 3: Custom Domain (docs.webkubor.com)
+        // It will naturally use the defaults defined in STATE (webkubor/AI_Common)
+
+        await loadRepo();
     }
 
     els.repoInput.addEventListener('keypress', async (e) => {
