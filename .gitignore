@@ -1,33 +1,29 @@
-# --- OS & Editor ---
+# Core
 .DS_Store
-.idea/
-.vscode/
+.env
+*.log
 
-# --- Private Environment Context (敏感环境信息) ---
-# 包含本机路径、用户名、详细版本快照
-env_profile.md
-
-# --- Private Logs & Data (私有日志与数据) ---
-# 包含具体业务 Bug、复盘记录和可能的敏感逻辑
-retrospective.md
-archives/
-
-# --- Config & Excludes (配置与排除项) ---
-# 隐私排除清单本身
-privacy_excludes.md
-# 测试上下文
-_test_context.md
-
-# --- Temporary ---
-tmp/
-temp/
-project_index.md
-
-# --- Local Database Context ---
-# 统一的 Milvus 工具箱配置
-extensions/milvus-toolkit.md
-
-# --- Personal Writer Context ---
-extensions/juejin-writer.md# --- Private Snippets ---
+# 🔒 L2 Private Memory (必须忽略)
 snippets/
-extensions/snippet_master.md
+rules/retrospective.md
+retrospective.md
+.aider*
+.gemini/
+
+# 🚫 Secrets & Keys (高风险)
+*.pem
+*.key
+*.p12
+id_rsa*
+*token*
+*secret*
+*creds*
+mcp-oauth-tokens.json
+oauth_creds.json
+
+# Build & Cache
+node_modules/
+dist/
+build/
+tmp/
+coverage/

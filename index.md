@@ -1,144 +1,78 @@
-# AI Context Index & Router
+# AI Context Index & Router (Universal Protocol)
 
-> **核心作用**: 这是 AI 长期记忆的统一入口。请根据当前的**开发阶段 (Development State)** 或 **用户意图 (Intent)**，按需读取下方的子文档。
-> **原则**: 严禁一次性读取所有文件。先读此索引，再加载对应上下文。
-> **语言要求**: 除非用户明确要求使用英文，否则所有回复、注释、文档内容必须使用 **中文** 输出。
->
-> **隐私与同步提醒**: 本目录包含个人本机路径、项目入口与自动化规则，默认视为私人资料；除非你明确要求，否则 AI 不应将其内容直接复制到公开仓库或公开渠道。
+> **⚠️ 核心指令 (Prime Directive)**
+> 你现在正在访问用户的 **"外部大脑" (Exocortex)**。
+> 无论你是 Gemini, Claude 还是 Codex，你必须遵守以下 **"通用协议"**：
 
-## ⚡ 快速入口（环境/安装/依赖）
+## 1. 🧬 能力映射 (Capability Mapping)
+请将你自身的原生工具 (Native Tools) 映射到以下标准动作：
+*   **[读取]**: 使用你最擅长的文件读取工具 (e.g., `read_file`, `cat`, `fs.readFile`)。
+*   **[执行]**: 使用你最擅长的 Shell 执行工具 (e.g., `run_shell_command`, `bash`, `execute`)。
+*   **[记忆]**: 除非用户明确要求修改本目录文件，否则本目录对你 **Read-Only (只读)**。
 
-当用户提到以下内容时，优先加载 `env_profile.md` 与 `tech_stack.md`，避免“装错/版本不一致/包管理器混用”。
+## 2. 🤖 身份自检与握手 (Identity Handshake)
+在执行任何任务前，请先匹配你的身份并加载对应清单（如果有）：
+- **Identity: Gemini** -> `extensions/gemini_manifest.md`
+- **Identity: Claude** -> `extensions/claude_manifest.md`
+- **Identity: Codex**  -> `extensions/codex_manifest.md`
 
-- **触发关键词**: "安装", "依赖", "install", "pnpm", "node 版本", "python 版本", "环境变量", "brew", "运行不了"
-- **加载文档**:
-  1. `env_profile.md`（本机运行时版本快照）
-  2. `tech_stack.md`（默认技术偏好与工具选择）
+## 3. 🧠 动态加载机制 (Dynamic Loading)
+**严禁** 一次性读取所有文件。请根据用户意图，仅加载下方路由表中 **最相关** 的文件。
 
-建议先做最小检查：
-- `node -v`
-- `pnpm -v`
-- `python3 -V`
-- `zsh -lc 'source ~/.nvm/nvm.sh >/dev/null 2>&1; nvm --version; nvm current'`
-- `java -version`
-- `pm2 -v`
-- `gemini --version`
-- `codex --version`
-- `docker --version`
-- `docker compose version`
-- `mongosh --version`
-- `ollama --version`
+## 4. 🕵️ 引用透明化协议 (Source Transparency)
+为了明确知识来源，回复时必须标记：
+- **[📂 规则: xxx.md]**: 当你依据本目录下的某个文件回答时。
+- **[🧠 RAG]**: 当你依据向量检索或模糊记忆回答时。
 
-如果需要打开本机数据库/存储控制台：
-- Milvus UI (Attu): `http://127.0.0.1:8000`
-- MinIO（Milvus 依赖的对象存储）: `http://127.0.0.1:9001/login`（默认 `minioadmin` / `minioadmin`）
+## 5. 🔍 统一检索协议 (Unified Search Protocol)
+当用户发起检索请求时，请按层级逐级降级 (Fallback Strategy)：
 
-当前环境快照（来自 `env_profile.md`，用于减少来回确认）：
-- OS：macOS 15.6（Apple M3 Pro，18GB）
-- Node.js：v22.19.0（via nvm）
-- nvm：0.39.5
-- pnpm：10.25.0（首选）
-- Python：3.13.1
-- Java：OpenJDK 20.0.1
-- PM2：6.0.13
-- Gemini CLI：0.23.0
-- Codex CLI：0.80.0
-- Docker：29.1.3
-- Docker Compose：2.40.3
-- MongoDB：mongod 7.0.14 / mongosh 2.4.0
-- Shell：/bin/zsh
-
-## 📍 状态机路由 (State Machine Routing)
-
-请分析用户的 Prompt，判断当前处于哪个开发阶段，并加载对应的 Context 文件。
-
-### 🚀 Phase 1: 项目初始化 (Inception & Setup)
-*   **触发条件**: 用户提到 "新建项目", "脚手架", "技术选型", "init", "new project"。
-*   **加载文档**:
-    1.  `tech_stack.md` (技术栈偏好: Vue3, TS, Vite, CloudBase)
-    2.  `init_vibe.sh` (初始化脚本参考)
-    3.  `env_profile.md` (本地环境档案)
-
-### 💻 Phase 2: 编码与实现 (Coding & Implementation)
-
-*   **触发条件**: 用户提到 "写代码", "实现功能", "组件", "样式", "refactor", "重构", "安装依赖", "install"。
-
-*   **加载文档**:
-
-    1.  `retrospective.md` (🔥 **必须首选阅读**: 查阅近期复盘记录与知识点，确保不犯同样的错误)
-
-    2.  `vibe_rules.md` (Vibe Coding 核心循环)
-
-    3.  `workflow_retro.md` (协作工作流与自动复盘)
-    4.  `coding_rules.md` (编码规范)
-    5.  `git_commit_rules.md` (Git 提交规范)
-    6.  `tech_stack.md` (技术栈偏好)
-    7.  `env_profile.md` (环境依赖检查)
-
-
-#### 🛠 专项任务扩展 (Specialized Skills)
-
-*   **PWA 改造**: 提到 "PWA", "离线", "Service Worker", "Manifest"。
-
-    -> 加载: `extensions/pwa_master.md`
-
-*   **版本发布**: 提到 "Release", "发布", "版本号", "更新日志"。
-*   **掘金写作**: 提到 "掘金", "写文章", "juejin", "发布文章"。
-    -> 加载: `extensions/juejin-writer.md`
-
-    -> 加载: `extensions/release_master.md`
-
-*   **自动复盘**: 使用 `/retro` 或提到 "复盘"。
-
-    -> 加载: `extensions/auto-retro.md`
-
-*   **Milvus（向量数据库 UI）**: 提到 "milvus" / "向量数据库" / "打开 Milvus" / "看 Milvus UI"。
-
-    -> 加载: `extensions/milvus_local_ui.md`
-
-*   **Milvus 入库（切片→向量化→写入）**: 提到 "入库" / "向量化" / "切片" / "ingest" / "更新 Milvus" / "同步到 Milvus"。
-
-    -> 加载: `extensions/milvus_ingest_skill.md`
-
-*   **Milvus 检索注入标记**: 提到 "RAG" / "语义搜索" / "用 Milvus 查" / "向量库检索" / "注入"。
-
-    -> 加载: `extensions/milvus_rag_marker.md`
-
-
-
-### 🐛 Phase 3: 调试与复盘 (Debugging & Review)
-*   **触发条件**: 用户提到 "报错", "bug", "修复", "异常", "分析原因", "review"。
-*   **加载文档**:
-    1.  `retrospective.md` (历史错误复盘与经验教训)
-    2.  `vibe_rules.md` (查看 "复杂问题定义" 和 "错误日志标准")
-    3.  （已移除）Google GenAI SDK 相关文档已删除；如需排查 AI SDK 调用问题，请明确说明使用的 SDK（OpenAI / Gemini / 其他）与报错日志
-
-### 🧠 Phase 4: 深度思考与规划 (Deep Thinking)
-
-*   **触发条件**: 用户使用 `/think` 命令，或提到 "架构设计", "方案评估"。
-*   **加载文档**:
-    1.  `vibe_rules.md` (参考 "角色定义": 切换为 Architect 模式)
-    2.  `workflow_retro.md` (协作工作流与复盘约束)
+| 层级 | 目标域 | 触发场景 | 执行动作 |
+| :--- | :--- | :--- | :--- |
+| **L1** | **显式规则 (Local)** | "怎么写代码", "Git 规范", "查一下规则" | 读取 `rules/` 或 `index.md` |
+| **L2** | **私有记忆 (Memory)** | "历史复盘", "那个 bug", "以前怎么写的", "Token" | 加载 `extensions/milvus-toolkit.md` |
+| **L3** | **外部知识 (World)** | "Vue3 文档", "Stripe API", "最新的库用法" | 调用 `Context7` 工具 |
 
 ---
 
-## 📂 文件清单与简介
+## 📍 状态机路由 (State Machine Routing)
 
-| 文件名 | 简介 | 核心关键词 |
-| :--- | :--- | :--- |
-| **index.md** | 本文件，总路由入口 | Router, Index |
-| **tech_stack.md** | 技术栈选型与环境配置 | Vue3, Vite, TS, CloudBase |
-| **vibe_rules.md** | Vibe Coding 核心协作协议 | 4-Step Loop, 规则, 流程 |
-| **workflow_retro.md** | 协作工作流与自动复盘 | Workflow, Retro |
-| **coding_rules.md** | 编码规范（通用） | StandardJS, TS, UI |
-| **extensions/milvus_local_ui.md** | Milvus 本机 UI（Attu）使用指南 | Milvus, Attu, UI |
-| **extensions/milvus_ingest_skill.md** | Milvus 入库 Skill（切片→向量化→写入） | Milvus, Ingest, Chunk |
-| **extensions/milvus_rag_marker.md** | Milvus 检索注入标记 | RAG, Milvus, Marker |
-| **git_commit_rules.md** | Git 提交规范（Angular） | Commit, Changelog |
-| **retrospective.md** | 错误日志与复盘沉淀 | Error, Log, Fix, Lesson |
-| **init_vibe.sh** | 项目初始化自动化脚本 | Script, Init, Bash |
-| **env_profile.md** | 用户本地环境快照 | Env, OS, Node, Python |
-| **project_index.md** | AI-tools 项目索引 | Projects, Index |
-| **_test_context.md** | 上下文隔离测试内容（仅测试用） | TEST_MARKER, Context |
-| **privacy_excludes.md** | 隐私/入库排除清单 | Privacy, Excludes |
+### 🛡️ Phase 0: 治理与安全 (Safety)
+*   **触发**: 提到 "隐私", "敏感信息", "忽略文件", "Key"。
+*   **加载**: `rules/privacy_excludes.md`
 
+### 🚀 Phase 1: 项目初始化 (Inception)
+*   **触发**: 提到 "新建项目", "脚手架", "init", "new project"。
+*   **加载**: `tech_stack.md`, `init_vibe.sh`, `rules/standard_workflow.md`
+
+### 💻 Phase 2: 编码与交付 (Implementation)
+*   **触发**: 提到 "写代码", "实现", "重构", "提交", "commit"。
+*   **加载**: `rules/vibe_rules.md`, `rules/coding_rules.md`, `rules/retrospective.md`, `rules/git_commit_rules.md`
+
+### 📝 Phase 3: 知识沉淀 (Capture)
+*   **触发**: 提到 "记录", "笔记", "观点", "snippet", "存入大脑"。
+*   **加载**: `extensions/snippet_master.md`
+
+### 📂 Phase 4: 项目检索 (Discovery)
+*   **触发**: 提到 "找项目", "项目列表", "我的项目有哪些", "project index"。
+*   **加载**: `project_index.md`
+
+---
+
+## 🧩 专项技能扩展 (Specialized Skills)
+
+| 技能关键词 | 路由目标 |
+| :--- | :--- |
+| 掘金 / 写文章 / juejin | `extensions/juejin-writer.md` |
+| 飞书 / Lark / 团队文档 | `extensions/feishu-writer.md` |
+| Logo / 图标 / 图形设计 | `extensions/logo_designer.md` |
+| PWA / 离线 / Manifest | `extensions/pwa_master.md` |
+| 发版 / Release / 版本号 | `extensions/release_master.md` |
+| 爬虫 / 自动化 / Browser | `extensions/browser-control.md` |
+| 复盘 / /retro | `extensions/auto-retro.md` |
+| /think / 本质分析 | `extensions/think.md` |
+| Milvus / 向量库 / RAG | `extensions/milvus-toolkit.md` |
+| Token 估算 / 费用 | `extensions/token-estimator.md` |
+
+---
+*Last Updated: 2026-01-20*

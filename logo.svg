@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- 极光渐变：象征 AI 的多变与智能 -->
+    <linearGradient id="auroraGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" /> <!-- Sky Blue -->
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" /> <!-- Violet -->
+      <stop offset="100%" style="stop-color:#f43f5e;stop-opacity:1" /> <!-- Rose -->
+    </linearGradient>
+    
+    <!-- 内部发光效果 -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <title>AI Common Logo</title>
+  <desc>A geometric abstraction of a neural core connecting to knowledge nodes.</desc>
+
+  <!-- 背景：保留透明，适配各种环境 -->
+  
+  <g filter="url(#glow)">
+    <!-- 核心圆：象征知识库本体 -->
+    <!-- 黄金比例：512 / 1.618 ≈ 316 (外圈) -->
+    <!-- 黄金比例：316 / 1.618 ≈ 195 (内圈) -->
+    
+    <!-- 外部轨道环 -->
+    <circle cx="256" cy="256" r="195" fill="none" stroke="url(#auroraGradient)" stroke-width="32" stroke-linecap="round" stroke-dasharray="80 140" transform="rotate(45 256 256)" opacity="0.8" />
+    
+    <!-- 内部核心 -->
+    <circle cx="256" cy="256" r="90" fill="url(#auroraGradient)" />
+    
+    <!-- 卫星节点：象征 Skills/Extensions -->
+    <!-- 位置计算：基于 195 半径的轨道 -->
+    <circle cx="256" cy="61" r="24" fill="#0ea5e9" /> <!-- Top -->
+    <circle cx="425" cy="354" r="24" fill="#f43f5e" /> <!-- Bottom Right -->
+    <circle cx="87" cy="354" r="24" fill="#8b5cf6" /> <!-- Bottom Left -->
+    
+    <!-- 连接线：象征 Connection -->
+    <path d="M256 151 L256 85" stroke="url(#auroraGradient)" stroke-width="8" stroke-linecap="round" opacity="0.5" />
+    <path d="M334 299 L399 337" stroke="url(#auroraGradient)" stroke-width="8" stroke-linecap="round" opacity="0.5" />
+    <path d="M178 299 L113 337" stroke="url(#auroraGradient)" stroke-width="8" stroke-linecap="round" opacity="0.5" />
+  </g>
+</svg>

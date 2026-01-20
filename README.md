@@ -10,17 +10,17 @@
 
 ## 🏗 核心架构 (The Hybrid RAG)
 
-本仓库采用 **L0-L2 三层分发体系**，在 Token 效率与隐私安全之间取得平衡：
+本仓库采用 **L1-L3 三层分发体系**，在 Token 效率与隐私安全之间取得平衡：
 
 | 层级 | 名称 | 载体 | 核心使命 | 典型内容 |
 | :--- | :--- | :--- | :--- | :--- |
-| **L0** | **显式规则** (Explicit) | `index.md` / `vibe_rules.md` | **基准 (Baseline)** | 路由地图、代码规范、Git 协议 |
-| **L1** | **私有内脑** (Local RAG) | Milvus / `snippets/` | **经验 (Experience)** | 历史 Bug 复盘、私有 Token、业务代码 |
-| **L2** | **官方外脑** (Official RAG) | MCP Knowledge Base | **知识 (Knowledge)** | 腾讯云 API 文档、框架手册 |
+| **L1** | **显式规则** (Explicit) | `index.md` / `rules/` | **基准 (Baseline)** | 路由地图、代码规范、Git 协议 |
+| **L2** | **私有内脑** (Local RAG) | Milvus / `snippets/` | **经验 (Experience)** | 历史 Bug 复盘、私有 Token、业务代码 |
+| **L3** | **官方外脑** (Official RAG) | Context7 | **知识 (Knowledge)** | 腾讯云 API 文档、框架手册 |
 
 ### 🔒 隐私设计
-*   **Git 追踪**：仅包含通用的 L0 规则与方法论文档。
-*   **本地留存**：L1 私有数据（`retrospective.md`, `snippets/`, `env_profile.md`）通过 `.gitignore` 严格屏蔽，物理隔离在本地机器。
+*   **Git 追踪**：仅包含通用的 L1 规则与方法论文档。
+*   **本地留存**：L2 私有数据（`retrospective.md`, `snippets/`, `env_profile.md`）通过 `.gitignore` 严格屏蔽，物理隔离在本地机器。
 
 ---
 
