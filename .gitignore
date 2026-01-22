@@ -20,6 +20,7 @@ id_rsa*
 *creds*
 mcp-oauth-tokens.json
 oauth_creds.json
+!extensions/token-estimator.md
 
 # Build & Cache
 node_modules/

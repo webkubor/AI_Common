@@ -30,7 +30,7 @@
 | 层级 | 目标域 | 触发场景 | 执行动作 |
 | :--- | :--- | :--- | :--- |
 | **L1** | **显式规则 (Local)** | "怎么写代码", "Git 规范", "查一下规则" | 读取 `rules/` 或 `index.md` |
-| **L2** | **私有记忆 (Memory)** | "历史复盘", "那个 bug", "以前怎么写的", "Token" | 加载 `extensions/milvus-toolkit.md` |
+| **L2** | **私有记忆 (Memory)** | "历史复盘", "那个 bug", "以前怎么写的", "Token" | 加载 `milvus-toolkit.md` & `retrospectives/INDEX.md` |
 | **L3** | **外部知识 (World)** | "Vue3 文档", "Stripe API", "最新的库用法" | 调用 `Context7` 工具 |
 
 ---
@@ -38,8 +38,8 @@
 ## 📍 状态机路由 (State Machine Routing)
 
 ### 🛡️ Phase 0: 治理与安全 (Safety)
-*   **触发**: 提到 "隐私", "敏感信息", "忽略文件", "Key"。
-*   **加载**: `rules/privacy_excludes.md`
+*   **触发**: 提到 "隐私", "敏感信息", "忽略文件", "Key", "Figma Token"。
+*   **加载**: `rules/privacy_excludes.md`, `rules/figma_mcp_config.md`
 
 ### 🚀 Phase 1: 项目初始化 (Inception)
 *   **触发**: 提到 "新建项目", "脚手架", "init", "new project"。
@@ -47,7 +47,7 @@
 
 ### 💻 Phase 2: 编码与交付 (Implementation)
 *   **触发**: 提到 "写代码", "实现", "重构", "提交", "commit"。
-*   **加载**: `rules/vibe_rules.md`, `rules/coding_rules.md`, `rules/retrospective.md`, `rules/git_commit_rules.md`
+*   **加载**: `rules/vibe_rules.md`, `rules/coding_rules.md`, `rules/workflow_retro.md`, `retrospectives/INDEX.md`, `rules/git_commit_rules.md`
 
 ### 📝 Phase 3: 知识沉淀 (Capture)
 *   **触发**: 提到 "记录", "笔记", "观点", "snippet", "存入大脑"。
@@ -69,10 +69,16 @@
 | PWA / 离线 / Manifest | `extensions/pwa_master.md` |
 | 发版 / Release / 版本号 | `extensions/release_master.md` |
 | 爬虫 / 自动化 / Browser | `extensions/browser-control.md` |
-| 复盘 / /retro | `extensions/auto-retro.md` |
+| 复盘 / /retro | `extensions/auto-retro.md`, `rules/workflow_retro.md` |
 | /think / 本质分析 | `extensions/think.md` |
 | Milvus / 向量库 / RAG | `extensions/milvus-toolkit.md` |
 | Token 估算 / 费用 | `extensions/token-estimator.md` |
+| 设计 / Design / UI | `extensions/super-design.md` |
+| Snippets / 代码片段 | `extensions/snippet_master.md` |
+| Figma / MCP / 设计稿 | `rules/figma_mcp_config.md` |
+| Slack GIF / 动图 / GIF | `extensions/slack-gif-creator` |
+| Web 测试 / Playwright / E2E | `extensions/webapp-testing` |
+| 内部沟通 / 邮件 / 纪要 | `extensions/internal-comms` |
 
 ---
-*Last Updated: 2026-01-20*
+*Last Updated: 2026-01-22 (Figma & Retro Sync, Extensions Skills Added)*
