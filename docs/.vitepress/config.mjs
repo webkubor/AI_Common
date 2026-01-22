@@ -20,7 +20,6 @@ export default defineConfig({
         items: [
           { text: '首页', link: '/' },
           { text: '路由总览', link: '/router' },
-          { text: 'README', link: '/README' },
           { text: '技术栈偏好', link: '/tech_stack' },
           { text: '项目索引', link: '/project_index' }
         ]
@@ -29,13 +28,13 @@ export default defineConfig({
         text: '规则中心',
         items: [
           { text: '总览', link: '/rules/' },
-          { text: 'coding_rules', link: '/rules/coding_rules' },
-          { text: 'git_commit_rules', link: '/rules/git_commit_rules' },
-          { text: 'privacy_excludes', link: '/rules/privacy_excludes' },
-          { text: 'standard_workflow', link: '/rules/standard_workflow' },
-          { text: 'vibe_rules', link: '/rules/vibe_rules' },
-          { text: 'workflow_retro', link: '/rules/workflow_retro' },
-          { text: 'figma_mcp_config', link: '/rules/figma_mcp_config' }
+          { text: '编码规范', link: '/rules/coding_rules' },
+          { text: 'Git 提交规范', link: '/rules/git_commit_rules' },
+          { text: '隐私与忽略规范', link: '/rules/privacy_excludes' },
+          { text: '标准工作流', link: '/rules/standard_workflow' },
+          { text: 'Vibe 编程规则', link: '/rules/vibe_rules' },
+          { text: '工作流复盘', link: '/rules/workflow_retro' },
+          { text: 'Figma MCP 配置', link: '/rules/figma_mcp_config' }
         ]
       },
       {
@@ -53,11 +52,11 @@ export default defineConfig({
         text: '扩展能力',
         items: [
           { text: '总览', link: '/extensions/' },
-          { text: 'milvus-toolkit', link: '/extensions/milvus-toolkit' },
-          { text: 'browser-control', link: '/extensions/browser-control' },
-          { text: 'webapp-testing', link: '/extensions/webapp-testing/' },
-          { text: 'internal-comms', link: '/extensions/internal-comms/' },
-          { text: 'slack-gif-creator', link: '/extensions/slack-gif-creator/' }
+          { text: 'Milvus 工具集', link: '/extensions/milvus-toolkit' },
+          { text: '浏览器自动化控制', link: '/extensions/browser-control' },
+          { text: 'Web 应用测试', link: '/extensions/webapp-testing/' },
+          { text: '内部沟通', link: '/extensions/internal-comms/' },
+          { text: 'Slack GIF 生成器', link: '/extensions/slack-gif-creator/' }
         ]
       }
     ]

@@ -1,17 +1,51 @@
 :root {
-  --vp-c-brand-1: #0f766e;
-  --vp-c-brand-2: #0b5f58;
-  --vp-c-brand-3: #14b8a6;
-  --vp-c-brand-soft: rgba(20, 184, 166, 0.14);
+  --vp-c-brand-1: #0ea5a6;
+  --vp-c-brand-2: #0b7d7f;
+  --vp-c-brand-3: #22d3ee;
+  --vp-c-brand-soft: rgba(34, 211, 238, 0.18);
   --vp-font-family-base: "IBM Plex Sans", "PingFang SC", "Noto Sans SC", system-ui, -apple-system, sans-serif;
   --vp-font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.35);
+  --glass-shadow: 0 20px 40px rgba(10, 20, 40, 0.12);
+}
+
+.Layout {
+  background:
+    radial-gradient(900px 600px at 20% 10%, rgba(14, 165, 166, 0.25), transparent 60%),
+    radial-gradient(700px 520px at 90% 20%, rgba(244, 114, 182, 0.18), transparent 60%),
+    radial-gradient(900px 700px at 60% 90%, rgba(59, 130, 246, 0.18), transparent 60%),
+    linear-gradient(180deg, #f7f7fb 0%, #eef3f9 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.Layout::before,
+.Layout::after {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto auto;
+  width: 60vw;
+  height: 60vw;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(34, 211, 238, 0.45), transparent 55%),
+    radial-gradient(circle at 70% 50%, rgba(244, 114, 182, 0.35), transparent 60%),
+    radial-gradient(circle at 40% 70%, rgba(59, 130, 246, 0.35), transparent 60%);
+  filter: blur(40px);
+  opacity: 0.8;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0);
+}
+
+.Layout::after {
+  inset: auto auto -25% -10%;
+  width: 55vw;
+  height: 55vw;
+  opacity: 0.7;
 }
 
 .VPHome {
-  background:
-    radial-gradient(1200px 600px at 80% -10%, rgba(15, 118, 110, 0.15), transparent 60%),
-    radial-gradient(900px 500px at 10% 10%, rgba(249, 115, 22, 0.12), transparent 60%),
-    linear-gradient(180deg, #f8f6f2 0%, #f1f4f7 100%);
+  background: transparent;
 }
 
 .VPHome .VPHomeHero {
@@ -26,22 +60,45 @@
   padding-bottom: 72px;
 }
 
+.VPHome .VPHomeFeature,
+.VPContent .vp-doc,
+.VPNavBar,
+.VPSidebar,
+.VPNavBar.has-sidebar {
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.VPNavBar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
 .VPHome .VPHomeFeature {
-  backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(15, 118, 110, 0.12);
-  box-shadow: 0 8px 20px rgba(11, 16, 32, 0.08);
+  border-radius: 16px;
 }
 
-.dark .VPHome {
+.VPContent .vp-doc {
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.VPSidebar {
+  border-right: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.dark {
+  --glass-bg: rgba(12, 18, 32, 0.6);
+  --glass-border: rgba(148, 163, 184, 0.25);
+  --glass-shadow: 0 24px 44px rgba(2, 6, 23, 0.55);
+}
+
+.dark .Layout {
   background:
-    radial-gradient(1200px 600px at 80% -10%, rgba(45, 212, 191, 0.12), transparent 60%),
-    radial-gradient(900px 500px at 10% 10%, rgba(249, 115, 22, 0.12), transparent 60%),
-    linear-gradient(180deg, #0b1020 0%, #0f172a 100%);
-}
-
-.dark .VPHome .VPHomeFeature {
-  background: rgba(15, 23, 42, 0.7);
-  border-color: rgba(148, 163, 184, 0.2);
-  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.45);
+    radial-gradient(900px 600px at 20% 10%, rgba(16, 185, 129, 0.18), transparent 60%),
+    radial-gradient(700px 520px at 90% 20%, rgba(236, 72, 153, 0.18), transparent 60%),
+    radial-gradient(900px 700px at 60% 90%, rgba(59, 130, 246, 0.2), transparent 60%),
+    linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
 }
