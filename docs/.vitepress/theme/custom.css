@@ -32,7 +32,7 @@
     radial-gradient(circle at 70% 50%, rgba(244, 114, 182, 0.35), transparent 60%),
     radial-gradient(circle at 40% 70%, rgba(59, 130, 246, 0.35), transparent 60%);
   filter: blur(40px);
-  opacity: 0.8;
+  opacity: 0.5;
   pointer-events: none;
   transform: translate3d(0, 0, 0);
 }
@@ -41,7 +41,7 @@
   inset: auto auto -25% -10%;
   width: 55vw;
   height: 55vw;
-  opacity: 0.7;
+  opacity: 0.4;
 }
 
 .VPHome {
@@ -83,6 +83,8 @@
 .VPContent .vp-doc {
   border-radius: 18px;
   padding: 24px;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 .VPSidebar {
@@ -90,9 +92,14 @@
 }
 
 .dark {
-  --glass-bg: rgba(12, 18, 32, 0.6);
-  --glass-border: rgba(148, 163, 184, 0.25);
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 24px 44px rgba(2, 6, 23, 0.55);
+
+  /* 优化暗色模式下的品牌色，使其更亮更清晰 */
+  --vp-c-brand-1: #22d3ee;
+  --vp-c-brand-2: #0ea5a6;
+  --vp-c-brand-3: #0b7d7f;
 }
 
 .dark .Layout {
