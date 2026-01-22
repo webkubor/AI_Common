@@ -5,7 +5,6 @@
 ## 📋 片段列表
 
 - [aliases.md](./aliases.md) - 命令别名配置
-- [github_token.md](./github_token.md) - GitHub Token 使用说明
 - [nodejs_mjs_usage.md](./nodejs_mjs_usage.md) - Node.js ES Modules 使用指南
 - [rag_hybrid_architecture.md](./rag_hybrid_architecture.md) - RAG 混合架构设计
 - [satori.md](./satori.md) - Satori 相关配置
