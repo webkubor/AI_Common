@@ -34,7 +34,7 @@ export default defineConfig({
           { text: '标准工作流', link: '/rules/standard_workflow' },
           { text: 'Vibe 编程规则', link: '/rules/vibe_rules' },
           { text: '工作流复盘', link: '/rules/workflow_retro' },
-          { text: 'Figma MCP 配置', link: '/rules/figma_mcp_config' }
+
         ]
       },
       {
