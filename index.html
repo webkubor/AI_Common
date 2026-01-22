@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Common | Knowledge Base</title>
+    <meta name="description" content="AI Common 外部大脑：知识路由、规则与项目索引的统一入口。">
+    <link rel="icon" href="logo.svg">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Marked.js -->
@@ -11,37 +13,131 @@
     <!-- GitHub Markdown Style (Base) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css" id="markdown-style">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
-        :root { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root {
+            font-family: 'IBM Plex Sans', sans-serif;
+            --ink: #0b1020;
+            --sand: #f6f3ee;
+            --mist: #e9eef2;
+            --teal: #0f766e;
+            --teal-deep: #0b5f58;
+            --ember: #f97316;
+            --shadow-strong: 0 12px 24px rgba(11, 16, 32, 0.16);
+            --shadow-soft: 0 8px 20px rgba(11, 16, 32, 0.08);
+        }
+
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
 
-        .markdown-body { background-color: transparent !important; font-family: inherit !important; }
+        .markdown-body {
+            background-color: transparent !important;
+            font-family: inherit !important;
+        }
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4 {
+            font-family: 'Space Grotesk', sans-serif !important;
+            letter-spacing: -0.02em;
+        }
+        .markdown-body code,
+        .markdown-body pre,
+        code {
+            font-family: 'JetBrains Mono', monospace !important;
+        }
         
         /* Glass Effect */
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        .app-bg {
+            background:
+                radial-gradient(1200px 600px at 80% -10%, rgba(15, 118, 110, 0.15), transparent 60%),
+                radial-gradient(900px 500px at 10% 10%, rgba(249, 115, 22, 0.12), transparent 60%),
+                linear-gradient(180deg, #f8f6f2 0%, #f1f4f7 100%);
         }
-        .dark .glass {
-            background: rgba(15, 23, 42, 0.8);
+        .noise {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                radial-gradient(rgba(11, 16, 32, 0.08) 0.5px, transparent 0.5px);
+            background-size: 12px 12px;
+            mix-blend-mode: multiply;
+            opacity: 0.15;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(15, 118, 110, 0.12);
+            box-shadow: var(--shadow-soft);
+        }
+        .nav-item-active {
+            background: rgba(15, 118, 110, 0.12);
+            color: var(--teal-deep);
+            font-weight: 600;
+            border-left: 3px solid var(--teal);
+        }
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+        .nav-item:hover {
+            background: rgba(15, 118, 110, 0.08);
+            transform: translateX(2px);
+        }
+        .pill {
+            border: 1px solid rgba(11, 16, 32, 0.08);
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: var(--shadow-soft);
+        }
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.04em;
+        }
+        .icon {
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon svg {
+            width: 16px;
+            height: 16px;
         }
 
-        .nav-item-active {
-            background: #eff6ff;
-            color: #2563eb;
-            font-weight: 600;
-            border-right: 3px solid #2563eb;
-        }
-        .dark .nav-item-active {
-            background: #1e293b;
-            color: #60a5fa;
-            border-right-color: #60a5fa;
+        @media (prefers-color-scheme: dark) {
+            body {
+                color: #e2e8f0;
+            }
+            .app-bg {
+                background:
+                    radial-gradient(1200px 600px at 80% -10%, rgba(45, 212, 191, 0.12), transparent 60%),
+                    radial-gradient(900px 500px at 10% 10%, rgba(249, 115, 22, 0.12), transparent 60%),
+                    linear-gradient(180deg, #0b1020 0%, #0f172a 100%);
+            }
+            .glass {
+                background: rgba(15, 23, 42, 0.75);
+                border: 1px solid rgba(148, 163, 184, 0.18);
+                box-shadow: 0 12px 28px rgba(2, 6, 23, 0.45);
+            }
+            .pill {
+                background: rgba(15, 23, 42, 0.6);
+                border-color: rgba(148, 163, 184, 0.25);
+            }
+            .nav-item {
+                color: #cbd5e1;
+            }
+            .nav-item:hover {
+                background: rgba(45, 212, 191, 0.15);
+            }
+            .nav-item-active {
+                color: #5eead4;
+                border-left-color: #5eead4;
+                background: rgba(45, 212, 191, 0.18);
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
         }
     </style>
     <script>
@@ -60,27 +156,36 @@
         }
     </script>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
+<body class="app-bg text-slate-900 transition-colors duration-300">
+    <div class="noise"></div>
 
     <!-- App Wrapper -->
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex h-screen overflow-hidden relative z-10">
         
         <!-- Sidebar -->
-        <aside id="sidebar" class="w-72 flex-shrink-0 flex flex-col glass border-r border-slate-200 dark:border-slate-800 z-20">
+        <aside id="sidebar" class="w-80 flex-shrink-0 flex flex-col glass z-20">
             <!-- Header -->
-            <div class="p-6 border-bottom border-slate-200 dark:border-slate-800">
-                <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold">A</div>
-                    <h1 class="text-lg font-bold tracking-tight">AI Common</h1>
+            <div class="p-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-white shadow-md flex items-center justify-center">
+                        <img src="logo.svg" alt="AI Common Logo" class="w-7 h-7" />
+                    </div>
+                    <div>
+                        <h1 class="hero-title text-xl font-semibold">AI Common</h1>
+                        <div id="repo-tag" class="mt-1 text-xs font-mono text-slate-500 truncate">Loading...</div>
+                    </div>
                 </div>
-                <div id="repo-tag" class="mt-2 text-xs font-mono text-slate-500 truncate">Loading...</div>
+                <div class="mt-4 flex items-center gap-2 text-xs text-slate-500">
+                    <span class="pill px-2 py-1 rounded-full">外部大脑</span>
+                    <span class="pill px-2 py-1 rounded-full">知识路由</span>
+                </div>
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto custom-scrollbar px-3 space-y-6 pb-6">
+            <div class="flex-1 overflow-y-auto custom-scrollbar px-4 space-y-6 pb-6">
                 <!-- Shortcuts -->
                 <div>
-                    <h2 class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">快捷访问</h2>
+                    <h2 class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-[0.2em] mb-2">快捷访问</h2>
                     <nav id="shortcuts" class="space-y-1">
                         <!-- Injected -->
                     </nav>
@@ -88,7 +193,7 @@
 
                 <!-- File Tree -->
                 <div>
-                    <h2 class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">项目文件</h2>
+                    <h2 class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-[0.2em] mb-2">项目文件</h2>
                     <nav id="tree-container" class="space-y-1">
                         <!-- Injected -->
                     </nav>
@@ -96,19 +201,19 @@
             </div>
 
             <!-- Sidebar Footer -->
-            <div class="p-4 bg-white/50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800">
-                <div class="text-xs font-medium text-slate-500 mb-2">🚀 初始化命令</div>
+            <div class="p-4 bg-white/60 dark:bg-slate-900/60 border-t border-slate-200/60 dark:border-slate-700/60">
+                <div class="text-xs font-medium text-slate-500 mb-2">初始化命令</div>
                 <div class="group relative">
-                    <code id="init-cmd" onclick="copyCmd(this.innerText)" class="block p-2 text-[10px] bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 text-pink-600 dark:text-pink-400 cursor-pointer hover:border-brand-400 transition-colors break-all">
+                    <code id="init-cmd" onclick="copyCmd(this.innerText)" class="block p-2 text-[10px] bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-700 text-teal-700 dark:text-teal-300 cursor-pointer hover:border-teal-500 transition-colors break-all">
                         ~/Documents/AI_Common/init_vibe.sh
                     </code>
-                    <span class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">点击复制</span>
+                    <span class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-900 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">点击复制</span>
                 </div>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main id="main" class="flex-1 overflow-y-auto relative bg-white dark:bg-slate-950 custom-scrollbar">
+        <main id="main" class="flex-1 overflow-y-auto relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm custom-scrollbar">
             <!-- Content Area -->
             <div class="max-w-4xl mx-auto px-8 py-12 md:py-20">
                 <article id="content" class="markdown-body transition-all duration-500 opacity-0 transform translate-y-4">
@@ -117,9 +222,9 @@
             </div>
 
             <!-- Loading Overlay -->
-            <div id="loader" class="absolute inset-0 flex items-center justify-center bg-white dark:bg-slate-950 z-10">
+            <div id="loader" class="absolute inset-0 flex items-center justify-center bg-white/90 dark:bg-slate-900/90 z-10">
                 <div class="flex flex-col items-center">
-                    <div class="w-12 h-12 border-4 border-slate-200 border-t-brand-600 rounded-full animate-spin"></div>
+                    <div class="w-12 h-12 border-4 border-slate-200 dark:border-slate-700 border-t-teal-600 rounded-full animate-spin"></div>
                     <p class="mt-4 text-sm text-slate-500 animate-pulse">正在同步数据...</p>
                 </div>
             </div>
@@ -137,13 +242,24 @@
 
         const IGNORE_FILES = ['.DS_Store', '.gitignore', '.git', 'LICENSE', 'index.html', 'project_index.md'];
         
+        const ICONS = {
+            compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3a9 9 0 1 0 9 9 9 9 0 0 0-9-9Z"/><path d="m14.5 9.5-1.6 4.1-4.1 1.6 1.6-4.1Z"/></svg>',
+            spark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m12 3 2.2 5.3L19 10l-4.8 1.7L12 17l-2.2-5.3L5 10l4.8-1.7Z"/></svg>',
+            bolt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2 3 14h7l-1 8 10-12h-7Z"/></svg>',
+            cpu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4"/></svg>',
+            stars: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 14 7l5 2-5 2-2 5-2-5-5-2 5-2Z"/><path d="M5 18l1 2 2 1-2 1-1 2-1-2-2-1 2-1Z"/></svg>',
+            settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V22a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H2a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1A2 2 0 1 1 6.1 3l.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5V2a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1H22a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z"/></svg>',
+            folder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h6l2 2h10v10a2 2 0 0 1-2 2H3Z"/><path d="M3 7V5a2 2 0 0 1 2-2h4l2 2"/></svg>',
+            file: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>'
+        };
+
         const SHORTCUTS = [
-            { name: '路由总览', icon: '🧭', path: 'index.md' },
-            { name: '复盘工作流', icon: '🔥', path: 'workflow_retro.md' },
-            { name: 'PWA 改造', icon: '⚡', path: 'extensions/pwa_master.md' },
-            { name: 'Codex Skills', icon: '🤖', path: 'extensions/codex_skills_protocol.md' },
-            { name: 'Gemini Skills', icon: '♊', path: 'extensions/gemini_skills_protocol.md' },
-            { name: '技术栈偏好', icon: '⚙️', path: 'tech_stack.md' }
+            { name: '路由总览', icon: 'compass', path: 'index.md' },
+            { name: '复盘工作流', icon: 'spark', path: 'workflow_retro.md' },
+            { name: 'PWA 改造', icon: 'bolt', path: 'extensions/pwa_master.md' },
+            { name: 'Codex Skills', icon: 'cpu', path: 'extensions/codex_manifest.md' },
+            { name: 'Gemini Skills', icon: 'stars', path: 'extensions/gemini_manifest.md' },
+            { name: '技术栈偏好', icon: 'settings', path: 'tech_stack.md' }
         ];
 
         const els = {
@@ -191,10 +307,10 @@
             // Shortcuts
             els.shortcuts.innerHTML = '';
             SHORTCUTS.forEach(s => {
-                const btn = createNavItem(`${s.icon} ${s.name}`, () => {
+                const btn = createNavItem(s.name, () => {
                     loadFile(s.path);
                     updateActiveItem(btn);
-                });
+                }, 0, s.icon);
                 els.shortcuts.appendChild(btn);
             });
 
@@ -205,23 +321,24 @@
             STATE.tree.forEach(item => {
                 const name = item.path.split('/').pop();
                 const depth = item.path.split('/').length - 1;
-                const icon = item.type === 'tree' ? '📁' : '📄';
-                
-                const btn = createNavItem(`${icon} ${name}`, () => {
+                const icon = item.type === 'tree' ? 'folder' : 'file';
+
+                const btn = createNavItem(name, () => {
                     if (item.type === 'blob') {
                         loadFile(item.path);
                         updateActiveItem(btn);
                     }
-                }, depth);
+                }, depth, icon);
                 els.tree.appendChild(btn);
             });
         }
 
-        function createNavItem(html, onClick, depth = 0) {
+        function createNavItem(label, onClick, depth = 0, icon = '') {
             const btn = document.createElement('button');
-            btn.className = `w-full text-left px-3 py-2 rounded-lg text-sm transition-all hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center space-x-2 text-slate-600 dark:text-slate-400`;
+            btn.className = 'nav-item w-full text-left px-3 py-2 rounded-lg text-sm flex items-center space-x-2 text-slate-700';
             btn.style.paddingLeft = `${depth * 12 + 12}px`;
-            btn.innerHTML = html;
+            const iconHtml = icon ? `<span class="icon text-teal-700">${ICONS[icon]}</span>` : '';
+            btn.innerHTML = `${iconHtml}<span>${label}</span>`;
             btn.onclick = onClick;
             return btn;
         }

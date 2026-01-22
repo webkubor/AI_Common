@@ -32,3 +32,20 @@
 | WebView 测试应用 | ~/Desktop/personal/server/my_webview_app | Flutter WebView 调试工具，带日志面板 | Flutter, webview_flutter | 无 |
 | Web Tools Online | ~/Desktop/personal/server/web-tools-online | 网页截图/爬虫/PDF/缓存工具集合 | Node.js, Puppeteer, Cheerio, Cloudflare | 无 |
 | bd-order-bot | ~/Desktop/personal/server/bd-order-bot | 订单拉取自动化流程与收银台 URL 捕获 | Playwright, 自动化 | 无 |
+
+## 收银台项目 (Desktop/收银台)
+
+| 项目 | 路径 | 简介 | 技术栈/关键词 | 链接 |
+| :--- | :--- | :--- | :--- | :--- |
+| base-payment | ~/Desktop/收银台/base-payment | TP 收银台基础版本，支持印尼、印度、巴西、墨西哥、肯尼亚，包含 mock 调试模式 | Vue, Payment, Multi-region | 无 |
+| bd-payment-web | ~/Desktop/收银台/bd-payment-web | 孟加拉支付收银台 (Bangladesh Payment Checkout) | Vue, Bangladesh | 无 |
+| pk-lp-web | ~/Desktop/收银台/pk-lp-web | 巴基斯坦支付收银台 (LP 专用线路) | Vue, LarkPay, Pakistan | 无 |
+| pk-tp-web | ~/Desktop/收银台/pk-tp-web | 巴基斯坦支付收银台 (H5)，支持 JazzCash / Easypaisa | Vue, JazzCash, Easypaisa | 无 |
+
+## TarsPay 业务项目 (Desktop/tarspay)
+
+| 项目 | 路径 | 简介 | 技术栈/关键词 | 链接 |
+| :--- | :--- | :--- | :--- | :--- |
+| TarsPay Manager | ~/Desktop/tarspay/manager | TarsPay 总管理后台系统 | Vue 3, TS, Naive UI | 无 |
+| TP 商户后台 | ~/Desktop/tarspay/merchant | 跨境支付商户运营后台，支持多语言/多品牌/可视化监控 | Vue 3, Vite, TS, Pinia, Naive UI, ECharts | 无 |
+| TarsPay Website | ~/Desktop/tarspay/tp-web | TarsPay 官方网站 | Vue 3, Website | 无 |

@@ -72,3 +72,14 @@
 ## Skill 维护与跨目录操作 (Skill Maintenance)
 - **跨目录读取能力**: AI 不受当前项目工作目录限制。在必要时（如修改全局规则、维护 Skill），必须主动通过 Shell 命令访问 `~/.gemini/` 或 `~/Documents/AI_Common/`。
 - **Skill 源码优先**: 当需要调整 AI 的技能行为（如撰写风格、代码审查逻辑）时，必须直接修改 `.gemini/extensions/` 下对应的 `GEMINI.md` 源码，而不是通过临时的 Patch 文件进行“外挂式”修补。
+
+## 🧬 2. 互动与环境规则 (Interaction & Environment Rules)
+
+1. **项目打开偏好 (Project Opening)**：
+   每当定位或找到一个项目后，**必须**主动询问用户希望使用以下哪款编辑器打开：
+   - **Cursor**
+   - **Trae**
+   - **Antigravity**
+
+2. **外部记忆同步 (Memory Sync)**：
+   所有关于项目索引、用户偏好或长期规则的改动，**必须**同步至 `~/Documents/AI_Common/` 目录下，以实现跨项目知识共享。
