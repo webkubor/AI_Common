@@ -1,0 +1,47 @@
+:root {
+  --vp-c-brand-1: #0f766e;
+  --vp-c-brand-2: #0b5f58;
+  --vp-c-brand-3: #14b8a6;
+  --vp-c-brand-soft: rgba(20, 184, 166, 0.14);
+  --vp-font-family-base: "IBM Plex Sans", "PingFang SC", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+  --vp-font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.VPHome {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(15, 118, 110, 0.15), transparent 60%),
+    radial-gradient(900px 500px at 10% 10%, rgba(249, 115, 22, 0.12), transparent 60%),
+    linear-gradient(180deg, #f8f6f2 0%, #f1f4f7 100%);
+}
+
+.VPHome .VPHomeHero {
+  padding-top: 64px;
+}
+
+.VPHome .VPHomeHero .name {
+  letter-spacing: -0.04em;
+}
+
+.VPHome .VPHomeFeatures {
+  padding-bottom: 72px;
+}
+
+.VPHome .VPHomeFeature {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(15, 118, 110, 0.12);
+  box-shadow: 0 8px 20px rgba(11, 16, 32, 0.08);
+}
+
+.dark .VPHome {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(45, 212, 191, 0.12), transparent 60%),
+    radial-gradient(900px 500px at 10% 10%, rgba(249, 115, 22, 0.12), transparent 60%),
+    linear-gradient(180deg, #0b1020 0%, #0f172a 100%);
+}
+
+.dark .VPHome .VPHomeFeature {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.45);
+}

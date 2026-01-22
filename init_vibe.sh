@@ -5,8 +5,8 @@
 # 使用方法：在项目根目录运行 `~/Documents/AI_Common/init_vibe.sh`
 
 COMMON_DIR="$HOME/Documents/AI_Common"
-TARGET_RULES="$COMMON_DIR/coding_rules.md"
-TARGET_STACK="$COMMON_DIR/tech_stack.md"
+TARGET_RULES="$COMMON_DIR/docs/rules/coding_rules.md"
+TARGET_STACK="$COMMON_DIR/docs/tech_stack.md"
 
 echo "🔮 Initializing Vibe Coding Context..."
 
@@ -16,7 +16,7 @@ if [ -f ".cursorrules" ]; then
     echo "⚠️  .cursorrules already exists. Skipping."
 else
     ln -s "$TARGET_RULES" .cursorrules
-    echo "✅ Linked .cursorrules -> coding_rules.md"
+    echo "✅ Linked .cursorrules -> docs/rules/coding_rules.md"
 fi
 
 # 2. 针对 Copilot / 通用: 挂载 Tech Stack
@@ -25,7 +25,7 @@ if [ -f ".ai_context.md" ]; then
     echo "⚠️  .ai_context.md already exists. Skipping."
 else
     ln -s "$TARGET_STACK" .ai_context.md
-    echo "✅ Linked .ai_context.md -> tech_stack.md"
+    echo "✅ Linked .ai_context.md -> docs/tech_stack.md"
 fi
 
 echo "🚀 Vibe Coding environment ready! AI now knows your standards."
