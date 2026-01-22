@@ -12,7 +12,8 @@
   <p>
     <a href="https://webkubor.github.io/AI_Common/">📚 在线文档</a> •
     <a href="#-快速开始">🚀 快速开始</a> •
-    <a href="#-核心架构">🏗 核心架构</a>
+    <a href="#-核心架构">🏗 核心架构</a> •
+    <a href="https://webkubor.github.io/milvus-tools/">🛠 向量工具</a>
   </p>
 </div>
 

@@ -107,7 +107,7 @@ AI 自动调用 Logo 设计技能，按照莫兰迪色系和极简几何风格�
 ## 📚 更多资源
 
 - [技术栈偏好](/tech_stack) - 了解项目的技术栈和设计规范
-
+- [Milvus Tools](https://webkubor.github.io/milvus-tools/) - 向量数据库可视化工具
 ---
 
 ## 🌟 关于这个方案
