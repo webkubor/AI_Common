@@ -1,25 +1,36 @@
-# 扩展能力
+# 扩展能力 (Extensions)
 
-以下为 AI Common 的能力扩展入口：
+这里汇集了 AI Common 的所有专项技能扩展。AI 助手可以根据任务需求，动态加载对应的技能模块。
 
-- [auto-retro](./auto-retro.md)
-- [browser-control](./browser-control.md)
-- [claude_manifest](./claude_manifest.md)
-- [codex_manifest](./codex_manifest.md)
-- [feishu-writer](./feishu-writer.md)
-- [gemini_manifest](./gemini_manifest.md)
-- [juejin-writer](./juejin-writer.md)
-- [logo_designer](./logo_designer.md)
-- [milvus-toolkit](./milvus-toolkit.md)
-- [pwa_master](./pwa_master.md)
-- [release_master](./release_master.md)
-- [snippet_master](./snippet_master.md)
-- [super-design](./super-design.md)
-- [think](./think.md)
-- [vitepress-init](./vitepress-init.md)
+## 🧠 核心能力 (Core Capabilities)
 
+- [深度思考 (Think)](./think.md) - 苏格拉底式引导与多维分析，用于复杂问题拆解。
+- [Claude 能力清单](./claude_manifest.md) - Claude 模型的专属能力定义与协议。
+- [Codex 能力清单](./codex_manifest.md) - Codex (工程向) 模型的专属能力定义。
+- [Gemini 能力清单](./gemini_manifest.md) - Gemini 模型的专属能力定义。
 
-子目录：
-- [internal-comms](./internal-comms/)
-- [slack-gif-creator](./slack-gif-creator/)
-- [webapp-testing](./webapp-testing/)
+## ✍️ 内容创作 (Content Creation)
+
+- [掘金文章助手](./juejin-writer.md) - 撰写幽默且硬核的技术文章，自动配图与排版。
+- [飞书文档助手](./feishu-writer.md) - 撰写结构清晰的团队内部技术文档。
+- [内部沟通专家](./internal-comms/index.md) - 编写周报、FAQ、Newsletter 等内部沟通材料。
+- [Logo 设计师](./logo_designer.md) - 生成莫兰迪色系、极简几何风格的 SVG Logo。
+- [Slack GIF 生成器](./slack-gif-creator/index.md) - 创建适配 Slack 的高质量 GIF 动图。
+
+## 🛠️ 工程与自动化 (Engineering & Automation)
+
+- [浏览器控制](./browser-control.md) - 基于 Playwright 的浏览器自动化与调试标准。
+- [Web 应用测试](./webapp-testing/index.md) - 本地 Web 应用的自动化测试与验收。
+- [PWA 专家](./pwa_master.md) - 为 Vite 项目提供标准化的 PWA 离线化改造方案。
+- [版本发布专家](./release_master.md) - 自动化处理版本升级、日志生成与 Git 发布。
+- [VitePress 初始化](./vitepress-init.md) - 快速搭建标准化的 VitePress 文档站点。
+
+## 📚 知识管理 (Knowledge Management)
+
+- [自动复盘 (Auto Retro)](./auto-retro.md) - 自动记录 Bug 与经验，定期归档与 GC。
+- [碎片知识管家](./snippet_master.md) - 管理零散的代码片段、配置备忘与临时灵感。
+- [Milvus 工具集](./milvus-toolkit.md) - 本地向量库的检索、入库与维护工具。
+
+## 🎨 设计系统 (Design System)
+
+- [超级设计系统](./super-design.md) - 双模态 UI/UX 架构师（专业版 + 艺术版）。
