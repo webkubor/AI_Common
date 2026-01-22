@@ -17,6 +17,9 @@ hero:
     - theme: alt
       text: 关于作者
       link: https://www.webkubor.online/home
+    - theme: alt
+      text: 掘金主页
+      link: https://juejin.cn/user/2119514149631870
 
 features:
   - icon: 🧠
