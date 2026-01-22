@@ -79,6 +79,7 @@
 | 复盘 / /retro | `docs/extensions/auto-retro.md`, `docs/rules/workflow_retro.md` |
 | /think / 本质分析 | `docs/extensions/think.md` |
 | Milvus / 向量库 / RAG | `docs/extensions/milvus-toolkit.md` |
+| VitePress / 文档初始化 | `docs/extensions/vitepress-init.md` |
 
 | 设计 / Design / UI | `docs/extensions/super-design.md` |
 | Snippets / 代码片段 | `docs/extensions/snippet_master.md` |

@@ -16,6 +16,7 @@
 - [snippet_master](./snippet_master.md)
 - [super-design](./super-design.md)
 - [think](./think.md)
+- [vitepress-init](./vitepress-init.md)
 
 
 子目录：

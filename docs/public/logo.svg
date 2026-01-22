@@ -1,47 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <!-- 极光渐变：象征 AI 的多变与智能 -->
-    <linearGradient id="auroraGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" /> <!-- Sky Blue -->
-      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" /> <!-- Violet -->
-      <stop offset="100%" style="stop-color:#f43f5e;stop-opacity:1" /> <!-- Rose -->
+    <!-- 莫兰迪渐变：低饱和度、高级感 -->
+    <linearGradient id="morandiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C9EB2;stop-opacity:1" /> <!-- 莫兰迪蓝 -->
+      <stop offset="50%" style="stop-color:#9D8BA3;stop-opacity:1" /> <!-- 莫兰迪紫 -->
+      <stop offset="100%" style="stop-color:#C4A484;stop-opacity:1" /> <!-- 莫兰迪棕 -->
     </linearGradient>
-    
-    <!-- 内部发光效果 -->
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="16" result="coloredBlur"/>
+
+    <!-- 柔和阴影 -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="12" result="blur"/>
+      <feOffset in="blur" dx="8" dy="12" result="offsetBlur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.15"/>
+      </feComponentTransfer>
       <feMerge>
-        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="offsetBlur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
 
   <title>AI Common Logo</title>
-  <desc>A geometric abstraction of a neural core connecting to knowledge nodes.</desc>
+  <desc>Abstract geometric "AI" logo with Morandi gradient</desc>
 
-  <!-- 背景：保留透明，适配各种环境 -->
-  
-  <g filter="url(#glow)">
-    <!-- 核心圆：象征知识库本体 -->
-    <!-- 黄金比例：512 / 1.618 ≈ 316 (外圈) -->
-    <!-- 黄金比例：316 / 1.618 ≈ 195 (内圈) -->
-    
-    <!-- 外部轨道环 -->
-    <circle cx="256" cy="256" r="195" fill="none" stroke="url(#auroraGradient)" stroke-width="32" stroke-linecap="round" stroke-dasharray="80 140" transform="rotate(45 256 256)" opacity="0.8" />
-    
-    <!-- 内部核心 -->
-    <circle cx="256" cy="256" r="90" fill="url(#auroraGradient)" />
-    
-    <!-- 卫星节点：象征 Skills/Extensions -->
-    <!-- 位置计算：基于 195 半径的轨道 -->
-    <circle cx="256" cy="61" r="24" fill="#0ea5e9" /> <!-- Top -->
-    <circle cx="425" cy="354" r="24" fill="#f43f5e" /> <!-- Bottom Right -->
-    <circle cx="87" cy="354" r="24" fill="#8b5cf6" /> <!-- Bottom Left -->
-    
-    <!-- 连接线：象征 Connection -->
-    <path d="M256 151 L256 85" stroke="url(#auroraGradient)" stroke-width="8" stroke-linecap="round" opacity="0.5" />
-    <path d="M334 299 L399 337" stroke="url(#auroraGradient)" stroke-width="8" stroke-linecap="round" opacity="0.5" />
-    <path d="M178 299 L113 337" stroke="url(#auroraGradient)" stroke-width="8" stroke-linecap="round" opacity="0.5" />
+  <!-- 整体倾斜 15°，增加动感 -->
+  <g transform="rotate(15 256 256)" filter="url(#softShadow)">
+    <!-- "A" 字母：用几何切割 -->
+    <!-- 主三角形 -->
+    <path d="M180 380 L256 120 L332 380 Z" fill="url(#morandiGradient)" />
+
+    <!-- 负空间切割：形成 "A" 的横杠 -->
+    <path d="M210 280 L302 280 L256 160 Z" fill="#F5F5F0" />
+
+    <!-- "I" 字母：简洁的垂直线条，不对称布局 -->
+    <!-- 放在右侧，与 "A" 形成视觉平衡 -->
+    <rect x="360" y="140" width="32" height="240" rx="16" fill="url(#morandiGradient)" />
+
+    <!-- 装饰性几何元素：增加层次感 -->
+    <!-- 小圆点：象征知识节点 -->
+    <circle cx="256" cy="120" r="12" fill="#7C9EB2" opacity="0.8" />
+    <circle cx="180" cy="380" r="8" fill="#9D8BA3" opacity="0.6" />
+    <circle cx="332" cy="380" r="8" fill="#C4A484" opacity="0.6" />
   </g>
 </svg>

@@ -5,6 +5,7 @@ export default defineConfig({
   title: "AI Common",
   description: "AI Common 外部大脑：知识路由、规则与项目索引的统一入口。",
   base: "/AI_Common/",
+  head: [["link", { rel: "icon", href: "/AI_Common/logo.svg" }]],
   themeConfig: {
     logo: "/logo.svg",
     nav: [
