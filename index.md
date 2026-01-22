@@ -48,6 +48,10 @@
 ### 💻 Phase 2: 编码与交付 (Implementation)
 *   **触发**: 提到 "写代码", "实现", "重构", "提交", "commit"。
 *   **加载**: `rules/vibe_rules.md`, `rules/coding_rules.md`, `rules/workflow_retro.md`, `retrospectives/INDEX.md`, `rules/git_commit_rules.md`
+*   **提交流程**:
+    - 仅提交用户明确允许的文件，排除经验记录类内容（如 `retrospectives/`）
+    - 按 `rules/git_commit_rules.md` 生成提交信息并完成提交
+    - 用户要求时执行推送（默认 `origin/main`）
 
 ### 📝 Phase 3: 知识沉淀 (Capture)
 *   **触发**: 提到 "记录", "笔记", "观点", "snippet", "存入大脑"。
