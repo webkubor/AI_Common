@@ -1,6 +1,6 @@
 # AI Context Index & Router (Universal Protocol)
 
-> ⚠️ VitePress 已启用：文档入口迁移到 `docs/`，路由总览对应 `docs/router.md`。
+> ⚠️ VitePress 已启用：路由总览对应 `docs/router.md`。
 
 > **⚠️ 核心指令 (Prime Directive)**
 > 你现在正在访问用户的 **"外部大脑" (Exocortex)**。
