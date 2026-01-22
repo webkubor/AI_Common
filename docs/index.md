@@ -14,6 +14,9 @@ hero:
     - theme: alt
       text: 查看规则
       link: /rules/
+    - theme: alt
+      text: 关于作者
+      link: https://www.webkubor.online/home
 
 features:
   - icon: 🧠
@@ -120,5 +123,5 @@ AI 自动调用 Logo 设计技能，按照莫兰迪色系和极简几何风格�
 ---
 
 <div style="text-align: center; margin-top: 3rem; opacity: 0.6;">
-  <small>由 VitePress 驱动 · 基于 Morandi 色系设计</small>
+  <small>由 <strong>webkubor</strong> 构建 · 基于 VitePress · Morandi 色系设计</small>
 </div>

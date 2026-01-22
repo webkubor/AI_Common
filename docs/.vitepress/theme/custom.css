@@ -1,10 +1,14 @@
 :root {
-  --vp-c-brand-1: #A79BC6;
-  --vp-c-brand-2: #8D81B1;
-  --vp-c-brand-3: #74689C;
+  --vp-c-brand-1: #a79bc6;
+  --vp-c-brand-2: #8d81b1;
+  --vp-c-brand-3: #74689c;
   --vp-c-brand-soft: rgba(167, 155, 198, 0.14);
-  --vp-font-family-base: "IBM Plex Sans", "PingFang SC", "Noto Sans SC", system-ui, -apple-system, sans-serif;
-  --vp-font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --vp-font-family-base:
+    "IBM Plex Sans", "PingFang SC", "Noto Sans SC", system-ui, -apple-system,
+    sans-serif;
+  --vp-font-family-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   --glass-bg: rgba(255, 255, 255, 0.55);
   --glass-border: rgba(255, 255, 255, 0.35);
   --glass-shadow: 0 20px 40px rgba(10, 20, 40, 0.12);
@@ -12,9 +16,21 @@
 
 .Layout {
   background:
-    radial-gradient(900px 600px at 20% 10%, rgba(167, 155, 198, 0.25), transparent 60%),
-    radial-gradient(700px 520px at 90% 20%, rgba(141, 129, 177, 0.18), transparent 60%),
-    radial-gradient(900px 700px at 60% 90%, rgba(116, 104, 156, 0.18), transparent 60%),
+    radial-gradient(
+      900px 600px at 20% 10%,
+      rgba(167, 155, 198, 0.25),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 520px at 90% 20%,
+      rgba(141, 129, 177, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 700px at 60% 90%,
+      rgba(116, 104, 156, 0.18),
+      transparent 60%
+    ),
     linear-gradient(180deg, #f7f7fb 0%, #eef3f9 100%);
   position: relative;
   overflow: hidden;
@@ -28,9 +44,21 @@
   width: 60vw;
   height: 60vw;
   background:
-    radial-gradient(circle at 30% 30%, rgba(167, 155, 198, 0.35), transparent 55%),
-    radial-gradient(circle at 70% 50%, rgba(141, 129, 177, 0.25), transparent 60%),
-    radial-gradient(circle at 40% 70%, rgba(116, 104, 156, 0.25), transparent 60%);
+    radial-gradient(
+      circle at 30% 30%,
+      rgba(167, 155, 198, 0.35),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 70% 50%,
+      rgba(141, 129, 177, 0.25),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 40% 70%,
+      rgba(116, 104, 156, 0.25),
+      transparent 60%
+    );
   filter: blur(40px);
   opacity: 0.5;
   pointer-events: none;
@@ -48,8 +76,24 @@
   background: transparent;
 }
 
+/* 增加首页 Hero 区域的顶部内边距，避免与导航栏重叠 */
 .VPHome .VPHomeHero {
-  padding-top: 64px;
+  padding-top: 128px !important;
+  padding-bottom: 64px !important;
+}
+
+@media (min-width: 640px) {
+  .VPHome .VPHomeHero {
+    padding-top: 160px !important;
+    padding-bottom: 80px !important;
+  }
+}
+
+@media (min-width: 960px) {
+  .VPHome .VPHomeHero {
+    padding-top: 192px !important;
+    padding-bottom: 96px !important;
+  }
 }
 
 .VPHome .VPHomeHero .name {
@@ -111,23 +155,33 @@
   margin: 0 auto;
 }
 
-
-
 .dark {
   --glass-bg: rgba(45, 45, 60, 0.75);
   --glass-border: rgba(180, 180, 200, 0.15);
   --glass-shadow: 0 24px 44px rgba(0, 0, 0, 0.6);
 
   /* 优化暗色模式下的品牌色，使其更亮更清晰 */
-  --vp-c-brand-1: #A79BC6;
-  --vp-c-brand-2: #8D81B1;
-  --vp-c-brand-3: #74689C;
+  --vp-c-brand-1: #a79bc6;
+  --vp-c-brand-2: #8d81b1;
+  --vp-c-brand-3: #74689c;
 }
 
 .dark .Layout {
   background:
-    radial-gradient(900px 600px at 20% 10%, rgba(167, 155, 198, 0.15), transparent 60%),
-    radial-gradient(700px 520px at 90% 20%, rgba(141, 129, 177, 0.15), transparent 60%),
-    radial-gradient(900px 700px at 60% 90%, rgba(116, 104, 156, 0.15), transparent 60%),
+    radial-gradient(
+      900px 600px at 20% 10%,
+      rgba(167, 155, 198, 0.15),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 520px at 90% 20%,
+      rgba(141, 129, 177, 0.15),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 700px at 60% 90%,
+      rgba(116, 104, 156, 0.15),
+      transparent 60%
+    ),
     linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
 }
