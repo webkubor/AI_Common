@@ -4,7 +4,7 @@
 *.log
 
 # 🔒 L2 Private Memory (必须忽略)
-snippets/
+snippets/github_token.md
 rules/retrospective.md
 retrospective.md
 .aider*
