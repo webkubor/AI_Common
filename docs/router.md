@@ -31,7 +31,7 @@
 
 | 层级 | 目标域 | 触发场景 | 执行动作 |
 | :--- | :--- | :--- | :--- |
-| **L1** | **显式规则 (Local)** | "怎么写代码", "Git 规范", "查一下规则" | 读取 `docs/rules/` 或 `docs/router.md` |
+| **L1** | **显式规则 (Local)** | "怎么写代码", "Git 规范", "查一下规则" | 读取 `docs/rules/`、`docs/router.md` 或 `docs/index.md` |
 | **L2** | **私有记忆 (Memory)** | "历史复盘", "那个 bug", "以前怎么写的", "Token" | 加载 `docs/extensions/milvus-toolkit.md` & `docs/retrospectives/index.md` |
 | **L3** | **外部知识 (World)** | "Vue3 文档", "Stripe API", "最新的库用法" | 调用 `Context7` 工具 |
 
@@ -57,7 +57,7 @@
 
 ### 📝 Phase 3: 知识沉淀 (Capture)
 *   **触发**: 提到 "记录", "笔记", "观点", "snippet", "存入大脑"。
-*   **加载**: `docs/extensions/snippet_master.md`
+*   **加载**: `docs/extensions/snippet_master.md`, `docs/snippets/`
 
 ### 📂 Phase 4: 项目检索 (Discovery)
 *   **触发**: 提到 "找项目", "项目列表", "我的项目有哪些", "project index"。
@@ -69,6 +69,7 @@
 
 | 技能关键词 | 路由目标 |
 | :--- | :--- |
+| 扩展总览 / All Extensions | `docs/extensions/index.md` |
 | 掘金 / 写文章 / juejin | `docs/extensions/juejin-writer.md` |
 | 飞书 / Lark / 团队文档 | `docs/extensions/feishu-writer.md` |
 | Logo / 图标 / 图形设计 | `docs/extensions/logo_designer.md` |
@@ -78,7 +79,7 @@
 | 复盘 / /retro | `docs/extensions/auto-retro.md`, `docs/rules/workflow_retro.md` |
 | /think / 本质分析 | `docs/extensions/think.md` |
 | Milvus / 向量库 / RAG | `docs/extensions/milvus-toolkit.md` |
-| Token 估算 / 费用 | `docs/extensions/token-estimator.md` |
+
 | 设计 / Design / UI | `docs/extensions/super-design.md` |
 | Snippets / 代码片段 | `docs/extensions/snippet_master.md` |
 | Figma / MCP / 设计稿 | `docs/rules/figma_mcp_config.md` |
