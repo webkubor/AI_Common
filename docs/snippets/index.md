@@ -1,0 +1,24 @@
+# 代码片段
+
+这里是零散的、非系统性的知识片段，包括配置脚本、命令备忘、临时灵感等。
+
+## 📋 片段列表
+
+- [_aliases.md](./_aliases.md) - 命令别名配置
+- [github_token.md](./github_token.md) - GitHub Token 使用说明
+- [nodejs_mjs_usage.md](./nodejs_mjs_usage.md) - Node.js ES Modules 使用指南
+- [rag_hybrid_architecture.md](./rag_hybrid_architecture.md) - RAG 混合架构设计
+- [satori.md](./satori.md) - Satori 相关配置
+
+## 💡 使用说明
+
+这些片段主要用于：
+- 快速查找常用配置
+- 记录临时灵感
+- 保存命令备忘
+
+如果某个片段内容过于庞大，建议将其合并到 `index.md` 体系或入库 Milvus。
+
+## 🔗 相关技能
+
+- [Snippet Master](../extensions/snippet_master.md) - 碎片知识管家
