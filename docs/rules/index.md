@@ -3,6 +3,7 @@
 这里集中放置协作规范、编码规则与流程约束。
 
 - [coding_rules](./coding_rules)
+- [jsdoc_rules](./jsdoc_rules/index.md)
 - [git_commit_rules](./git_commit_rules)
 - [privacy_excludes](./privacy_excludes)
 - [standard_workflow](./standard_workflow)

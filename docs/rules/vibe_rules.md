@@ -76,10 +76,7 @@
 ## 🧬 2. 互动与环境规则 (Interaction & Environment Rules)
 
 1. **项目打开偏好 (Project Opening)**：
-   每当定位或找到一个项目后，**必须**主动询问用户希望使用以下哪款编辑器打开：
-   - **Cursor**
-   - **Trae**
-   - **Antigravity**
+   默认使用 **Zed** 打开项目，不再询问其他编辑器；仅当用户明确要求时再切换。
 
 2. **外部记忆同步 (Memory Sync)**：
    所有关于项目索引、用户偏好或长期规则的改动，**必须**同步至 `~/Documents/AI_Common/` 目录下，以实现跨项目知识共享。
