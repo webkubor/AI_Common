@@ -32,8 +32,8 @@
 
 | 层级 | 目标域 | 触发场景 | 执行动作 |
 | :--- | :--- | :--- | :--- |
-| **L1** | **显式规则 (Local)** | "怎么写代码", "Git 规范", "查一下规则" | 读取 `docs/rules/`、`docs/router.md` 或 `docs/index.md` |
-| **L2** | **私有记忆 (Memory)** | "历史复盘", "那个 bug", "以前怎么写的" | 加载 `docs/skills/milvus-toolkit.md` & `docs/retrospectives/index.md` |
+| **L1** | **显式规则 (Local)** | "怎么写代码", "Git 规范", "标准化操作规范", "SOP" | 读取 `docs/rules/`、`docs/router.md` 或 `docs/index.md` |
+| **L2** | **私有记忆 (Memory)** | "深度复盘", "经验萃取", "那个 bug", "以前怎么写的" | 加载 `docs/skills/milvus-toolkit.md` & `docs/retrospectives/index.md` |
 | **L3** | **外部知识 (World)** | "Vue3 文档", "Stripe API", "最新的库用法" | 调用 `Context7` 工具 |
 
 ---
@@ -45,11 +45,11 @@
 *   **加载**: `docs/rules/privacy_excludes.md`, `docs/rules/figma_mcp_config.md`
 
 ### 🚀 Phase 1: 项目初始化 (Inception)
-*   **触发**: 提到 "新建项目", "脚手架", "init", "new project"。
+*   **触发**: 提到 "新建项目", "脚手架", "init", "new project", "SOP"。
 *   **加载**: `docs/tech_stack.md`, `docs/rules/standard_workflow.md`
 
 ### 💻 Phase 2: 编码与交付 (Implementation)
-*   **触发**: 提到 "写代码", "实现", "重构", "提交", "commit"。
+*   **触发**: 提到 "写代码", "实现", "重构", "提交", "commit", "复盘"。
 *   **加载**: `docs/rules/vibe_rules.md`, `docs/rules/coding_rules.md`, `docs/rules/workflow_retro.md`, `docs/retrospectives/index.md`, `docs/rules/git_commit_rules.md`
 *   **提交流程**:
     - 仅提交用户明确允许的文件，排除经验记录类内容（如 `docs/retrospectives/`）
@@ -57,7 +57,7 @@
     - 用户要求时执行推送（默认 `origin/main`）
 
 ### 📝 Phase 3: 知识沉淀 (Capture)
-*   **触发**: 提到 "记录", "笔记", "观点", "snippet", "存入大脑"。
+*   **触发**: 提到 "记录", "笔记", "观点", "snippet", "存入大脑", "经验萃取"。
 *   **加载**: `docs/skills/snippet_master.md`, `docs/snippets/`
 
 ### 📂 Phase 4: 项目检索 (Discovery)
@@ -76,7 +76,7 @@
 | Logo / 图标 / 图形设计 | `docs/skills/logo-designer.md` |
 | PWA / 离线 / Manifest | `docs/skills/pwa-master.md` |
 | 发版 / Release / 版本号 | `docs/skills/release_master.md` |
-| 复盘 / /retro | `docs/skills/auto-retro.md`, `docs/rules/workflow_retro.md` |
+| 深度复盘 / /retro | `docs/skills/auto-retro.md`, `docs/rules/workflow_retro.md` |
 | /think / 本质分析 | `docs/skills/think-skill.md` |
 | Milvus / 向量库 / RAG | `docs/skills/milvus-toolkit.md` |
 | VitePress / 文档初始化 | `docs/skills/vitepress-init.md` |

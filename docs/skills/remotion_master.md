@@ -31,5 +31,20 @@ npx remotion render videos/index.ts {composition_id} out/{composition_id}.mp4 --
 open out/
 ```
 
+---
+
+## 📚 开发百科与最佳实践 (Knowledge Base)
+
+在进行 Remotion 开发时，应参考以下核心模式：
+
+- **动画与时序**: 使用 `timing` (interpolation, spring) 和 `sequencing` (delay, trim)。
+- **资产管理**: 使用 `assets`, `images`, `videos`, `audio` 组件及其优化模式。
+- **动态元数据**: 通过 `calculate-metadata` 动态设置时长与尺寸。
+- **字幕与排版**: 参考 `display-captions`, `import-srt-captions`, `text-animations`。
+- **数据可视化**: 使用 `charts` 模式进行数据驱动绘图。
+- **工程化**: 集成 `tailwind`, `lottie`, `3d` (Three.js) 等增强功能。
+
+---
+
 ## 💡 开发者说明
 - 本技能强调“即写即得”，Agent 在完成代码后不应询问用户是否渲染，而应作为连续动作执行。
