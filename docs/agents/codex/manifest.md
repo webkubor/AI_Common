@@ -23,7 +23,7 @@
 
 ## 🎨 UI 专家能力 (Specialties)
 - **theme-factory**: 配合 L1 规范生成 Design Tokens。
-- **super-design**: 具备双模态设计能力（Pro Max + Artist），擅长高阶 UI 实现。
+- **frontend-design**: 前端设计技能（同步自 Anthropic skills）。
 
 ## 🚫 限制与边界
 - 禁止绕过 Playwright 使用不透明的浏览器进程。

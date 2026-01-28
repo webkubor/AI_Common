@@ -1,7 +1,7 @@
 ---
 name: slack-gif-creator
-description: Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when users request animated GIFs for Slack like "make me a GIF of X doing Y for Slack."
-license: Complete terms in LICENSE.txt
+description: Toolkit for creating animated GIFs optimized for Slack. Provides constraints, validation tools and animation concepts. Use when users request animated GIFs for Slack like "make me a GIF of X doing Y for Slack."
+license: Apache 2.0
 ---
 
 # Slack GIF Creator
@@ -10,34 +10,39 @@ A toolkit providing utilities and knowledge for creating animated GIFs optimized
 
 ## Slack Requirements
 
-**Dimensions:**
-- Emoji GIFs: 128x128 (recommended)
-- Message GIFs: 480x480
+### Dimensions
+- **Emoji GIFs**: 128x128 (recommended)
+- **Message GIFs**: 480x480
 
-**Parameters:**
-- FPS: 10-30 (lower is smaller file size)
-- Colors: 48-128 (fewer = smaller file size)
-- Duration: Keep under 3 seconds for emoji GIFs
+### Parameters
+- **FPS**: 10-30 (lower = smaller file size)
+- **Colors**: 48-128 (fewer = smaller file size)
+- **Duration**: Keep under 3 seconds for emoji GIFs
 
 ## Core Workflow
 
+### Create builder
 ```python
 from core.gif_builder import GIFBuilder
 from PIL import Image, ImageDraw
 
 # 1. Create builder
 builder = GIFBuilder(width=128, height=128, fps=10)
+```
 
+### Generate frames
+```python
 # 2. Generate frames
 for i in range(12):
-    frame = Image.new('RGB', (128, 128), (240, 248, 255))
+    frame = Image.new('RGB', (128, 128), (240, 248), (255))
     draw = ImageDraw.Draw(frame)
-
     # Draw your animation using PIL primitives
     # (circles, polygons, lines, etc.)
-
     builder.add_frame(frame)
+```
 
+### Save with optimization
+```python
 # 3. Save with optimization
 builder.save('output.gif', num_colors=48, optimize_for_emoji=True)
 ```
@@ -59,7 +64,6 @@ uploaded = Image.open('file.png')
 
 ### Drawing from Scratch
 When drawing graphics from scratch, use PIL ImageDraw primitives:
-
 ```python
 from PIL import ImageDraw
 
@@ -79,34 +83,24 @@ draw.line([(x1, y1), (x2, y2)], fill=(r, g, b), width=5)
 draw.rectangle([x1, y1, x2, y2], fill=(r, g, b), outline=(r, g, b), width=3)
 ```
 
-**Don't use:** Emoji fonts (unreliable across platforms) or assume pre-packaged graphics exist in this skill.
-
-### Making Graphics Look Good
+## Making Graphics Look Good
 
 Graphics should look polished and creative, not basic. Here's how:
 
-**Use thicker lines** - Always set `width=2` or higher for outlines and lines. Thin lines (width=1) look choppy and amateurish.
-
-**Add visual depth**:
-- Use gradients for backgrounds (`create_gradient_background`)
-- Layer multiple shapes for complexity (e.g., a star with a smaller star inside)
-
-**Make shapes more interesting**:
-- Don't just draw a plain circle - add highlights, rings, or patterns
-- Stars can have glows (draw larger, semi-transparent versions behind)
-- Combine multiple shapes (stars + sparkles, circles + rings)
-
-**Pay attention to colors**:
-- Use vibrant, complementary colors
-- Add contrast (dark outlines on light shapes, light outlines on dark shapes)
-- Consider the overall composition
-
-**For complex shapes** (hearts, snowflakes, etc.):
-- Use combinations of polygons and ellipses
-- Calculate points carefully for symmetry
-- Add details (a heart can have a highlight curve, snowflakes have intricate branches)
-
-Be creative and detailed! A good Slack GIF should look polished, not like placeholder graphics.
+- **Use thicker lines** - Always set `width=2` or higher for outlines and lines. Thin lines (width=1) look choppy and amateurish.
+- **Add visual depth**:
+  - Use gradients for backgrounds (`create_gradient_background`)
+  - Layer multiple shapes for complexity (e.g., a star with a smaller star inside)
+- **Make shapes more interesting**:
+  - Don't just draw a plain circle - add highlights, rings, or patterns
+- **Pay attention to colors**: Use vibrant, complementary colors
+  - Add contrast (dark outlines on light shapes, light outlines on dark shapes)
+- Consider overall composition
+- **For complex shapes** (hearts, snowflakes, etc.):
+  - Use combinations of polygons and ellipses
+  - Calculate points carefully for symmetry
+  - Add details (a heart can have a highlight curve, snowflakes have intricate branches)
+- **Be creative and detailed!** A good Slack GIF should look polished, not like placeholder graphics.
 
 ## Available Utilities
 
@@ -179,17 +173,12 @@ Object falls and bounces:
 - Use `easing='ease_in'` for falling (accelerating)
 - Apply gravity by increasing y velocity each frame
 
-### Spin/Rotate
-Rotate object around center:
-- PIL: `image.rotate(angle, resample=Image.BICUBIC)`
-- For wobble: use sine wave for angle instead of linear
-
 ### Fade In/Out
 Gradually appear or disappear:
 - Create RGBA image, adjust alpha channel
-- Or use `Image.blend(image1, image2, alpha)`
 - Fade in: alpha from 0 to 1
 - Fade out: alpha from 1 to 0
+- Or use `Image.blend(image1, image2, alpha)`
 
 ### Slide
 Move object from off-screen to position:
@@ -213,7 +202,7 @@ Create particles radiating outward:
 
 ## Optimization Strategies
 
-Only when asked to make the file size smaller, implement a few of the following methods:
+Only when asked to make file size smaller, implement a few of following methods:
 
 1. **Fewer frames** - Lower FPS (10 instead of 20) or shorter duration
 2. **Fewer colors** - `num_colors=48` instead of 128
@@ -236,7 +225,7 @@ builder.save(
 This skill provides:
 - **Knowledge**: Slack's requirements and animation concepts
 - **Utilities**: GIFBuilder, validators, easing functions
-- **Flexibility**: Create the animation logic using PIL primitives
+- **Flexibility**: Create animation logic using PIL primitives
 
 It does NOT provide:
 - Rigid animation templates or pre-made functions
@@ -244,8 +233,6 @@ It does NOT provide:
 - A library of pre-packaged graphics built into the skill
 
 **Note on user uploads**: This skill doesn't include pre-built graphics, but if a user uploads an image, use PIL to load and work with it - interpret based on their request whether they want it used directly or just as inspiration.
-
-Be creative! Combine concepts (bouncing + rotating, pulsing + sliding, etc.) and use PIL's full capabilities.
 
 ## Dependencies
 

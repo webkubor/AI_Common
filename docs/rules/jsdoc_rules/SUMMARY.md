@@ -60,7 +60,7 @@
   - 类和装饰器
   - 类型守卫
 
-- [Vue 组件示例](./examples/vue-component.vue) - Vue 组件示例
+- Vue 组件示例 - Vue 组件示例
   - 组件 Props
   - 组件 Emits
   - 计算属性

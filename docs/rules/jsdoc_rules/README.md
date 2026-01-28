@@ -34,11 +34,11 @@ jsdoc_rules/
 - 常见场景示例
 - 检查清单
 
-### [示例代码](./examples/)
+### 示例代码
 实际代码示例，展示如何应用规范：
 - [JavaScript 示例](./examples/javascript.js) - 包含函数、类、工具函数等
 - [TypeScript 示例](./examples/typescript.ts) - 包含接口、泛型、装饰器等
-- [Vue 组件示例](./examples/vue-component.vue) - 包含组件 Props、Emits、方法等
+- Vue 组件示例 (见 `./examples/vue-component.vue`) - 包含组件 Props、Emits、方法等
 
 ### [最佳实践](./best_practices.md)
 基于行业标准和团队经验总结的注释最佳实践指南，包含：
@@ -113,7 +113,7 @@ npm install -D eslint eslint-plugin-jsdoc
 
 1. **开发前**：阅读[完整规范文档](./index.md)了解详细要求
 2. **开发中**：使用[快速参考指南](./quick_reference.md)快速查阅标签
-3. **遇到问题**：参考[示例代码](./examples/)中的实际应用
+3. **遇到问题**：参考示例代码中的实际应用
 4. **提升质量**：学习[最佳实践](./best_practices.md)中的经验总结
 5. **提交前**：使用检查清单确保注释完整
 6. **自动化**：配置 ESLint 进行自动检查和修复

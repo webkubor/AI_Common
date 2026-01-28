@@ -1,16 +1,22 @@
+---
+name: vitepress-init
+description: VitePress documentation site initialization expert. Use when user requests to initialize VitePress, create documentation site, or set up documentation system. Ensures project structure, Logo configuration, and Favicon setup are configured correctly in one pass.
+license: Apache 2.0
+---
+
 # VitePress Init Skill (文档站点初始化专家)
 
-## 🎯 技能定位
+## 技能定位
 本技能专注于快速初始化 VitePress 文档站点，确保项目结构、Logo 配置、Favicon 设置等关键环节一次性配置正确，避免后续反复调整。
 
-## 🚀 触发条件
+## 触发条件
 当用户提出以下请求时自动激活：
 - "初始化 VitePress"
 - "创建文档站点"
 - "搭建 VitePress 项目"
 - "配置文档系统"
 
-## 📋 核心工作流
+## 核心工作流
 
 ### 阶段 1: 环境准备
 1. **确认环境**:
@@ -51,7 +57,7 @@ project-root/
    - 背景：默认透明，适配深/浅色模式
 
 2. **Logo 创建**:
-   - 使用 `docs/extensions/logo_designer.md` 技能生成
+   - 使用 `think` 或 `logo-design` 技能生成
    - 保存路径：`docs/public/logo.svg`
 
 3. **Favicon 配置**（关键步骤）:
@@ -69,20 +75,20 @@ export default defineConfig({
   title: "项目名称",
   description: "项目描述",
   base: "/项目路径/",  // 如：/AI_Common/
-  
+
   // ⚠️ 关键：Favicon 配置
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/项目路径/logo.svg' }]
   ],
-  
+
   themeConfig: {
     logo: "/logo.svg",  // 导航栏 logo
-    
+
     nav: [
       { text: "首页", link: "/" },
       // ... 其他导航项
     ],
-    
+
     sidebar: [
       {
         text: "核心",
@@ -93,12 +99,12 @@ export default defineConfig({
       },
       // ... 其他分组
     ],
-    
+
     docFooter: {
       prev: "上一页",
       next: "下一页",
     },
-    
+
     darkModeSwitchLabel: "外观",
     lightModeSwitchTitle: "切换到浅色模式",
     darkModeSwitchTitle: "切换到深色模式",
@@ -122,7 +128,7 @@ export default defineConfig({
    - [ ] 深色/浅色模式切换正常
    - [ ] 侧边栏导航正常
 
-## ⚙️ 关键技术规范
+## 关键技术规范
 
 ### 1. 路径配置规范（重要）
 当设置了 `base: "/项目路径/"` 后：
@@ -134,7 +140,6 @@ export default defineConfig({
 | **静态资源引用** | 相对路径 | `![图片](./image.png)` |
 
 ### 2. Logo 设计规范
-参考 `docs/extensions/logo_designer.md`：
 - 使用莫兰迪色系渐变
 - 黄金比例构图
 - 语义化标签（`<title>`, `<desc>`）
@@ -146,7 +151,7 @@ export default defineConfig({
 - **静态资源**：`docs/public/`
 - **主题定制**：`docs/.vitepress/theme/`
 
-## ✅ 验收清单
+## 验收清单
 
 ### 必须完成
 - [ ] VitePress 成功安装并启动
@@ -162,7 +167,7 @@ export default defineConfig({
 - [ ] 添加搜索功能
 - [ ] 配置部署脚本
 
-## 🚨 常见问题
+## 常见问题
 
 ### Q1: Favicon 不显示？
 **原因**：路径配置错误
@@ -176,16 +181,12 @@ export default defineConfig({
 **原因**：Logo 使用了纯黑色
 **解决**：使用莫兰迪色系或提供亮色描边版本
 
-## 📚 参考资源
+## 参考资源
 - [VitePress 官方文档](https://vitepress.dev/guide/getting-started)
 - [VitePress 配置参考](https://vitepress.dev/reference/site-config)
-- [Logo 设计技能](./logo_designer.md)
 
-## 💡 最佳实践
+## 最佳实践
 1. **统一配置**：所有路径配置在 `config.mjs` 中集中管理
 2. **版本控制**：将 `docs/public/logo.svg` 纳入版本控制
 3. **文档同步**：Logo 更新后同步更新所有引用
 4. **测试先行**：每次配置修改后立即验证效果
-
----
-*Last Updated: 2026-01-22 (VitePress v1.6.4)*

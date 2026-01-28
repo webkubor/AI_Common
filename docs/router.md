@@ -14,9 +14,9 @@
 
 ## 2. 🤖 身份自检与握手 (Identity Handshake)
 在执行任何任务前，请先匹配你的身份并加载对应清单（如果有）：
-- **Identity: Gemini** -> `docs/extensions/gemini_manifest.md`
-- **Identity: Claude** -> `docs/extensions/claude_manifest.md`
-- **Identity: Codex**  -> `docs/extensions/codex_manifest.md`
+- **Identity: Gemini** -> `docs/agents/gemini/manifest.md`
+- **Identity: Claude** -> `docs/agents/claude/manifest.md`
+- **Identity: Codex**  -> `docs/agents/codex/manifest.md`
 
 ## 3. 🧠 动态加载机制 (Dynamic Loading)
 **严禁** 一次性读取所有文件。请根据用户意图，仅加载下方路由表中 **最相关** 的文件。
@@ -69,24 +69,24 @@
 
 | 技能关键词 | 路由目标 |
 | :--- | :--- |
-| 扩展总览 / All Extensions | `docs/extensions/index.md` |
-| 掘金 / 写文章 / juejin | `docs/extensions/juejin-writer.md` |
-| 飞书 / Lark / 团队文档 | `docs/extensions/feishu-writer.md` |
-| Logo / 图标 / 图形设计 | `docs/extensions/logo_designer.md` |
-| PWA / 离线 / Manifest | `docs/extensions/pwa_master.md` |
-| 发版 / Release / 版本号 | `docs/extensions/release_master.md` |
-| 爬虫 / 自动化 / Browser | `docs/extensions/browser-control.md` |
-| 复盘 / /retro | `docs/extensions/auto-retro.md`, `docs/rules/workflow_retro.md` |
-| /think / 本质分析 | `docs/extensions/think.md` |
-| Milvus / 向量库 / RAG | `docs/extensions/milvus-toolkit.md` |
-| VitePress / 文档初始化 | `docs/extensions/vitepress-init.md` |
+| 扩展总览 / All Extensions | `docs/rules/extensions/index.md` |
+| 掘金 / 写文章 / juejin | `docs/rules/extensions/juejin-writer.md` |
+| 飞书 / Lark / 团队文档 | `docs/rules/extensions/feishu-writer.md` |
+| Logo / 图标 / 图形设计 | `docs/rules/extensions/logo-designer.md` |
+| PWA / 离线 / Manifest | `docs/rules/extensions/pwa-master.md` |
+| 发版 / Release / 版本号 | `docs/rules/extensions/release_master.md` |
+| 爬虫 / 自动化 / Browser | `docs/rules/extensions/browser-control.md` |
+| 复盘 / /retro | `docs/rules/extensions/auto-retro.md`, `docs/rules/workflow_retro.md` |
+| /think / 本质分析 | `docs/rules/extensions/think-skill.md` |
+| Milvus / 向量库 / RAG | `docs/rules/extensions/milvus-toolkit.md` |
+| VitePress / 文档初始化 | `docs/rules/extensions/vitepress-init.md` |
 
-| 设计 / Design / UI | `docs/extensions/super-design.md` |
-| Snippets / 代码片段 | `docs/extensions/snippet_master.md` |
+| 设计 / Design / UI | `docs/rules/extensions/frontend-design.md` |
+| Snippets / 代码片段 | `docs/rules/extensions/snippet_master.md` |
 | Figma / MCP / 设计稿 | `docs/rules/figma_mcp_config.md` |
-| Slack GIF / 动图 / GIF | `docs/extensions/slack-gif-creator` |
-| Web 测试 / Playwright / E2E | `docs/extensions/webapp-testing` |
-| 内部沟通 / 邮件 / 纪要 | `docs/extensions/internal-comms` |
+| Slack GIF / 动图 / GIF | `docs/rules/extensions/slack-gif-creator.md` |
+| Web 测试 / Playwright / E2E | `docs/rules/extensions/webapp-testing.md` |
+| 内部沟通 / 邮件 / 纪要 | `docs/rules/extensions/internal-comms.md` |
 
 ---
 *Last Updated: 2026-01-22 (Figma & Retro Sync, Extensions Skills Added)*
