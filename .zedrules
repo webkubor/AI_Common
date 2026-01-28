@@ -96,7 +96,8 @@ AI_Common/
 │   ├── .vitepress/         # VitePress 配置
 │   ├── public/             # 静态资源（logo.svg）
 │   ├── agents/             # AI 身份清单 (Manifests)
-│   ├── rules/              # 规则文档 (含 extensions)
+│   ├── extensions/         # 扩展能力
+│   ├── rules/              # 规则文档
 │   ├── retrospectives/     # 复盘文档
 │   ├── snippets/           # 代码片段
 │   ├── index.md            # 首页
