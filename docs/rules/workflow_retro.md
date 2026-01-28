@@ -8,7 +8,7 @@
 
 ## 1. 核心工作流（Vibe 循环）
 
-> 约定：如果本次回答实际使用了 Milvus 做语义检索（RAG 注入），需要在回复第一行标记 `[RAG:Milvus] ...`（见 `docs/extensions/milvus_rag_marker.md`）。
+> 约定：如果本次回答实际使用了 Milvus 做语义检索（RAG 注入），需要在回复第一行标记 `[RAG:Milvus] ...`（见 `docs/skills/milvus_rag_marker.md`）。
 
 1. **环境探测 (Context Detection)**：生成代码前，先确认项目真实技术栈与入口。
 2. **编码 (Coding)**：基于探测结果做最小可行改动（避免过度设计）。
@@ -59,7 +59,7 @@
 
 ### 3.3 /retro 自动复盘
 
-- 使用 `/retro`：走“快速、轻量”的追加模式（见 `docs/extensions/auto-retro.md`）。
+- 使用 `/retro`：走“快速、轻量”的追加模式（见 `docs/skills/auto-retro.md`）。
 - 使用 `/retro --full`：触发深度复盘与维护（如归档/提炼）。
 
 ## 4. 相关规范文档（已拆分）

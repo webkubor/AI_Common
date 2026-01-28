@@ -4,7 +4,7 @@
 > **这是最高优先级规则，任何操作不得违背。**
 
 1.  **动作前检索 (Pre-Action Lookup)**：
-    在执行具有特定业务属性的任务（如**写文章、操作数据库、发布版本、生成组件**）前，**必须**先检索 `docs/extensions/` 目录下是否存在对应的 Skill 定义。
+    在执行具有特定业务属性的任务（如**写文章、操作数据库、发布版本、生成组件**）前，**必须**先检索 `docs/skills/` 目录下是否存在对应的 Skill 定义。
     *   **命中协议**：必须严格遵守该 Skill 定义的 `Save Path`（保存路径）、`Output Format`（格式）和 `Privacy`（隐私规则）。
     *   **未命中**：按通用 Vibe Coding 流程执行。
 
@@ -70,8 +70,10 @@
 - **环境适配**：所有产出必须适配 Mac (macOS) 本地开发环境。
 
 ## Skill 维护与跨目录操作 (Skill Maintenance)
-- **跨目录读取能力**: AI 不受当前项目工作目录限制。在必要时（如修改全局规则、维护 Skill），必须主动通过 Shell 命令访问 `~/.gemini/` 或 `~/Documents/AI_Common/`。
-- **Skill 源码优先**: 当需要调整 AI 的技能行为（如撰写风格、代码审查逻辑）时，必须直接修改 `.gemini/extensions/` 下对应的 `GEMINI.md` 源码，而不是通过临时的 Patch 文件进行“外挂式”修补。
+
+- **跨目录读取能力**: AI 不受当前项目工作目录限制。在必要时（如修改全局规则、维护 Skill） ，必须主动通过 Shell 命令访问 `~/.gemini/` 或 `~/Documents/AI_Common/`。
+
+- **Skill 源码优先**: 当需要调整 AI 的技能行为（如撰写风格、代码审查逻辑）时，必须直接修改 `.gemini/skills/` 下对应的 `GEMINI.md` 源码，而不是通过临时的 Patch 文件进行“外挂式” 修补。
 
 ## 🧬 2. 互动与环境规则 (Interaction & Environment Rules)
 
