@@ -1,3 +1,8 @@
-# 规则复盘
+# 规则复盘 (Rules Retrospectives)
 
-- [interaction](./interaction)
+这里记录了在协作过程中沉淀下来的交互规范和行为准则复盘。
+
+## 📂 复盘列表
+
+- **[交互与行为规范](./interaction)**
+  - 记录关于 UI 主题一致性和“存入大脑”指令的执行标准。
