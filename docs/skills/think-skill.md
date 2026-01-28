@@ -71,7 +71,7 @@ license: Apache 2.0
 
 ## 归档位置
 当需要输出最终总结并保存时，保存路径为：
-- 目录：`/Users/webkubor/Documents/AI_Plan/think/`
+- 目录：`~/Documents/AI_Plan/think/`
 - 文件名：`YYYY-MM-DD_[思考核心主题].md`（以本地日期为准）
 
 ## 禁忌
