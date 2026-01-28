@@ -21,7 +21,8 @@
 ### Phase 2: 生成与注册 (Scaffold)
 1.  根据用户需求在 `videos/` 下创建新视频子目录。
 2.  生成标准的 `src/Root.tsx`, `data/config.json`。
-3.  **关键动作**: 自动在 `videos/index.ts` 中注册该 Composition。
+3.  **关键动作 (Audio)**: 默认必须在 `Main.tsx` 中添加 `<Audio />` 组件（即便使用占位符 `staticFile("bgm.mp3")`）。
+4.  **关键动作 (Register)**: 自动在 `videos/index.ts` 中注册该 Composition。
 
 ### Phase 3: 渲染 (Render)
 执行高效率渲染命令：
