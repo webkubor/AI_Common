@@ -5,9 +5,9 @@
 ## 🧠 核心能力 (Core Capabilities)
 
 - [深度思考 (Think)](./think-skill.md) ✅ **已迁移至标准技能库** - 苏格拉底式引导与多维分析，用于复杂问题拆解。
-- [Claude 能力清单](../../agents/claude/manifest.md) - Claude 模型的专属能力定义与协议。
-- [Codex 能力清单](../../agents/codex/manifest.md) - Codex (工程向) 模型的专属能力定义。
-- [Gemini 能力清单](../../agents/gemini/manifest.md) - Gemini 模型的专属能力定义。
+- [Claude 能力清单](../agents/claude/manifest.md) - Claude 模型的专属能力定义与协议。
+- [Codex 能力清单](../agents/codex/manifest.md) - Codex (工程向) 模型的专属能力定义。
+- [Gemini 能力清单](../agents/gemini/manifest.md) - Gemini 模型的专属能力定义。
 
 ## ✍️ 内容创作 (Content Creation)
 

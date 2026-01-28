@@ -57,7 +57,7 @@
 
 ### 📝 Phase 3: 知识沉淀 (Capture)
 *   **触发**: 提到 "记录", "笔记", "观点", "snippet", "存入大脑"。
-*   **加载**: `docs/rules/extensions/snippet_master.md`, `docs/snippets/`
+*   **加载**: `docs/extensions/snippet_master.md`, `docs/snippets/`
 
 ### 📂 Phase 4: 项目检索 (Discovery)
 *   **触发**: 提到 "找项目", "项目列表", "我的项目有哪些", "project index"。
@@ -69,23 +69,23 @@
 
 | 技能关键词 | 路由目标 |
 | :--- | :--- |
-| 扩展总览 / All Extensions | `docs/rules/extensions/index.md` |
-| 掘金 / 写文章 / juejin | `docs/rules/extensions/juejin-writer.md` |
-| 飞书 / Lark / 团队文档 | `docs/rules/extensions/feishu-writer.md` |
-| Logo / 图标 / 图形设计 | `docs/rules/extensions/logo-designer.md` |
-| PWA / 离线 / Manifest | `docs/rules/extensions/pwa-master.md` |
-| 发版 / Release / 版本号 | `docs/rules/extensions/release_master.md` |
-| 复盘 / /retro | `docs/rules/extensions/auto-retro.md`, `docs/rules/workflow_retro.md` |
-| /think / 本质分析 | `docs/rules/extensions/think-skill.md` |
-| Milvus / 向量库 / RAG | `docs/rules/extensions/milvus-toolkit.md` |
-| VitePress / 文档初始化 | `docs/rules/extensions/vitepress-init.md` |
+| 扩展总览 / All Extensions | `docs/extensions/index.md` |
+| 掘金 / 写文章 / juejin | `docs/extensions/juejin-writer.md` |
+| 飞书 / Lark / 团队文档 | `docs/extensions/feishu-writer.md` |
+| Logo / 图标 / 图形设计 | `docs/extensions/logo-designer.md` |
+| PWA / 离线 / Manifest | `docs/extensions/pwa-master.md` |
+| 发版 / Release / 版本号 | `docs/extensions/release_master.md` |
+| 复盘 / /retro | `docs/extensions/auto-retro.md`, `docs/rules/workflow_retro.md` |
+| /think / 本质分析 | `docs/extensions/think-skill.md` |
+| Milvus / 向量库 / RAG | `docs/extensions/milvus-toolkit.md` |
+| VitePress / 文档初始化 | `docs/extensions/vitepress-init.md` |
 
-| 设计 / Design / UI | `docs/rules/extensions/frontend-design.md` |
-| Snippets / 代码片段 | `docs/rules/extensions/snippet_master.md` |
+| 设计 / Design / UI | `docs/extensions/frontend-design.md` |
+| Snippets / 代码片段 | `docs/extensions/snippet_master.md` |
 | Figma / MCP / 设计稿 | `docs/rules/figma_mcp_config.md` |
-| Slack GIF / 动图 / GIF | `docs/rules/extensions/slack-gif-creator.md` |
-| Web 测试 / Playwright / E2E | `docs/rules/extensions/webapp-testing.md` |
-| 内部沟通 / 邮件 / 纪要 | `docs/rules/extensions/internal-comms.md` |
+| Slack GIF / 动图 / GIF | `docs/extensions/slack-gif-creator.md` |
+| Web 测试 / Playwright / E2E | `docs/extensions/webapp-testing.md` |
+| 内部沟通 / 邮件 / 纪要 | `docs/extensions/internal-comms.md` |
 
 ---
 *Last Updated: 2026-01-22 (Figma & Retro Sync, Extensions Skills Added)*

@@ -20,4 +20,4 @@
 
 ## 🔗 相关技能
 
-- [Snippet Master](../rules/extensions/snippet_master.md) - 碎片知识管家
+- [Snippet Master](../extensions/snippet_master.md) - 碎片知识管家
