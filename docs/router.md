@@ -87,6 +87,7 @@
 | Slack GIF / 动图 / GIF | `docs/skills/slack-gif-creator.md` |
 | Web 测试 / Playwright / E2E | `docs/skills/webapp-testing.md` |
 | 内部沟通 / 邮件 / 纪要 | `docs/skills/internal-comms.md` |
+| 微信公众号 / Wechat / 心语拾光 | `docs/skills/wechat-writer.md` |
 
 ---
 *Last Updated: 2026-01-22 (Figma & Retro Sync, Extensions Skills Added)*

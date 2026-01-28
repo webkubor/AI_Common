@@ -9,4 +9,5 @@
 - [standard_workflow](./standard_workflow)
 - [vibe_rules](./vibe_rules)
 - [workflow_retro](./workflow_retro)
+- [interaction](./interaction)
 - [figma_mcp_config](./figma_mcp_config)
