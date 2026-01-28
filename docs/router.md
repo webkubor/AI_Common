@@ -32,7 +32,7 @@
 | 层级 | 目标域 | 触发场景 | 执行动作 |
 | :--- | :--- | :--- | :--- |
 | **L1** | **显式规则 (Local)** | "怎么写代码", "Git 规范", "查一下规则" | 读取 `docs/rules/`、`docs/router.md` 或 `docs/index.md` |
-| **L2** | **私有记忆 (Memory)** | "历史复盘", "那个 bug", "以前怎么写的" | 加载 `docs/rules/extensions/milvus-toolkit.md` & `docs/retrospectives/index.md` |
+| **L2** | **私有记忆 (Memory)** | "历史复盘", "那个 bug", "以前怎么写的" | 加载 `docs/extensions/milvus-toolkit.md` & `docs/retrospectives/index.md` |
 | **L3** | **外部知识 (World)** | "Vue3 文档", "Stripe API", "最新的库用法" | 调用 `Context7` 工具 |
 
 ---
