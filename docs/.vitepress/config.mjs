@@ -12,7 +12,7 @@ export default defineConfig({
       { text: "首页", link: "/" },
       { text: "路由总览", link: "/router" },
       { text: "规则中心", link: "/rules/" },
-      { text: "扩展能力", link: "/extensions/" },
+      { text: "技能库", link: "/skills/" },
       { text: "项目索引", link: "/project_index" },
     ],
     sidebar: [
@@ -50,13 +50,13 @@ export default defineConfig({
         ],
       },
       {
-        text: "扩展能力",
+        text: "技能库",
         items: [
-          { text: "总览", link: "/extensions/" },
-          { text: "Milvus 工具集", link: "/extensions/milvus-toolkit" },
-          { text: "Web 应用测试", link: "/extensions/webapp-testing" },
-          { text: "内部沟通", link: "/extensions/internal-comms" },
-          { text: "Slack GIF 生成器", link: "/extensions/slack-gif-creator" },
+          { text: "总览", link: "/skills/" },
+          { text: "Milvus 工具集", link: "/skills/milvus-toolkit" },
+          { text: "Web 应用测试", link: "/skills/webapp-testing" },
+          { text: "内部沟通", link: "/skills/internal-comms" },
+          { text: "Slack GIF 生成器", link: "/skills/slack-gif-creator" },
         ],
       },
     ],

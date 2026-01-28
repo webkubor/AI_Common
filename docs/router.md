@@ -33,7 +33,7 @@
 | 层级 | 目标域 | 触发场景 | 执行动作 |
 | :--- | :--- | :--- | :--- |
 | **L1** | **显式规则 (Local)** | "怎么写代码", "Git 规范", "查一下规则" | 读取 `docs/rules/`、`docs/router.md` 或 `docs/index.md` |
-| **L2** | **私有记忆 (Memory)** | "历史复盘", "那个 bug", "以前怎么写的" | 加载 `docs/extensions/milvus-toolkit.md` & `docs/retrospectives/index.md` |
+| **L2** | **私有记忆 (Memory)** | "历史复盘", "那个 bug", "以前怎么写的" | 加载 `docs/skills/milvus-toolkit.md` & `docs/retrospectives/index.md` |
 | **L3** | **外部知识 (World)** | "Vue3 文档", "Stripe API", "最新的库用法" | 调用 `Context7` 工具 |
 
 ---
@@ -41,7 +41,7 @@
 ## 📍 状态机路由 (State Machine Routing)
 
 ### 🛡️ Phase 0: 治理与安全 (Safety)
-*   **触发**: 提到 "隐私", "敏感信息", "忽略文件", "Key", "Figma Token"。
+*   **触发**: 提到 "隐私", "敏感信息", "忽略文件", "Key", "Figma Token" 。
 *   **加载**: `docs/rules/privacy_excludes.md`, `docs/rules/figma_mcp_config.md`
 
 ### 🚀 Phase 1: 项目初始化 (Inception)
@@ -58,7 +58,7 @@
 
 ### 📝 Phase 3: 知识沉淀 (Capture)
 *   **触发**: 提到 "记录", "笔记", "观点", "snippet", "存入大脑"。
-*   **加载**: `docs/extensions/snippet_master.md`, `docs/snippets/`
+*   **加载**: `docs/skills/snippet_master.md`, `docs/snippets/`
 
 ### 📂 Phase 4: 项目检索 (Discovery)
 *   **触发**: 提到 "找项目", "项目列表", "我的项目有哪些", "project index"。
@@ -66,27 +66,28 @@
 
 ---
 
-## 🧩 专项技能扩展 (Specialized Skills)
+## 🧩 专项技能 (Specialized Skills)
 
 | 技能关键词 | 路由目标 |
 | :--- | :--- |
-| 扩展总览 / All Extensions | `docs/extensions/index.md` |
-| 掘金 / 写文章 / juejin | `docs/extensions/juejin-writer.md` |
-| 飞书 / Lark / 团队文档 | `docs/extensions/feishu-writer.md` |
-| Logo / 图标 / 图形设计 | `docs/extensions/logo-designer.md` |
-| PWA / 离线 / Manifest | `docs/extensions/pwa-master.md` |
-| 发版 / Release / 版本号 | `docs/extensions/release_master.md` |
-| 复盘 / /retro | `docs/extensions/auto-retro.md`, `docs/rules/workflow_retro.md` |
-| /think / 本质分析 | `docs/extensions/think-skill.md` |
-| Milvus / 向量库 / RAG | `docs/extensions/milvus-toolkit.md` |
-| VitePress / 文档初始化 | `docs/extensions/vitepress-init.md` |
+| 技能总览 / All Skills | `docs/skills/index.md` |
+| 掘金 / 写文章 / juejin | `docs/skills/juejin-writer.md` |
+| 飞书 / Lark / 团队文档 | `docs/skills/feishu-writer.md` |
+| Logo / 图标 / 图形设计 | `docs/skills/logo-designer.md` |
+| PWA / 离线 / Manifest | `docs/skills/pwa-master.md` |
+| 发版 / Release / 版本号 | `docs/skills/release_master.md` |
+| 复盘 / /retro | `docs/skills/auto-retro.md`, `docs/rules/workflow_retro.md` |
+| /think / 本质分析 | `docs/skills/think-skill.md` |
+| Milvus / 向量库 / RAG | `docs/skills/milvus-toolkit.md` |
+| VitePress / 文档初始化 | `docs/skills/vitepress-init.md` |
 
-| 设计 / Design / UI | `docs/extensions/frontend-design.md` |
-| Snippets / 代码片段 | `docs/extensions/snippet_master.md` |
+| 设计 / Design / UI | `docs/skills/frontend-design.md` |
+| Remotion / 视频生成 / 渲染 | `docs/skills/remotion-master.md` |
+| Snippets / 代码片段 | `docs/skills/snippet_master.md` |
 | Figma / MCP / 设计稿 | `docs/rules/figma_mcp_config.md` |
-| Slack GIF / 动图 / GIF | `docs/extensions/slack-gif-creator.md` |
-| Web 测试 / Playwright / E2E | `docs/extensions/webapp-testing.md` |
-| 内部沟通 / 邮件 / 纪要 | `docs/extensions/internal-comms.md` |
+| Slack GIF / 动图 / GIF | `docs/skills/slack-gif-creator.md` |
+| Web 测试 / Playwright / E2E | `docs/skills/webapp-testing.md` |
+| 内部沟通 / 邮件 / 纪要 | `docs/skills/internal-comms.md` |
 
 ---
 *Last Updated: 2026-01-22 (Figma & Retro Sync, Extensions Skills Added)*
