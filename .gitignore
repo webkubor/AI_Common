@@ -26,6 +26,7 @@ oauth_creds.json
 node_modules/
 dist/
 build/
+!docs/retrospectives/build/
 tmp/
 coverage/
 docs/.vitepress/cache/
