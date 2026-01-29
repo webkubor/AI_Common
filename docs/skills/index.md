@@ -20,6 +20,7 @@
 
 - [webapp-testing](./webapp-testing.md) - Web 应用自动化测试专家
 - [wechat-writer](./wechat-writer.md) - 微信公众号（心语拾光）创作助手
+- [gitlab-manager](./gitlab-manager.md) - GitLab 仓库与流水线管理专家
 - [碎片知识管家](./snippet_master.md) (~/.agents/skills/snippet-master/) ✅ **已迁移至标准技能库** - 管理零散的代码片段、配置备忘与临时灵感。
 - [PWA 专家](./pwa-master.md) (~/.agents/skills/pwa-master/) ✅ **已迁移至标准技能库** - 为 Vite 项目提供标准化的 PWA 离线化改造方案。
 - [版本发布专家](./release_master.md) - 自动化处理版本升级、日志生成与 Git 发布。

@@ -82,7 +82,7 @@ graph TD
 在 CLI 中输入 `/start` 或直接提问，AI 将自动读取本仓库的 `docs/router.md` 并加载路由。
 
 ### 3. 碎片知识记录
-- **存**: "记一下 GitHub Token" -> 存入 `docs/snippets/github_token.md` (私有)。
+- **存**: "记一下 GitHub Token" -> 存入 `docs/secrets/github_token.md` (私有)。
 - **查**: "我的 Token 是多少？" -> AI 检索私有库并回答。
 
 ---

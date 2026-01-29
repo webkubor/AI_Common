@@ -88,6 +88,8 @@
 | Web 测试 / Playwright / E2E | `docs/skills/webapp-testing.md` |
 | 内部沟通 / 邮件 / 纪要 | `docs/skills/internal-comms.md` |
 | 微信公众号 / Wechat / 心语拾光 | `docs/skills/wechat-writer.md` |
+| GitLab / 仓库管理 / CI | `docs/skills/gitlab-manager.md` |
+| Supabase / 后端 / 数据库 | `docs/skills/supabase-master.md` |
 
 ---
 *Last Updated: 2026-01-22 (Figma & Retro Sync, Extensions Skills Added)*

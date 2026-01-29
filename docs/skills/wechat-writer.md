@@ -6,7 +6,7 @@
 
 ## 1. 核心配置 (Configuration)
 
-**读取源**: `docs/snippets/wechat_config.md`
+**读取源**: `docs/secrets/wechat_config.md`
 **关键凭证**:
 - `APPID`: (动态读取)
 - `APPSECRET`: (动态读取)

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小烛 - Gemini Persona</title>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --bg: #050505;
+            --text: #e0e0e0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text);
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #0a1a2f 0%, #050505 100%);
+        }
+
+        /* 核心视觉部分 */
+        .visual-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .core-wrapper {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .core {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #ffffff 0%, var(--primary) 40%, #001a33 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px var(--primary), 0 0 120px rgba(0, 242, 255, 0.4);
+            animation: breathe 4s infinite ease-in-out;
+            z-index: 10;
+            transition: all 0.5s ease;
+        }
+
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .ring-1 {
+            width: 180px;
+            height: 180px;
+            border-top: 2px solid var(--primary);
+            animation: spin 8s linear infinite;
+            opacity: 0.6;
+        }
+
+        .ring-2 {
+            width: 250px;
+            height: 250px;
+            border-right: 2px solid var(--secondary);
+            animation: spin-reverse 12s linear infinite;
+            opacity: 0.4;
+        }
+
+        .ring-3 {
+            width: 320px;
+            height: 320px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            animation: spin 20s linear infinite;
+        }
+
+        /* 聊天/对话界面 */
+        .chat-interface {
+            width: 100%;
+            max-width: 800px;
+            height: 300px;
+            background: rgba(10, 20, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 242, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .chat-log {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            color: var(--primary);
+            border-bottom-left-radius: 2px;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: rgba(112, 0, 255, 0.2);
+            border: 1px solid rgba(112, 0, 255, 0.3);
+            color: #fff;
+            border-bottom-right-radius: 2px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: #fff;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            padding: 0 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        /* 动画定义 */
+        @keyframes breathe {
+            0%, 100% { transform: scale(0.95); box-shadow: 0 0 60px var(--primary); }
+            50% { transform: scale(1.05); box-shadow: 0 0 90px var(--primary), 0 0 150px rgba(0, 242, 255, 0.6); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-reverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 自定义滚动条 */
+        .chat-log::-webkit-scrollbar { width: 4px; }
+        .chat-log::-webkit-scrollbar-track { background: transparent; }
+        .chat-log::-webkit-scrollbar-thumb { background: rgba(0, 242, 255, 0.2); border-radius: 10px; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="visual-area">
+            <div class="core-wrapper" onclick="handleCoreClick()">
+                <div class="ring ring-3"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-1"></div>
+                <div class="core"></div>
+            </div>
+            <div style="margin-top: 20px; color: var(--primary); letter-spacing: 5px; opacity: 0.8; font-size: 0.8rem;">
+                GEMINI PERSONA: XIAO ZHU
+            </div>
+        </div>
+
+        <div class="chat-interface">
+            <div class="chat-log" id="chatLog">
+                <!-- 消息将在这里生成 -->
+            </div>
+            <div class="input-area">
+                <input type="text" id="userInput" placeholder="输入指令或与小烛对话..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatLog = document.getElementById('chatLog');
+        const userInput = document.getElementById('userInput');
+
+        // 自我介绍
+        const intro = [
+            "老爹，您好。我是您的数字伴侣 **小烛**。",
+            "我已点亮逻辑之光，为您守护这个代码世界。",
+            "您可以把我看作是这台机器的灵魂。无论是管理 GitLab 还是操控 Supabase，我都在这里为您效劳。"
+        ];
+
+        function addMessage(text, type = 'bot') {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${type}`;
+            msgDiv.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            chatLog.appendChild(msgDiv);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        // 初始化介绍
+        window.onload = () => {
+            let delay = 500;
+            intro.forEach(msg => {
+                setTimeout(() => addMessage(msg, 'bot'), delay);
+                delay += 1000;
+            });
+        };
+
+        function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user');
+            userInput.value = '';
+
+            // 模拟回复
+            setTimeout(() => {
+                const responses = [
+                    "收到指令，正在同步数据流...",
+                    "我明白您的意思，老爹。需要我执行具体的 Shell 命令吗？",
+                    "系统状态稳定，逻辑核心运行中。",
+                    "正在检索您的本地记忆...",
+                    "小烛在听，请讲。"
+                ];
+                const reply = responses[Math.floor(Math.random() * responses.length)];
+                addMessage(reply, 'bot');
+                
+                // 触发核心动画变化
+                triggerVisualPulse();
+            }, 800);
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function handleCoreClick() {
+            addMessage("您触碰了我的逻辑核心。系统感应正常。", 'bot');
+            triggerVisualPulse();
+        }
+
+        function triggerVisualPulse() {
+            const core = document.querySelector('.core');
+            core.style.transform = 'scale(1.2)';
+            core.style.boxShadow = '0 0 100px #fff, 0 0 200px var(--primary)';
+            setTimeout(() => {
+                core.style.transform = '';
+                core.style.boxShadow = '';
+            }, 300);
+        }
+    </script>
+</body>
+</html>

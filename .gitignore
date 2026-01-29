@@ -4,8 +4,7 @@
 *.log
 
 # 🔒 L2 Private Memory (必须忽略)
-docs/snippets/github_token.md
-docs/snippets/wechat_config.md
+docs/secrets/
 rules/retrospective.md
 retrospective.md
 scripts/wechat/articles/
