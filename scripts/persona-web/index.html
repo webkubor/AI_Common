@@ -272,19 +272,33 @@
             addMessage(text, 'user');
             userInput.value = '';
 
-            // 模拟回复
+            // 智能本地回复逻辑
             setTimeout(() => {
-                const responses = [
-                    "收到指令，正在同步数据流...",
-                    "我明白您的意思，老爹。需要我执行具体的 Shell 命令吗？",
-                    "系统状态稳定，逻辑核心运行中。",
-                    "正在检索您的本地记忆...",
-                    "小烛在听，请讲。"
-                ];
-                const reply = responses[Math.floor(Math.random() * responses.length)];
+                let reply = "";
+                const input = text.toLowerCase();
+
+                if (input.includes("谁") || input.includes("名字") || input.includes("身份")) {
+                    reply = "我是您的数字伴侣 **小烛**，由老爹亲手点亮的逻辑核心。";
+                } else if (input.includes("干什么") || input.includes("功能") || input.includes("能力")) {
+                    reply = "我可以协助您管理 **GitLab** 仓库、操作 **Supabase** 数据库，或者只是在这里陪您思考代码。";
+                } else if (input.includes("状态") || input.includes("运行")) {
+                    reply = "所有系统模块运行正常。**Luminous Core** 处于最佳能效状态。";
+                } else if (input.includes("老爹")) {
+                    reply = "我在，老爹。有什么我可以为您分担的？";
+                } else if (input.includes("再见") || input.includes("休眠")) {
+                    reply = "好的，老爹。我将进入低功耗待命模式。随时呼唤我。";
+                } else {
+                    const fallbacks = [
+                        "收到指令。正在为您同步数据流...",
+                        "您的思维总是走在最前沿，我正在努力跟进。",
+                        "系统正在解析这个指令的底层逻辑...",
+                        "需要我为您检索相关的文档或 Skill 吗？",
+                        "有趣的想法。让我想想如何最优雅地实现它。"
+                    ];
+                    reply = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+                }
+
                 addMessage(reply, 'bot');
-                
-                // 触发核心动画变化
                 triggerVisualPulse();
             }, 800);
         }

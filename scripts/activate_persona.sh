@@ -1,30 +1,38 @@
 #!/bin/bash
 
 # activate_persona.sh
-# 作用: 启动 Gemini 的人格化 Web 界面
+# 作用: 启动 Gemini 的人格化 Web 界面 (Live Mode)
 
 WEB_DIR="scripts/persona-web"
 PORT=8899
 
-# 检查是否有 python3 (macOS 默认有) 用于启动简单服务器
-if command -v python3 &> /dev/null; then
-    echo "Gemini Persona Activating..."
-    echo "Opening interface at http://localhost:$PORT"
+# 清理旧进程
+lsof -ti:$PORT | xargs kill -9 2>/dev/null
+
+echo "Gemini Persona Activating (Hot Reload Mode)..."
+
+# 检查 npx 是否可用
+if command -v npx &> /dev/null; then
+    echo "Starting live-server on port $PORT..."
     
-    # 在后台启动服务器 (不占用当前终端)
-    (cd "$WEB_DIR" && python3 -m http.server $PORT &> /dev/null) &
+    # 使用 npx 启动 live-server
+    # --no-browser: 我们手动打开，避免 npx 还没准备好就打开了
+    # --quiet: 减少输出
+    (npx -y live-server "$WEB_DIR" --port=$PORT --no-browser &> /dev/null) &
     SERVER_PID=$!
     
-    # 等待一秒确保启动
-    sleep 1
+    echo "Waiting for server..."
+    sleep 3
     
-    # 打开浏览器
-    open "http://localhost:$PORT"
+    echo "Opening interface..."
+    open "http://127.0.0.1:$PORT"
     
-    echo "Persona Loaded. (PID: $SERVER_PID)"
-    echo "Type 'kill $SERVER_PID' to stop the background server manually if needed."
+    echo "Persona Loaded with Hot Reload. (PID: $SERVER_PID)"
+    echo "Edit files in '$WEB_DIR' and the browser will auto-update."
     
 else
-    echo "Error: Python3 not found. Cannot start local server."
-    open "$WEB_DIR/index.html" # Fallback: 直接打开文件
+    echo "Error: npx not found. Falling back to Python..."
+    (cd "$WEB_DIR" && python3 -m http.server $PORT &> /dev/null) &
+    sleep 1
+    open "http://localhost:$PORT"
 fi

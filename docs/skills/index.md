@@ -15,6 +15,7 @@
 - [飞书文档助手](./feishu-writer.md) (~/.agents/skills/feishu-writer/) ✅ **已迁移至标准技能库** - 撰写结构清晰的团队内部技术文档。
 - [内部沟通专家](./internal-comms.md) (~/.codex/skills/internal-comms/) ✅ **已迁移至标准技能库** - 编写周报、FAQ、Newsletter 等内部沟通材料。
 - [Slack GIF 生成器](./slack-gif-creator.md) (~/.codex/skills/slack-gif-creator/) ✅ **已迁移至标准技能库** - 创建适配 Slack 的高质量 GIF 动图。
+- [生成语音 / 生成声音 / TTS](./qwen3-tts.md) - 本地文字转语音/声音克隆，默认输出 wav 到 `/Users/webkubor/Documents/voice`。
 
 ## 🛠️ 工程与自动化 (Engineering & Automation)
 
