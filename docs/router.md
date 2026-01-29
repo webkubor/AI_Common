@@ -42,8 +42,8 @@
 ## 📍 状态机路由 (State Machine Routing)
 
 ### 🛡️ Phase 0: 治理与安全 (Safety)
-*   **触发**: 提到 "隐私", "敏感信息", "忽略文件", "Key", "Figma Token" 。
-*   **加载**: `docs/rules/privacy_excludes.md`, `docs/rules/figma_mcp_config.md`
+*   **触发**: 提到 "token", "消耗", "省钱", "隐私", "敏感信息", "忽略文件", "Key", "Figma Token" 。
+*   **加载**: `docs/rules/privacy_excludes.md`, `docs/rules/figma_mcp_config.md, docs/rules/token_efficiency.md`
 
 ### 🚀 Phase 1: 项目初始化 (Inception)
 *   **触发**: 提到 "新建项目", "脚手架", "init", "new project", "SOP"。
@@ -83,7 +83,7 @@
 | 设计 / Design / UI | `docs/skills/frontend-design.md` |
 | Remotion / 视频生成 / 渲染 | `docs/skills/remotion-master.md` |
 | Snippets / 代码片段 | `docs/skills/snippet_master.md` |
-| Figma / MCP / 设计稿 | `docs/rules/figma_mcp_config.md` |
+| Figma / MCP / 设计稿 | `docs/rules/figma_mcp_config.md, docs/rules/token_efficiency.md` |
 | Slack GIF / 动图 / GIF | `docs/skills/slack-gif-creator.md` |
 | Web 测试 / Playwright / E2E | `docs/skills/webapp-testing.md` |
 | 内部沟通 / 邮件 / 纪要 | `docs/skills/internal-comms.md` |
