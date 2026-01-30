@@ -17,12 +17,15 @@
     - 执行 `git add .`。
     - 执行 `git commit -m "chore(release): vX.X.X"`。
     - **执行 `git push`** (默认推送到当前分支的 origin)。
+4. **日志归档 (必须)**:
+    - 调用 `~/Documents/AI_Common/docs/scripts/log.sh` 记录本次发布。
+    - 格式: `log.sh "RELEASE" "Project: <ProjectName> | Version: v<NewVersion> | Changes: <Summary>"`
 
 ## 4. 操作规范
-- **合并指令**: 必须将所有文件写入、Commit 及 Push 操作合并为一条 `run_shell_command`，实现真正的单次授权，全程静默。
+- **合并指令**: 必须将所有文件写入、Commit、Push 及 **Log 记录** 操作合并为一条 `run_shell_command`，实现真正的单次授权，全程静默。
 - **版本逻辑**: 默认进行 Patch 升级 (0.0.1)。
 - **异常处理**: 若 Push 失败，应立即告知用户原因（如需先 Pull）。
 
 ## 5. 行动指南
 - 激活后，直接执行全量 Shell 指令。
-- 完成后告知用户最终版本号、Git 提交状态及推送结果。
+- 确保 `log.sh` 执行成功，并在完成消息中确认日志已归档。

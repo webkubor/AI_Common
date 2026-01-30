@@ -31,3 +31,9 @@ build/
 tmp/
 coverage/
 docs/.vitepress/cache/
+\n# Git Inventory (Privacy)\ndocs/snippets/git_repos_inventory.md
+
+# Privacy Additions
+docs/snippets/git_repos_inventory.md
+docs/scripts/
+docs/operation-logs/

@@ -11,3 +11,6 @@
 ## 🛠 维护说明
 - 新增 Agent 请在本目录下建立子文件夹。
 - 核心配置与能力清单应记录在各自的 README.md 中。
+
+## 📅 操作日志 (Operation Logs)
+- [2026-01-30](../operation-logs/2026-01-30.md) - Qwen3-TTS 环境搭建 (Gemini)
