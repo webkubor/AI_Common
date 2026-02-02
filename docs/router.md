@@ -91,6 +91,7 @@
 | 微信公众号 / Wechat / 心语拾光 | `docs/skills/wechat-writer.md` |
 | GitLab / 仓库管理 / CI | `docs/skills/gitlab-manager.md` |
 | Supabase / 后端 / 数据库 | `docs/skills/supabase-master.md` |
+| 生成语音 / 声音生成 / TTS | `docs/skills/voice-generator.md` |
 
 ---
-*Last Updated: 2026-01-22 (Figma & Retro Sync, Extensions Skills Added)*
+*Last Updated: 2026-02-02 (Renamed skill to voice-generator)*
