@@ -48,7 +48,8 @@
 
 ### 🚀 Phase 1: 项目初始化 (Inception)
 *   **触发**: 提到 "新建项目", "脚手架", "init", "new project", "SOP"。
-*   **加载**: `docs/tech_stack.md`, `docs/rules/standard_workflow.md`
+*   **首要动作**: 优先创建 .agent/ 目录结构；严禁在此阶段加载 vibe_rules.md 等编码规范。
+*   **加载**: docs/tech_stack.md, docs/rules/project_initialization_sop.md
 
 ### 💻 Phase 2: 编码与交付 (Implementation)
 *   **触发**: 提到 "写代码", "实现", "重构", "提交", "commit", "复盘"。
@@ -84,6 +85,7 @@
 | 设计 / Design / UI | `docs/skills/frontend-design.md` |
 | Remotion / 视频生成 / 渲染 | `docs/skills/remotion-master.md` |
 | Snippets / 代码片段 | `docs/skills/snippet_master.md` |
+| Image Gen / 智能绘图 / Smart Gen | `docs/skills/smart-image-generator.md` |
 | Figma / MCP / 设计稿 | `docs/rules/figma_mcp_config.md, docs/rules/token_efficiency.md` |
 | Slack GIF / 动图 / GIF | `docs/skills/slack-gif-creator.md` |
 | Web 测试 / Playwright / E2E | `docs/skills/webapp-testing.md` |

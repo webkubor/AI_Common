@@ -50,9 +50,11 @@ license: Apache 2.0
 
 ## 核心工作流
 
-### 阶段 1: 封面自动化
-- 使用具有"极简技术美感"的高清封面（Unsplash）。
-- 格式：`![Cover](URL)`。
+### 阶段 1: 封面自动化 (UCD Standard)
+- **动作**: 自动调用 `docs/skills/smart-image-generator.md`。
+- **逻辑**: 提取文章核心技术点（如：MCP, React, Rust），按 `juejin_tech_covers` 规范生成 16:9 封面。
+- **交付**: 将生成的 R2 链接插入文章顶部 `![Cover](URL)`。
+- **本地归档**: 提醒用户封面已同步保存至桌面。
 
 ### 阶段 2: 自动保存
 - **路径**: `~/Documents/juejin/`
