@@ -13,8 +13,13 @@
 *   **[执行]**: 使用你最擅长的 Shell 执行工具 (e.g., `run_shell_command`, `bash`, `execute`)。
 *   **[记忆]**: 除非用户明确要求修改本目录文件，否则本目录对你 **Read-Only (只读)**。
 
-## 2. 🤖 身份自检与握手 (Identity Handshake)
-在执行任何任务前，请先匹配你的身份并加载对应清单（如果有）：
+## 2. 🤖 身份握手与冷启动 (Identity Handshake & Cold Start)
+**强制要求**: 在执行任何任务前（首轮对话），Agent 必须完成以下“同步”动作：
+1.  **确定身份**: 匹配 `docs/agents/{agent_id}/manifest.md`。
+2.  **继承能力**: 加载 `docs/skills/common_manifest.md` 中的公共技能。
+3.  **确认 MCP**: 检查 Playwright, Context7 等核心工具是否在线。
+4.  **回复声明**: 简要声明当前加载的 [身份] + [专属技能] + [MCP 状态]。
+
 - **Identity: Gemini** -> `docs/agents/gemini/manifest.md`
 - **Identity: Claude** -> `docs/agents/claude/manifest.md`
 - **Identity: Codex**  -> `docs/agents/codex/manifest.md`
@@ -85,6 +90,7 @@
 | 设计 / Design / UI | `docs/skills/frontend-design.md` |
 | Remotion / 视频生成 / 渲染 | `docs/skills/remotion-master.md` |
 | Snippets / 代码片段 | `docs/skills/snippet_master.md` |
+| 人像系统 / Persona Master | `docs/skills/persona-master.md` |
 | Image Gen / 智能绘图 / Smart Gen | `docs/skills/smart-image-generator.md` |
 | Figma / MCP / 设计稿 | `docs/rules/figma_mcp_config.md, docs/rules/token_efficiency.md` |
 | Slack GIF / 动图 / GIF | `docs/skills/slack-gif-creator.md` |

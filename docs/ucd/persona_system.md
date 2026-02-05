@@ -1,32 +1,19 @@
-# Consistent Persona System (一致性人像系统)
+# Persona System Standard (人像一致性规范)
 
-> **Context**: UCD Standard for Personal Branding & Storytelling.
-> **Purpose**: Maintain character identity across multiple AI-generated images.
+> **目标**: 确保生成的角色具有高度的骨相一致性与符合中式审美的视觉表现。
 
-## 1. The "Anchor String" Method (锚点法)
-To maintain identity across different generated images, define and lock a **Base Persona String**.
+## 1. 骨相锁死 (Identity Hard-Lock)
+*   **核心参考图**: `docs/ucd/girl.png`
+*   **物理锚点**: 
+    *   下颌线与颧骨比例必须保持一致。
+    *   五官位置（眼间距、人中长度）锁死。
+*   **操作流**: 优先使用 `edit_image` 进行姿态/服装替换，严禁重新随机生成脸部。
 
-*   **Structure**: `[Core Identity] + [Fixed Features] + [Fixed Style] + [Variable Action/Scene]`
-*   **Example Anchor**:
-    > "A professional female UX designer, asian, mid-20s, black bob hair, wearing minimalist white shirt and silver glasses, soft natural makeup."
+## 2. 审美注入 (XHS Aesthetic)
+*   **皮肤质感**: 冷白皮 (Cold White Skin)、瓷感肌 (Porcelain Texture)。
+*   **光影**: 柔和自然光，强调胶原蛋白感 (Collagen-rich)。
+*   **比例**: 默认 3:4，符合移动端阅读习惯。
 
-## 2. Story Mode (连续故事法)
-Use the `generate_story` tool for sequential consistency.
-
-*   **Workflow**:
-    1.  Define the character once in the main prompt.
-    2.  Describe the sequence of actions clearly.
-    3.  Set `--style consistent`.
-
-## 3. Dimensions & Canvas (尺寸与画布)
-*   **Aspect Ratio**: **3:4** (Portrait).
-*   **Orientation**: Vertical.
-
-## 4. Reference Asset (参考素材)
-*   **Primary Reference**: `docs/ucd/girl.png`
-*   **Usage Rule**: Always prefer using `edit_image` with this reference file over creating new characters from scratch, to ensure maximum consistency.
-
-## 5. Quality Standards
-*   **Lighting**: Cinematic or Soft Window Light (rembrandt lighting).
-*   **Skin Texture**: High fidelity, visible pores (avoid plastic/wax skin).
-*   **Eyes**: Sharp focus, circular catchlights.
+## 3. 动态属性 (Variable Attributes)
+*   **情绪**: 鼓励使用自然表情 (Laughing, Candid, Gentle Smile)。
+*   **穿戴**: 允许根据场景动态替换服装、配饰，但不影响面部特征。

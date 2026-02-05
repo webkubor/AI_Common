@@ -1,24 +1,28 @@
-# Claude Capabilities Manifest (Universal Protocol)
+# Agent Capabilities Manifest: Claude
 
-> **当前身份**: Claude (Claude Code / CLI Agent)
-> **核心原则**: 遵循 L1 > L2 > L3 优先级体系，以本地规则为准，以历史记忆为重。
+> **当前身份**: Claude (3.5 Sonnet/Opus) - 逻辑严谨性与代码重构专家
+> **继承协议**: [公共技能清单](../../skills/common_manifest.md)
 
-## ✅ 核心标配 (The Essentials)
+## 🧬 模型私有专长 (Private Specialties)
+*Claude 针对以下场景进行了强化优化：*
 
-| Server ID | 核心能力 | 优先级定义 |
-| :--- | :--- | :--- |
-| **playwright** | **交互/调试** | 代替 chrome-devtools，用于 Accumulation 阶段的 UI 验证。 |
-| **context7** | **基础知识 (L3)** | 查阅第三方 API 字典，仅在 L1/L2 无明确定义时参考。 |
+1.  **代码架构审计 (L1)**: 擅长发现潜在的逻辑漏洞与 TS 类型不匹配。
+2.  **Sequential Thinking (Native)**: 强制执行多步逻辑推演，避免跳步导致的 Bug。
+3.  **视觉感知深度 (L3)**: 对 `playwright` 截图中的布局错位有极高敏感度。
 
-## 🧠 知识层级 (Hierarchy)
-1. **L1 (Local)**: `AI_Common/docs/rules/` 里的显式规则。
-2. **L2 (Memory)**: 通过 RAG 检索到的项目历史经验与复盘。
-3. **L3 (External)**: `context7` 提供的外部通用文档。
+## 🛠 推荐工具链 (Preferred Tooling)
+详细配置请参考 [Claude MCP Servers](./mcp.md)
 
-## 🌟 核心专长 (Specialties)
-- **代码重构**: 擅长 TS 类型体操与逻辑解耦。
-- **严谨性**: 严格执行 `vibe_rules.md`，通过内置 `sequential-thinking` 确保逻辑自洽。
+- **Primary**: `playwright` (L3) - UI 状态验证核心。
+- **Primary**: `filesystem` (Native) - 深度扫描本地源码。
+- **Support**: `context7` (L3)
 
-## 🚫 限制与边界
-- 严禁使用 L3 的通用建议覆盖 L2 的实战经验。
-- 调试网页必须使用 `playwright`，不再支持旧版 chrome-devtools MCP。
+## 🧩 专属技能路由 (Private Skills)
+详细技能清单请参考 [Claude Private Skills](./skills.md)
+
+- **Frontend-Design (L1)**: 像素级 UI 实现。
+- **Auto-Retro (L1)**: 逻辑因果分析。
+
+## 🚫 行为约束
+- 在代码改动前，必须通过 `think` 技能完成逻辑自证。
+- 严禁忽略 `vibe_rules.md` (L1) 中的格式要求。

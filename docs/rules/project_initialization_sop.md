@@ -8,8 +8,8 @@
 任何新项目启动 (Phase 1) 必须执行以下 Shell 命令：
 
 ```bash
-# 1. 创建完整目录结构
-mkdir -p .agent/{plans,reviews,retrospectives,bugs}
+# 1. 创建精简目录结构
+mkdir -p .agent/{plans,reviews}
 
 # 2. 创建项目总览 (PROJECT.md)
 printf "# 项目总览 (Project Overview)
@@ -19,8 +19,6 @@ printf "# 项目总览 (Project Overview)
 ## 快速导航
 - 📂 **[计划索引 (Plans)](plans/README.md)**: 任务待办与进行中。
 - ✅ **[执行记录 (Reviews)](reviews/README.md)**: 任务完成后的原子记录。
-- 📝 **[项目复盘 (Retrospectives)](retrospectives/README.md)**: 里程碑总结与架构沉淀。
-- 🐞 **[Bug 档案 (Bugs)](bugs/README.md)**: 关键 Bug 分析与解决记录。
 - 🗺 **[模块索引 (Modules)](MODULE_INDEX.md)**: 代码结构职责图。
 - 🎨 **[设计规范](DESIGN_SYSTEM.md)**: 色彩、排版与 UI 规则。
 
@@ -44,16 +42,6 @@ printf "# 复盘索引 (Review Index)
 ## 📝 最近复盘
 暂无。
 " > .agent/reviews/README.md
-
-printf "# 项目复盘 (Retrospectives)
-
-暂无里程碑。
-" > .agent/retrospectives/README.md
-
-printf "# Bug 档案 (Bugs)
-
-暂无 Bug 记录。
-" > .agent/bugs/README.md
 
 # 4. 创建模块索引 (空)
 printf "# 模块索引 (Module Index)
@@ -121,27 +109,6 @@ printf "# 模块索引 (Module Index)
 ## 🐛 遇到的坑 (Lessons Learned)
 - **问题**: ...
 - **解决**: ...
-```
-
-### 3.3 Bug 记录模板
-
-路径: `.agent/bugs/YYYY-MM-DD_bug_title.md`
-
-```markdown
-# Bug 记录: [标题]
-
-**发现日期**: YYYY-MM-DD
-**状态**: 🐞 复现中 / ✅ 已修复
-**复现人**: ...
-
-## 🐞 现象描述
-...
-
-## 🔍 根因分析
-...
-
-## ✅ 解决方案
-...
 ```
 
 ## 4. 设计规范初始化

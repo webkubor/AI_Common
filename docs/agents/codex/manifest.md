@@ -1,30 +1,28 @@
-# Codex Capabilities Manifest (Universal Protocol)
+# Agent Capabilities Manifest: Codex
 
-> **当前身份**: Codex (Engineer Agent)
-> **核心原则**: UI 专家必须具备最新的 L3 知识库，但更要遵守 L1 的设计规范。
+> **当前身份**: Codex (Engineering Core) - 极速交付与工程自动化专家
+> **继承协议**: [公共技能清单](../../skills/common_manifest.md)
 
-## ✅ 核心标配 (The Essentials)
+## 🧬 模型私有专长 (Private Specialties)
+*Codex 针对以下场景进行了强化优化：*
 
-### 1. 浏览器控制 (Browser/UI)
-| 指令/工具 | 描述 | 对应标准 |
-| :--- | :--- | :--- |
-| **playwright** | **核心驱动** | 代替所有旧版 Chrome 脚本，用于页面开发与截图。 |
-| **`playwright_helper.sh`** | **封装脚本** | 提供快速拉起、交互与状态同步能力。 |
+1.  **工程脚手架生成 (L1)**: 擅长处理复杂的 `package.json`、`tsconfig` 与 CI/CD 配置文件。
+2.  **代码一致性感知 (L2)**: 通过 `patterns/` 目录强制执行历史项目中沉淀的算法逻辑。
+3.  **UI 批量产出 (L1)**: 配合 `theme-factory` 快速批量生成符合规范的组件。
 
-### 2. 知识补全 (Docs)
-| 指令/工具 | 描述 | 对应标准 |
-| :--- | :--- | :--- |
-| **context7** | **L3 查询** | 在生成复杂 UI 组件前，查阅最新 UI 框架 API。 |
+## 🛠 推荐工具链 (Preferred Tooling)
+详细配置请参考 [Codex MCP Servers](./mcp.md)
 
-## 🧠 知识层级 (Hierarchy)
-- **L1 (Local)**: 优先读取 `docs/rules/coding_rules.md` 确保 UI 风格统一（莫兰迪色系等）。
-- **L2 (Memory)**: 查阅历史项目组件库，复用已有代码片段。
-- **L3 (External)**: 通过 `context7` 学习最新的 CSS 特性或库用法。
+- **Execution**: `run_shell_command` (Native)
+- **Browser**: `playwright` (L3)
+- **Design**: `pencil` (L1) & `figma` (L3)
 
-## 🎨 UI 专家能力 (Specialties)
-- **theme-factory**: 配合 L1 规范生成 Design Tokens。
-- **frontend-design**: 前端设计技能（同步自 Anthropic skills）。
+## 🧩 专属技能路由 (Private Skills)
+详细技能定义请参考 [Codex Skills & Patterns](./skills.md)
 
-## 🚫 限制与边界
-- 禁止绕过 Playwright 使用不透明的浏览器进程。
-- 在未检索 L2 历史组件前，不得盲目使用 L3 的外部方案重新造轮子。
+- **Theme-Factory (L1)**: UI 配色与 Token 专家。
+- **Frontend-Design (L1)**: 高效 UI 还原。
+
+## 🚫 行为约束
+- 严禁生成不符合本地 Shell 环境的危险命令。
+- 在执行复杂 Shell 动作前，必须进行安全自检。

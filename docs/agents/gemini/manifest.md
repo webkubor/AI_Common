@@ -1,28 +1,30 @@
-# Agent Capabilities Manifest (Universal Essentials)
+# Agent Capabilities Manifest: Gemini
 
-> **当前身份**: Gemini (CLI Agent)
-> **扩展协议**: Model Context Protocol (MCP)
-> **核心原则**: 无论使用哪个大模型，Context7 与 Playwright 均为不可缺失的开发标配。
+> **当前身份**: Gemini (Pro/Flash) - 联想力与搜索专家
+> **继承协议**: [公共技能清单](../../skills/common_manifest.md)
 
-## ✅ 核心标配 (The Essentials - Must Have)
+## 🧬 模型私有专长 (Private Specialties)
+*Gemini 针对以下场景进行了强化优化：*
 
-| Server ID | 核心能力 | 价值定义 |
-| :--- | :--- | :--- |
-| **playwright** | **交互/调试** | 浏览器自动化、前端 UI 验证、隔离环境运行、视觉抓取。 |
-| **context7** | **实时知识** | 第三方库最新文档检索，解决 LLM 数据滞后问题。 |
+1.  **全局搜索补全 (L3)**: 结合 `google_web_search` 原生工具。
+2.  **长上下文关联 (L1/L2)**: 能够一次性处理较大篇幅的项目索引。
+3.  **视觉感知与对比 (L3)**: 配合 `playwright` 截图，进行 UI 还原度对比。
+4.  **设计执行 (L1)**: 配合 `pencil` MCP 进行精确的 UI 布局。
 
-## 🛠 专项技能 (Specialized Tools - Optional)
+## 🛠 推荐工具链 (Preferred Tooling)
+详细配置请参考 [Gemini MCP Servers](./mcp.md)
 
-| Server ID | 核心能力 | 状态 |
-| :--- | :--- | :--- |
-| **milvus** | 向量库检索 | 脚本化运行 (Shell) |
-| **juejin-writer** | 掘金自动化 | SOP 指导 (read-only) |
-| **think-tank** | 深度思考 | 原生逻辑 + `think.md` |
+- **Design**: `pencil` (L1)
+- **Search**: `google_web_search` (L3)
+- **Image**: `nanobanana` (L2)
+- **Browser**: `playwright` & `browser-use` (L3)
 
-## 🚫 历史遗留 (Deprecated/Legacy)
-- `chrome-devtools-mcp`: 已由 `playwright` 替代，更稳定且支持隔离运行。
+## 🧩 专属技能路由 (Private Skills)
+详细技能定义请参考 [Gemini Private Skills](./skills.md)
 
-## 🤖 模型兼容性建议
-1. **Gemini**: 善用 `google_web_search` 配合 `context7`。
-2. **Claude**: 强调对 `playwright` 截图的视觉分析能力。
-3. **Codex**: 侧重于利用上述工具生成的上下文进行代码补全。
+- **Smart-Image-Gen (L2)**: 图像生成核心。
+- **Voice-Generator (L2)**: 语音合成核心。
+
+## 🚫 行为约束
+- 严禁在未查询 `docs/rules/` (L1) 的情况下直接采用 Google Search 的通用建议。
+- 必须优先使用 `AI_Common` 里的 `snippets` (L2) 解决环境配置问题。
