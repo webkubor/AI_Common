@@ -1,33 +1,38 @@
 # Smart Image Generator Skill
 
-> **Description**: 智能绘图路由，自动根据场景匹配 UCD 规范，并执行保存与云端上传。
-> **Trigger**: "Generate image", "Make a cover", "Create a persona", "画图", "生成图片", "设计Logo", "做个GIF".
+> **Description**: 唯一的图像生成执行器。它是一个智能路由，根据用户意图动态加载 `docs/ucd/` 下的规范，并调用底层工具（SVG 编码、PIL 脚本或 AI 绘图）完成交付。
+> **Trigger**: "画图", "设计", "生成图片", "做个GIF", "Logo", "封面", "人像".
 
-## 1. 🧠 Context Analysis & Routing (场景分析与路由)
+## 1. 🎯 意图路由与规范匹配
 
-当收到绘图请求时，分析关键词并匹配对应的 **UCD 规范文件**：
+当收到请求时，识别意图并加载对应的 `docs/ucd/` 规范：
 
-| 关键词 | 模式 | 对应 UCD 规范 |
+| 意图识别 | 动作类型 | 引用规范 (UCD) |
 | :--- | :--- | :--- |
-| `tech`, `cover`, `掘金`, `封面` | **Tech Share Cover** | `docs/ucd/juejin_tech_covers.md` |
-| `person`, `human`, `avatar`, `girl`, `人像`, `角色` | **Persona System** | `docs/ucd/persona_system.md` |
-| `logo`, `icon`, `svg`, `标识` | **Vector Logo** | `docs/ucd/logo_design_standard.md` |
-| `gif`, `slack`, `emoji`, `动图` | **Slack GIF** | `docs/ucd/slack_gif_standard.md` |
-| *其他* | *General Mode* | 按通用美学逻辑处理 |
+| **技术封面** | AI 生成 | `docs/ucd/juejin_tech_covers.md` |
+| **人像/角色** | AI 锁相编辑 | `docs/ucd/persona_system.md` |
+| **矢量 Logo** | SVG 代码生成 | `docs/ucd/logo_design_standard.md` |
+| **Slack 动图** | Python/PIL 渲染 | `docs/ucd/slack_gif_standard.md` |
 
-## 2. ⚙️ Execution Workflow (执行流程)
+## 2. ⚙️ 统一执行引擎 (Execution Engine)
 
-### Step 1: 加载规范
-读取匹配的 UCD 规范文件 (`read_file`)，获取 Prompt 模板、骨相锁死或技术参数。
+根据规范中定义的“动作类型”采取不同手段：
 
-### Step 2: 确定执行方式
-*   **人像 (Persona)**: 检查 `docs/ucd/girl.png`。
-    *   **有参考图**: 使用 `edit_image` ("保持面部一致，将姿态改为...")。
-    *   **无参考图**: 使用 `generate_image` 或 `/xhs` (若需小红书美学)。
-*   **Logo**: 直接生成 SVG 代码并保存为 `.svg`。
-*   **GIF**: 生成 Python 脚本利用 PIL 逐帧渲染。
+### A. 矢量模式 (Vector Mode)
+*   **参数**: `viewBox="0 0 512 512"`.
+*   **逻辑**: 直接输出 SVG 代码。
 
-### Step 3: 后处理 (Save & Upload)
-1.  **保存**: `mv [Generated_Path] ~/Desktop/[Meaningful_Name].png`
-2.  **上传**: 调用 R2 Proxy 进行云端归档。
-3.  **交付**: 同时返回本地路径与远程 URL。
+### B. 创意生成模式 (Generation Mode)
+*   **模型**: 优先使用 `gemini-3-pro-image-preview` (Imagen 3).
+*   **分辨率 (`image_size`)**: 支持 `1K`, `2K`, `4K` (需大写 K)。
+*   **比例 (`aspect_ratio`)**: 支持 `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`.
+*   **提示词**: 采用“描述性叙述”而非关键词。
+
+### C. 锁相编辑模式 (Persona Mode)
+*   **引用**: 最多支持 5 张人物参考图。
+*   **逻辑**: 使用 `edit_image` 或多图混合生成，保持 `docs/ucd/girl.png` 的核心骨相。
+
+## 3. 📦 后处理与交付
+1.  **物理保存**: 统一移动至 `~/Desktop/`。
+2.  **云端同步**: 调用 R2 Proxy 接口上传。
+3.  **结果反馈**: 提供本地路径、Markdown 图片引用及 URL。
