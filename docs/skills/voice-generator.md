@@ -1,7 +1,9 @@
 ---
-name: tts-voice
-description: 本地文字转语音/生成声音技能。基于 Qwen3-TTS (CustomVoice-0.6B)。
-license: Apache 2.0
+id: voice-generator
+triggers: ["语音", "tts", "声音", "克隆"]
+mcp_requirements: []
+priority: 1
+---
 ---
 
 # 生成语音 / 生成声音 / TTS

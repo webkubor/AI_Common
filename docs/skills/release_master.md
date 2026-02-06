@@ -1,3 +1,9 @@
+---
+id: release-master
+triggers: ["发版", "release", "版本", "发布"]
+mcp_requirements: []
+priority: 1
+---
 # Release Master Skill (版本发布专家)
 
 ## 1. 技能定位

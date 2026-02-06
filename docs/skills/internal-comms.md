@@ -1,7 +1,8 @@
 ---
-name: internal-comms
-description: Internal communication expert for writing high-quality team documentation including weekly reports, announcements, FAQs, etc. Ensures clear, professional, and consistent information delivery.
-license: Apache 2.0
+id: internal-comms
+triggers: ["沟通", "邮件", "周报", "faq", "comms"]
+mcp_requirements: []
+priority: 2
 ---
 
 # Internal Comms Skill (内部沟通专家)

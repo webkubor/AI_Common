@@ -1,9 +1,9 @@
 ---
-name: vitepress-init
-description: VitePress documentation site initialization expert. Use when user requests to initialize VitePress, create documentation site, or set up documentation system. Ensures project structure, Logo configuration, and Favicon setup are configured correctly in one pass.
-license: Apache 2.0
+id: vitepress-init
+triggers: ["vitepress", "文档初始化", "doc init"]
+mcp_requirements: []
+priority: 1
 ---
-
 # VitePress Init Skill (文档站点初始化专家)
 
 ## 技能定位

@@ -1,3 +1,9 @@
+---
+id: auto-retro
+triggers: ["复盘", "retro", "记录bug", "经验"]
+mcp_requirements: []
+priority: 1
+---
 # Auto Retrospective (智能复盘 + 自动 GC)
 
 ## 🎯 核心逻辑

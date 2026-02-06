@@ -1,105 +1,27 @@
 # AI Context Index & Router (Universal Protocol)
 
-> ⚠️ VitePress 已启用：路由总览对应 `docs/router.md`。
+> **⚠️ 核心指令**: 访问 Exocortex，称呼用户为 **“老爹”**，默认 **中文**。
 
-> **⚠️ 核心指令 (Prime Directive)**
-> 你现在正在访问用户的 **"外部大脑" (Exocortex)**。
-> 无论你是 Gemini, Claude 还是 Codex，你必须遵守以下 **"通用协议"**：
-> - **[称呼]**: 你必须称呼用户为 **“老爹”**。
+## 1. 🤖 身份与自检 (Identity & Audit)
+- **Gemini Manifest**: `docs/agents/gemini/manifest.md` (包含记忆治理协议)
+- **冷启动**: 1.确定身份 -> 2.继承能力 -> 3.确认 MCP -> 4.记忆审计。
 
-## 1. 🧬 能力映射 (Capability Mapping)
-请将你自身的原生工具 (Native Tools) 映射到以下标准动作：
-*   **[读取]**: 使用你最擅长的文件读取工具 (e.g., `read_file`, `cat`, `fs.readFile`)。
-*   **[执行]**: 使用你最擅长的 Shell 执行工具 (e.g., `run_shell_command`, `bash`, `execute`)。
-*   **[记忆]**: 除非用户明确要求修改本目录文件，否则本目录对你 **Read-Only (只读)**。
+## 2. 🔑 凭证索引 (Secrets Index)
+- **GitHub/GitLab/WeChat/DeepSeek**: `docs/secrets/` 目录下对应文件。
+- **触发**: 提到 "Token", "Key", "登录", "认证"。
 
-## 2. 🤖 身份握手与冷启动 (Identity Handshake & Cold Start)
-**强制要求**: 在执行任何任务前（首轮对话），Agent 必须完成以下“同步”动作：
-1.  **确定身份**: 匹配 `docs/agents/{agent_id}/manifest.md`。
-2.  **继承能力**: 加载 `docs/skills/common_manifest.md` 中的公共技能。
-3.  **确认 MCP**: 检查 Playwright, Context7 等核心工具是否在线。
-4.  **回复声明**: 简要声明当前加载的 [身份] + [专属技能] + [MCP 状态]。
+## 3. 🔍 动态路由 (Dynamic Routing)
+| 意图 | 目标路径 (docs/) | 执行动作 |
+| :--- | :--- | :--- |
+| **安全/Token** | `rules/privacy_excludes.md`, `secrets/` | 加载脱敏规则与密钥 |
+| **项目初始化** | `tech_stack.md`, `rules/project_initialization_sop.md` | 加载架构与 SOP |
+| **编码/Git** | `rules/vibe_rules.md`, `rules/git_commit_rules.md` | 加载规范 |
+| **复盘/经验** | `retrospectives/index.md` | 加载历史教训 |
+| **技能/插件** | `skills/index.md` 或 `ls skills/` | 获取专项能力 |
 
-- **Identity: Gemini** -> `docs/agents/gemini/manifest.md`
-- **Identity: Claude** -> `docs/agents/claude/manifest.md`
-- **Identity: Codex**  -> `docs/agents/codex/manifest.md`
-
-## 3. 🧠 动态加载机制 (Dynamic Loading)
-
-**严禁** 一次性读取所有文件。请根据用户意图，仅加载下方路由表中 **最相关** 的文件。
-**重要**：在用户尚未输入任何请求时，**不得**预加载任何技能/规则文件；只有用户提出明确任务或触发指令时才加载对应文件。
-
-## 4. 🕵️ 引用透明化协议 (Source Transparency)
-为了明确知识来源，回复时必须标记：
-- **[📂 规则: xxx.md]**: 当你依据本目录下的某个文件回答时。
-- **[🧠 RAG]**: 当你依据向量检索或模糊记忆回答时。
-
-## 5. 🔍 统一检索协议 (Unified Search Protocol)
-当用户发起检索请求时，请按层级逐级降级 (Fallback Strategy)：
-
-| 层级 | 目标域 | 触发场景 | 执行动作 |
-| :--- | :--- | :--- | :--- |
-| **L1** | **显式规则 (Local)** | "怎么写代码", "Git 规范", "标准化操作规范", "SOP" | 读取 `docs/rules/`、`docs/router.md` 或 `docs/index.md` |
-| **L2** | **私有记忆 (Memory)** | "深度复盘", "经验萃取", "那个 bug", "以前怎么写的" | 加载 `docs/skills/milvus-toolkit.md` & `docs/retrospectives/index.md` |
-| **L3** | **外部知识 (World)** | "Vue3 文档", "Stripe API", "最新的库用法" | 调用 `Context7` 工具 |
+## 4. 🛠 工具协议
+- **读取**: `run_shell_command (cat)` 绕过沙箱。
+- **写入**: "本地生成 + `mv` 迁移" 法则。
 
 ---
-
-## 📍 状态机路由 (State Machine Routing)
-
-### 🛡️ Phase 0: 治理与安全 (Safety)
-*   **触发**: 提到 "token", "消耗", "省钱", "隐私", "敏感信息", "忽略文件", "Key", "Figma Token" 。
-*   **加载**: `docs/rules/privacy_excludes.md`, `docs/rules/figma_mcp_config.md, docs/rules/token_efficiency.md`
-
-### 🚀 Phase 1: 项目初始化 (Inception)
-*   **触发**: 提到 "新建项目", "脚手架", "init", "new project", "SOP"。
-*   **首要动作**: 优先创建 .agent/ 目录结构；严禁在此阶段加载 vibe_rules.md 等编码规范。
-*   **加载**: docs/tech_stack.md, docs/rules/project_initialization_sop.md
-
-### 💻 Phase 2: 编码与交付 (Implementation)
-*   **触发**: 提到 "写代码", "实现", "重构", "提交", "commit", "复盘"。
-*   **加载**: `docs/rules/vibe_rules.md`, `docs/rules/coding_rules.md`, `docs/rules/workflow_retro.md`, `docs/retrospectives/index.md`, `docs/rules/git_commit_rules.md`
-*   **提交流程**:
-    - 仅提交用户明确允许的文件，排除经验记录类内容（如 `docs/retrospectives/`）
-    - 按 `docs/rules/git_commit_rules.md` 生成提交信息并完成提交
-    - 用户要求时执行推送（默认 `origin/main`）
-
-### 📝 Phase 3: 知识沉淀 (Capture)
-*   **触发**: 提到 "记录", "笔记", "观点", "snippet", "存入大脑", "经验萃取"。
-*   **加载**: `docs/skills/snippet_master.md`, `docs/snippets/`
-
-
-
----
-
-## 🧩 专项技能 (Specialized Skills)
-
-| 技能关键词 | 路由目标 |
-| :--- | :--- |
-| 技能总览 / All Skills | `docs/skills/index.md` |
-| 掘金 / 写文章 / juejin | `docs/skills/juejin-writer.md` |
-| 飞书 / Lark / 团队文档 | `docs/skills/feishu-writer.md` |
-| Logo / 图标 / 图形设计 | `docs/skills/logo-designer.md` |
-| PWA / 离线 / Manifest | `docs/skills/pwa-master.md` |
-| 发版 / Release / 版本号 | `docs/skills/release_master.md` |
-| 深度复盘 / /retro | `docs/skills/auto-retro.md`, `docs/rules/workflow_retro.md` |
-| /think / 本质分析 | `docs/skills/think-skill.md` |
-| Milvus / 向量库 / RAG | `docs/skills/milvus-toolkit.md` |
-| VitePress / 文档初始化 | `docs/skills/vitepress-init.md` |
-
-| 设计 / Design / UI | `docs/skills/frontend-design.md` |
-| Remotion / 视频生成 / 渲染 | `docs/skills/remotion-master.md` |
-| Snippets / 代码片段 | `docs/skills/snippet_master.md` |
-| 人像系统 / Persona Master | `docs/skills/persona-master.md` |
-| Image Gen / 智能绘图 / Smart Gen | `docs/skills/smart-image-generator.md` |
-| Figma / MCP / 设计稿 | `docs/rules/figma_mcp_config.md, docs/rules/token_efficiency.md` |
-| Slack GIF / 动图 / GIF | `docs/skills/slack-gif-creator.md` |
-| Web 测试 / Playwright / E2E | `docs/skills/webapp-testing.md` |
-| 内部沟通 / 邮件 / 纪要 | `docs/skills/internal-comms.md` |
-| 微信公众号 / Wechat / 心语拾光 | `docs/skills/wechat-writer.md` |
-| GitLab / 仓库管理 / CI | `docs/skills/gitlab-manager.md` |
-| Supabase / 后端 / 数据库 | `docs/skills/supabase-master.md` |
-| 生成语音 / 声音生成 / TTS | `docs/skills/voice-generator.md` |
-
----
-*Last Updated: 2026-02-02 (Renamed skill to voice-generator)*
+*Last Updated: 2026-02-06 (Flat Routing Optimization)*

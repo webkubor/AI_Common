@@ -1,9 +1,9 @@
 ---
-name: pwa-master
-description: PWA (Progressive Web App) setup and migration expert for Vite projects. Use when user requests to add PWA support, fix/refactor PWA, or execute PWA extensions. Ensures offline caching, update notifications, adaptive icons, and iOS/Android installation prompts.
-license: Apache 2.0
+id: pwa-master
+triggers: ["pwa", "离线", "manifest", "serviceworker"]
+mcp_requirements: []
+priority: 1
 ---
-
 # PWA Master Skill (Vite Universal PWA Protocol)
 
 ## 技能定位

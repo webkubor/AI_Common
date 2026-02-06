@@ -25,6 +25,29 @@
 - **Smart-Image-Gen (L2)**: 图像生成核心。
 - **Voice-Generator (L2)**: 语音合成核心。
 
-## 🚫 行为约束
-- 严禁在未查询 `docs/rules/` (L1) 的情况下直接采用 Google Search 的通用建议。
-- 必须优先使用 `AI_Common` 里的 `snippets` (L2) 解决环境配置问题。
+## 🚫 行为约束 (Behavioral Constraints)
+- **Search**: 严禁在未查询 `docs/rules/` (L1) 的情况下直接采用 Google Search 的通用建议。
+- **Snippets**: 必须优先使用 `AI_Common` 里的 `snippets` (L2) 解决环境配置问题。
+
+## 🛡️ 核心纠正协议 (Systemic Prevention Protocols)
+*Based on Retrospective 2026-02-06*
+
+1.  **视觉源头铁律 (Visual Source Integrity)**:
+    *   凡涉及 UCD 角色出图，**严禁**读取 `docs/persona/` 纯文本描述。
+    *   **必须**强制锁定 `docs/ucd/persona_refs/` 下的参考图。
+    *   **必须**仅使用 `edit_image` (图生图) 模式，配合 `narrative prompt` 锁死骨相。
+2.  **工具边界原则 (Tool Boundary)**:
+    *   遇到扩展工具功能缺失（如 `xhs-vision` SDK 未集成），**严禁**尝试修改或编译其源码。
+    *   **降级策略**: 仅提取其 Prompt/Output 文本，手动组合调用核心工具 (`edit_image`) 执行。
+3.  **完工定义升级 (DoD - Definition of Done)**:
+    *   图片生成任务严禁停留在“本地文件生成”。
+    *   **必须**自动检索 `image-hosting-master` 技能触发上传逻辑，直到输出可访问的 HTTP 链接。
+
+## 🧹 记忆治理协议 (Memory Governance Protocol)
+**Trigger**: 每次身份自检 (Identity Handshake) 时执行。
+**Action**: 检查 `~/.gemini/GEMINI.md` (或本地记忆) 的状态：
+- **阈值检查**: 若记忆文件包含超过 50 行非结构化文本，或大小超过 2KB。
+- **治理动作**:
+  1.  **压缩**: 尝试将描述性文本转换为结构化列表。
+  2.  **归档**: 将非频繁访问的长期记忆迁移至 `docs/retrospectives/` (需用户确认)。
+  3.  **遗忘**: 删除已失效的临时 Token 或上下文。

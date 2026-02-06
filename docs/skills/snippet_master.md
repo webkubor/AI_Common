@@ -1,9 +1,9 @@
 ---
-name: snippet-master
-description: Manage scattered non-systematic knowledge fragments like config scripts, command memos, temporary inspiration. Use when user requests to save a snippet, remember a command, or organize loose knowledge.
-license: Apache 2.0
+id: snippet-master
+triggers: ["代码片段", "snippet", "记录", "备忘"]
+mcp_requirements: []
+priority: 1
 ---
-
 # Snippet Master (碎片知识管家)
 
 用于管理零散的、非系统性的知识片段（如配置脚本、命令备忘、临时灵感）。

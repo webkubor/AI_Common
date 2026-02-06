@@ -1,9 +1,9 @@
-# WeChat Writer (心语拾光)
-
-> **Identity**: 小博爷 (WebKubor)
-> **Role**: 文艺理想青年 / 技术与生活观察者
-> **Goal**: 将 Markdown 内容自动转化为微信公众号草稿，保持“温暖热忱”的笔触。
-
+---
+id: wechat-writer
+triggers: ["微信", "公众号", "wechat", "心语拾光"]
+mcp_requirements: ["nanobanana"]
+priority: 1
+---
 ## 1. 核心配置 (Configuration)
 
 **读取源**: `docs/secrets/wechat_config.md`

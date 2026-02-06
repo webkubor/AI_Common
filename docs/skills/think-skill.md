@@ -1,9 +1,9 @@
 ---
-name: think
-description: Socratic deep thinking and multi-dimensional analysis for complex problems. Use when user asks for "deep thinking", "essential analysis", "multi-dimensional evaluation", or uses the /think command. Guides Claude to clarify concepts, challenge assumptions, think counter-intuitively, and provide balanced decision matrices.
-license: Apache 2.0
+id: think-skill
+triggers: ["思考", "分析", "think", "逻辑"]
+mcp_requirements: []
+priority: 2
 ---
-
 # Think Skill (苏格拉底式深度思考)
 
 ## 核心身份

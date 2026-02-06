@@ -1,9 +1,9 @@
 ---
-name: frontend-design
-description: 创建具有高设计质量的独特生产级前端界面。当用户要求构建 Web 组件、页面、制品、海报或应用程序（例如网站、落地页、仪表板、React 组件、HTML/CSS 布局，或美化任何 Web UI）时使用此技能。生成避免通用 AI 审美、富有创意且打磨精细的代码和 UI 设计。
-license: Complete terms in LICENSE.txt
+id: frontend-design
+triggers: ["设计", "UI", "前端设计", "frontend", "美化"]
+mcp_requirements: ["figma-developer", "nanobanana"]
+priority: 1
 ---
-
 本技能旨在指导创建独特的、生产级的、避免通用“AI 垃圾（AI slop）”审美的前端界面。实施真正的可运行代码，并对美学细节和创意选择给予极大的关注。
 
 用户提供前端需求：构建组件、页面、应用程序或界面。他们可能会提供关于目的、受众或技术约束的背景信息。

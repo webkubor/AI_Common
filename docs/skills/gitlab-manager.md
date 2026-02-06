@@ -1,3 +1,9 @@
+---
+id: gitlab-manager
+triggers: ["gitlab", "仓库", "流水线", "CI"]
+mcp_requirements: []
+priority: 1
+---
 # GitLab Manager
 
 > **Identity**: GitLab Operations Expert

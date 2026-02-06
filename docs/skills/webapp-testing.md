@@ -1,7 +1,8 @@
 ---
-name: webapp-testing
-description: Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.
-license: Apache 2.0
+id: webapp-testing
+triggers: ["测试", "testing", "playwright", "e2e"]
+mcp_requirements: ["playwright"]
+priority: 1
 ---
 
 # Web Application Testing

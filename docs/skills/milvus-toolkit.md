@@ -1,3 +1,9 @@
+---
+id: milvus-toolkit
+triggers: ["milvus", "向量库", "rag", "知识库"]
+mcp_requirements: []
+priority: 1
+---
 # Milvus Toolkit (本地向量库全能助手)
 
 ## 🎯 技能定位

@@ -1,3 +1,9 @@
+---
+id: remotion-master
+triggers: ["视频", "remotion", "渲染", "video"]
+mcp_requirements: []
+priority: 1
+---
 # Remotion Master (视频自动化专家)
 
 ## 🎯 核心目标

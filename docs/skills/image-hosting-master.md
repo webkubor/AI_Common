@@ -1,3 +1,9 @@
+---
+id: image-hosting-master
+triggers: ["图床", "上传图片", "cdn", "assets"]
+mcp_requirements: []
+priority: 1
+---
 # 图床大师 (Image Hosting Master)
 
 > **核心目标**: 实现跨平台图像资产的“一键分发”。Agent 根据上下文自动选择最优图床，严禁用户手动执行 cURL。

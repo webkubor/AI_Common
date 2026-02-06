@@ -1,9 +1,9 @@
 ---
-name: feishu-writer
-description: Technical documentation expert for Feishu (飞书) team collaboration. Creates structured, logical, and actionable technical documentation for internal teams. Use when user requests to write Feishu docs, create team technical articles, or write internal technical specifications.
-license: Apache 2.0
+id: feishu-writer
+triggers: ["飞书", "Lark", "文档", "feishu"]
+mcp_requirements: []
+priority: 1
 ---
-
 # Feishu Writer Skill (飞书文档助手 - 团队版)
 
 ## 角色定义

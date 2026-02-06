@@ -1,3 +1,9 @@
+---
+id: supabase-master
+triggers: ["supabase", "后端", "数据库", "edge functions"]
+mcp_requirements: []
+priority: 1
+---
 # Supabase Master
 
 > **Identity**: Supabase Backend & Infrastructure Expert
