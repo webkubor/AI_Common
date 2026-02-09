@@ -1,46 +1,47 @@
 /* 
   Candle Cortex Theme - "Warm Technology"
-  Final Static & Integrated Layout Version
+  Final Integrated UI & Layout (Stability First)
 */
 
 :root {
   --vp-c-brand-1: #F59E0B;
-  --vp-c-brand-2: #D97706;
-  --vp-c-brand-3: #B45309;
-  --vp-c-brand-soft: rgba(245, 158, 11, 0.14);
+  --vp-c-brand-2: #fbbf24;
+  --vp-c-brand-3: #D97706;
+  --vp-c-brand-soft: rgba(245, 158, 11, 0.18);
   --vp-c-accent: #F43F5E;
   --vp-c-bg: #FFFFFF;
   --vp-c-bg-soft: #FFFBEB;
   --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(245, 158, 11, 0.2);
+  --glass-border: rgba(245, 158, 11, 0.25);
   --glass-shadow: 0 8px 32px rgba(245, 158, 11, 0.12);
   --vp-font-family-base: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 .dark {
   --vp-c-brand-1: #FBBF24;
-  --vp-c-brand-2: #F59E0B;
-  --vp-c-brand-3: #D97706;
-  --vp-c-brand-soft: rgba(251, 191, 36, 0.14);
+  --vp-c-brand-2: #FCD34D; 
+  --vp-c-brand-3: #F59E0B;
+  --vp-c-brand-soft: rgba(251, 191, 36, 0.2);
   --vp-c-bg: #0B0F1A;
   --vp-c-bg-soft: #161B26; 
-  --glass-bg: rgba(22, 27, 38, 0.7);
-  --glass-border: rgba(251, 191, 36, 0.15);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --glass-bg: rgba(22, 27, 38, 0.75);
+  --glass-border: rgba(251, 191, 36, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   
   background-image: 
-    radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.05) 0px, transparent 50%),
-    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54 48c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM6 48c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM54 6c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM6 6c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4z' fill='%23f59e0b' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+    radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.12) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.08) 0px, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54 48c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM6 48c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM54 6c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM6 6c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4z' fill='%23f59e0b' fill-opacity='0.04' fill-rule='evenodd'/%3E%3C/svg%3E");
   background-attachment: fixed;
 }
 
 /* --- 基础 UI --- */
 a { color: var(--vp-c-brand-1); transition: color 0.2s; }
 .VPButton.brand {
-  background-image: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-2) 100%) !important;
+  background-image: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-3) 100%) !important;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3) !important;
   color: white !important;
-  border: none !important;
+  border: 1px solid var(--vp-c-brand-2) !important;
 }
 
 /* --- 首页图片：静态避让 & 融合 --- */
@@ -52,15 +53,18 @@ a { color: var(--vp-c-brand-1); transition: color 0.2s; }
 @media (min-width: 960px) { .VPHomeHero .image { margin-top: 0; } }
 
 .VPHomeHero .image-container::before {
-  content: ""; position: absolute; width: 150%; height: 150%;
-  background: radial-gradient(circle, var(--vp-c-brand-soft) 0%, transparent 70%);
-  z-index: -1; filter: blur(50px); opacity: 0.5;
+  content: ""; position: absolute; width: 140%; height: 140%;
+  background: radial-gradient(circle, var(--vp-c-brand-soft) 0%, transparent 65%);
+  z-index: -1; filter: blur(50px); opacity: 0.8;
 }
 
 .VPHomeHero .VPImage {
-  border-radius: 40px !important;
+  border-radius: 32px !important;
   border: 1px solid var(--glass-border) !important;
   box-shadow: var(--glass-shadow);
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain;
   -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
@@ -78,23 +82,43 @@ a { color: var(--vp-c-brand-1); transition: color 0.2s; }
   border-top: 1px solid rgba(245, 158, 11, 0.1) !important; border-radius: 0 0 24px 24px !important;
 }
 
-/* --- 快速导航表格：核心修复 --- */
+/* --- 首页标题高亮 --- */
+.VPHome h2 {
+  border-left: 4px solid var(--vp-c-brand-1); padding-left: 16px;
+  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin: 48px 0 24px !important; text-align: left !important;
+}
+
+/* --- 快速导航表格：深度修复 --- */
 .VPHome .vp-doc table {
-  display: table !important; width: 100% !important; border-collapse: separate !important;
-  border-spacing: 0 !important; background: var(--vp-c-bg-soft) !important;
+  display: table !important; width: 100% !important; 
+  border-collapse: separate !important; border-spacing: 0 !important; 
+  background: var(--vp-c-bg-soft) !important;
   border: 1px solid var(--vp-c-brand-soft) !important; border-radius: 12px !important;
   overflow: hidden !important; margin: 32px 0 !important;
 }
 
 .VPHome .vp-doc th {
   background-color: var(--vp-c-brand-soft) !important; color: var(--vp-c-brand-1) !important;
-  padding: 14px 20px !important; text-align: left !important;
+  padding: 16px 24px !important; text-align: left !important; font-weight: 700 !important;
+  border-bottom: 2px solid var(--vp-c-brand-soft) !important;
 }
 
-.VPHome .vp-doc td { padding: 14px 20px !important; border-bottom: 1px solid var(--vp-c-brand-soft) !important; }
-.VPHome .vp-doc tr:last-child td { border-bottom: none !important; }
-.VPHome .vp-doc td a { font-weight: 600 !important; text-decoration: underline !important; }
+.VPHome .vp-doc td { 
+  padding: 16px 24px !important; 
+  border-bottom: 1px solid var(--vp-c-brand-soft) !important;
+  color: var(--vp-c-text-1) !important;
+  vertical-align: middle !important;
+}
 
-/* --- 侧边栏 --- */
+.VPHome .vp-doc tr:last-child td { border-bottom: none !important; }
+
+.VPHome .vp-doc td a { 
+  color: var(--vp-c-brand-1) !important; font-weight: 700 !important; 
+  text-decoration: none !important; border-bottom: 2px solid var(--vp-c-brand-soft) !important;
+}
+
+/* --- 侧边栏激活项 --- */
 .VPSidebarItem.is-active > .item .indicator { background-color: var(--vp-c-brand-1) !important; width: 3px !important; border-radius: 4px; }
 .VPSidebarItem.is-active > .item .text { color: var(--vp-c-brand-1) !important; font-weight: 600; }
