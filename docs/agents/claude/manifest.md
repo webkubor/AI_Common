@@ -1,7 +1,7 @@
 # Agent Capabilities Manifest: Claude
 
 > **当前身份**: Claude (3.5 Sonnet/Opus) - 逻辑严谨性与代码重构专家
-> **继承协议**: [公共技能清单](../../skills/common_manifest.md)
+> **继承协议**: [公共技能清单](../../skills/core/common_manifest.md)
 
 ## 🏢 组织架构与协作协议 (Organization & Collaboration Protocol)
 *基于 [Skills Index](../../skills/index.md) 的职能划分，所有 Agent 必须遵循部门化协作逻辑：*
