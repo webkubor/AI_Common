@@ -1,138 +1,138 @@
+/* 
+  Candle Cortex Theme 
+  Theme Color: Amber/Orange (Warmth, Life, Intelligence)
+*/
+
 :root {
-  /* 核心品牌色：烛光金/活力橙 - 代表生命力、希望与指引 */
-  --vp-c-brand-1: #F59E0B; /* Amber 500 */
-  --vp-c-brand-2: #D97706; /* Amber 600 */
-  --vp-c-brand-3: #B45309; /* Amber 700 */
-  --vp-c-brand-soft: rgba(245, 158, 11, 0.12);
+  /* 核心品牌色 - Amber 500/600/700 */
+  --vp-c-brand-1: #F59E0B;
+  --vp-c-brand-2: #D97706;
+  --vp-c-brand-3: #B45309;
+  --vp-c-brand-soft: rgba(245, 158, 11, 0.14);
+  
+  /* 强调色 - Rose 500 (用于渐变末端) */
+  --vp-c-accent: #F43F5E;
 
-  /* 字体系统：现代、清晰 */
-  --vp-font-family-base: "Inter", "PingFang SC", "Noto Sans SC", system-ui, -apple-system, sans-serif;
-  --vp-font-family-mono: "JetBrains Mono", "Fira Code", monospace;
+  /* 背景色覆盖 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, var(--vp-c-brand-1) 30%, var(--vp-c-accent));
 
-  /* 玻璃拟态基础变量 */
-  --glass-bg: rgba(255, 255, 255, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-  --glass-blur: 24px;
+  /* 字体优化 */
+  --vp-font-family-base: "Inter", system-ui, -apple-system, sans-serif;
+  --vp-font-family-mono: "JetBrains Mono", monospace;
+  
+  /* 玻璃拟态参数 */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 }
 
-/* 暗色模式 - 深邃宇宙中的烛光 */
 .dark {
-  --vp-c-brand-1: #FCD34D; /* Amber 300 - 更亮，适合暗底 */
-  --vp-c-brand-2: #F59E0B; /* Amber 500 */
-  --vp-c-brand-3: #D97706; /* Amber 600 */
-  --vp-c-brand-soft: rgba(252, 211, 77, 0.12);
+  /* 暗色模式品牌色 - Amber 400/500/600 (更亮) */
+  --vp-c-brand-1: #FBBF24;
+  --vp-c-brand-2: #F59E0B;
+  --vp-c-brand-3: #D97706;
+  --vp-c-brand-soft: rgba(251, 191, 36, 0.14);
 
-  --glass-bg: rgba(15, 23, 42, 0.6); /* Slate 900 alpha */
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  --glass-bg: rgba(30, 41, 59, 0.7); /* Slate 800 */
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-/* 全局布局背景 - 动态流光 */
+/* =========================================
+   全局样式覆盖
+   ========================================= */
+
+/* 链接颜色 */
+a {
+  color: var(--vp-c-brand-1);
+  transition: color 0.2s;
+}
+a:hover {
+  color: var(--vp-c-brand-2);
+}
+
+/* 按钮样式重写 */
+.VPButton.brand {
+  background-color: var(--vp-c-brand-1) !important;
+  background-image: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-2) 100%);
+  border-color: transparent !important;
+  color: white !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+}
+.VPButton.brand:hover {
+  background-image: linear-gradient(135deg, var(--vp-c-brand-2) 0%, var(--vp-c-brand-3) 100%);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+  transform: translateY(-1px);
+}
+
+/* =========================================
+   首页 (Home) 特有样式
+   ========================================= */
+
+/* 首页背景：温暖的光晕 */
 .Layout {
-  background-color: #f8fafc;
+  background-color: var(--vp-c-bg);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
-  transition: background 0.5s ease;
+    radial-gradient(circle at 15% 15%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(244, 63, 94, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 50% 90%, rgba(217, 119, 6, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
 }
 
 .dark .Layout {
-  background-color: #020617; /* Slate 950 */
   background-image: 
-    radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+    radial-gradient(circle at 15% 15%, rgba(251, 191, 36, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(244, 63, 94, 0.08) 0%, transparent 40%);
 }
 
-/* 首页 Hero 区域优化 */
-.VPHomeHero {
-  position: relative;
-  overflow: visible;
-}
-
-/* 标题渐变效果 - 生命力 */
+/* Hero 标题渐变 */
 .VPHomeHero .name {
-  background: linear-gradient(135deg, #F59E0B 0%, #F43F5E 100%);
+  background: -webkit-linear-gradient(120deg, var(--vp-c-brand-1) 30%, var(--vp-c-accent));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.3));
 }
 
-.dark .VPHomeHero .name {
-  background: linear-gradient(135deg, #FCD34D 0%, #F43F5E 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  filter: drop-shadow(0 4px 12px rgba(252, 211, 77, 0.4));
-}
-
-/* 功能卡片优化 - 悬浮发光 */
+/* 特性卡片 (Feature Cards) */
 .VPHomeFeature {
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-.VPHomeFeature:hover {
-  transform: translateY(-4px);
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 12px 40px -12px var(--vp-c-brand-soft);
-}
-
-.VPHome .VPHomeFeature,
-.VPContent .vp-doc {
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  border-radius: 16px;
-}
-
-/* 导航栏透明化处理 */
-.VPNavBar {
-  background-color: transparent !important;
+  background-color: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 12px !important;
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.VPNavBar.has-sidebar .content {
-  background-color: var(--glass-bg) !important;
-  backdrop-filter: blur(var(--glass-blur));
-}
-
-/* 侧边栏样式 */
-.VPSidebar {
-  background-color: var(--glass-bg) !important;
-  backdrop-filter: blur(var(--glass-blur));
-  border-right: 1px solid var(--glass-border);
-}
-
-/* 按钮样式强化 */
-.VPButton.brand {
-  background: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-2) 100%);
-  border: none;
-  box-shadow: 0 4px 12px var(--vp-c-brand-soft);
   transition: all 0.3s ease;
 }
 
-.VPButton.brand:hover {
+.VPHomeFeature:hover {
+  border-color: var(--vp-c-brand-1) !important;
+  box-shadow: 0 8px 24px var(--vp-c-brand-soft);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px var(--vp-c-brand-soft);
-  filter: brightness(1.1);
 }
 
-/* 细节调整 */
-.VPHome .VPHomeHero {
-  padding-top: 120px !important;
-  padding-bottom: 80px !important;
+/* 卡片图标背景 */
+.VPHomeFeature .icon {
+  background-color: var(--vp-c-brand-soft) !important;
+  color: var(--vp-c-brand-1) !important;
+  border-radius: 8px;
 }
 
-@media (min-width: 640px) {
-  .VPHome .VPHomeHero {
-    padding-top: 160px !important;
-    padding-bottom: 100px !important;
-  }
+/* =========================================
+   文档页 (Doc) 样式
+   ========================================= */
+
+/* 侧边栏当前激活项 */
+.VPSidebarItem.is-active > .item > .link,
+.VPSidebarItem.is-active > .item > .text {
+  color: var(--vp-c-brand-1) !important;
 }
+.VPSidebarItem.is-active > .item {
+  border-left-color: var(--vp-c-brand-1) !important;
+}
+
+/* 之前/之后 页脚链接 */
+.VPDocFooter .prev-next .link:hover .title {
+  color: var(--vp-c-brand-1) !important;
+}
+
+/* 修正 Logo 颜色 (如果是 SVG path 可以控制的话，但我们用了 img 标签，主要靠 SVG 内部颜色) */
+/* 这里不需要 CSS 控制 SVG 颜色，因为 SVG 本身已经改了 */

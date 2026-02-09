@@ -1,46 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <!-- 莫兰迪渐变：低饱和度、高级感 -->
-    <linearGradient id="morandiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#7C9EB2;stop-opacity:1" /> <!-- 莫兰迪蓝 -->
-      <stop offset="50%" style="stop-color:#9D8BA3;stop-opacity:1" /> <!-- 莫兰迪紫 -->
-      <stop offset="100%" style="stop-color:#C4A484;stop-opacity:1" /> <!-- 莫兰迪棕 -->
+    <!-- 烛光渐变：生命力与温暖 -->
+    <linearGradient id="candleGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" /> <!-- Amber 500 -->
+      <stop offset="50%" style="stop-color:#F97316;stop-opacity:1" /> <!-- Orange 500 -->
+      <stop offset="100%" style="stop-color:#F43F5E;stop-opacity:1" /> <!-- Rose 500 -->
     </linearGradient>
 
-    <!-- 柔和阴影 -->
-    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="12" result="blur"/>
-      <feOffset in="blur" dx="8" dy="12" result="offsetBlur"/>
-      <feComponentTransfer>
-        <feFuncA type="linear" slope="0.15"/>
-      </feComponentTransfer>
+    <!-- 内部辉光 -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="16" result="coloredBlur"/>
       <feMerge>
-        <feMergeNode in="offsetBlur"/>
+        <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
 
-  <title>AI Common Logo</title>
-  <desc>Abstract geometric "AI" logo with Morandi gradient</desc>
+  <title>Candle Cortex Logo</title>
+  
+  <!-- 外层光晕 (装饰) -->
+  <circle cx="256" cy="256" r="240" fill="url(#candleGradient)" opacity="0.05" />
+  <circle cx="256" cy="256" r="180" fill="url(#candleGradient)" opacity="0.1" />
 
-  <!-- 整体倾斜 15°，增加动感 -->
-  <g transform="rotate(15 256 256)" filter="url(#softShadow)">
-    <!-- "A" 字母：用几何切割 -->
-    <!-- 主三角形 -->
-    <path d="M180 380 L256 120 L332 380 Z" fill="url(#morandiGradient)" />
-
-    <!-- 负空间切割：形成 "A" 的横杠 -->
-    <path d="M210 280 L302 280 L256 160 Z" fill="#F5F5F0" />
-
-    <!-- "I" 字母：简洁的垂直线条，不对称布局 -->
-    <!-- 放在右侧，与 "A" 形成视觉平衡 -->
-    <rect x="360" y="140" width="32" height="240" rx="16" fill="url(#morandiGradient)" />
-
-    <!-- 装饰性几何元素：增加层次感 -->
-    <!-- 小圆点：象征知识节点 -->
-    <circle cx="256" cy="120" r="12" fill="#7C9EB2" opacity="0.8" />
-    <circle cx="180" cy="380" r="8" fill="#9D8BA3" opacity="0.6" />
-    <circle cx="332" cy="380" r="8" fill="#C4A484" opacity="0.6" />
+  <!-- 核心图形：抽象火焰/Cortex -->
+  <g transform="translate(256 256) scale(0.85) translate(-256 -256)" filter="url(#glow)">
+    <!-- 左侧火焰：象征 "Candle" -->
+    <path d="M256 460 C150 460 100 350 100 256 C100 140 256 52 256 52 C256 52 412 140 412 256 C412 350 362 460 256 460 Z" 
+          fill="url(#candleGradient)" />
+    
+    <!-- 内部负空间：象征 "Cortex" 神经网络/灯芯 -->
+    <path d="M256 380 C220 380 200 320 200 280 C200 200 256 160 256 160 C256 160 312 200 312 280 C312 320 292 380 256 380 Z" 
+          fill="#FFFFFF" fill-opacity="0.9" />
+          
+    <!-- 顶部火苗核心 -->
+    <circle cx="256" cy="230" r="24" fill="url(#candleGradient)" />
   </g>
 </svg>
