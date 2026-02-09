@@ -37,3 +37,11 @@ docs/.vitepress/cache/
 docs/snippets/git_repos_inventory.md
 docs/scripts/
 docs/operation-logs/
+
+# Storyboard Cast Privacy (角色私有配置与人脸图)
+docs/skills/visual/cinematic-storyboard/cast/*.json
+!docs/skills/visual/cinematic-storyboard/cast/character.template.json
+docs/skills/visual/cinematic-storyboard/cast_refs/*
+!docs/skills/visual/cinematic-storyboard/cast_refs/README.md
+docs/skills/visual/cinematic-storyboard/assets/*
+
