@@ -35,7 +35,6 @@
 - [智能绘图引擎](./visual/smart-image-generator.md) - **统一绘图入口**。
 - [电影级分镜](./visual/cinematic-storyboard/SKILL.md) - 视觉叙事方案。
 - [Frontend Design](./visual/frontend-design.md) - UI 设计还原。
-- [Remotion Master](./visual/remotion_master.md) - 视频代码化。
 
 ## 📚 知识管理部 (Knowledge)
 负责历史教训复盘与碎片资产管理。

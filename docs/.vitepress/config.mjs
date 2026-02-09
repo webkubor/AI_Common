@@ -109,7 +109,6 @@ export default defineConfig({
               { text: "🛠️ 智能绘图引擎", link: "/skills/visual/smart-image-generator" },
               { text: "🛠️ 电影级分镜", link: "/skills/visual/cinematic-storyboard/SKILL" },
               { text: "🛠️ 前端 UI/UX 设计", link: "/skills/visual/frontend-design" },
-              { text: "🛠️ Remotion 视频创作", link: "/skills/visual/remotion_master" },
             ]
           },
           {

@@ -5,7 +5,6 @@
 ## 📋 片段列表
 
 - [aliases.md](./aliases.md) - 命令别名配置
-- [git_repos_inventory.md](./git_repos_inventory.md) - 代码仓库清单 (Inventory)
 - [ky-flyio-compat-wrapper.md](./ky-flyio-compat-wrapper.md) - Ky 与 Fly.io 兼容层封装
 - [local_infrastructure.md](./local_infrastructure.md) - 本地基础设施配置
 - [nodejs_mjs_usage.md](./nodejs_mjs_usage.md) - Node.js ES Modules 使用指南
