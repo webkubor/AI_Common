@@ -19,6 +19,7 @@ export default defineConfig({
       { text: "路由总览", link: "/router" },
       { text: "规则中心", link: "/rules/" },
       { text: "技能库", link: "/skills/" },
+      { text: "关于我", link: "/about" },
     ],
     sidebar: [
       {
@@ -26,7 +27,6 @@ export default defineConfig({
         items: [
           { text: "首页", link: "/" },
           { text: "路由总览", link: "/router" },
-          { text: "关于小烛 (About)", link: "/about" },
           { text: "技术栈偏好", link: "/tech_stack" },
           { text: "代码片段", link: "/snippets/" },
         ],
@@ -132,6 +132,7 @@ export default defineConfig({
             collapsed: true,
             items: [
               { text: "总览", link: "/retrospectives/arch/" },
+              { text: "SDK 架构转型", link: "/retrospectives/2026-02-06-chatbot-sdk-transformation" },
               { text: "Blob 性能优化", link: "/retrospectives/arch/blob-performance" },
               { text: "Schema 归一化", link: "/retrospectives/arch/schema-unification" },
               { text: "SSOT 资产管理", link: "/retrospectives/arch/ssot-assets" },
