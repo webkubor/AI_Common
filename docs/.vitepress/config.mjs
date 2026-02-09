@@ -26,6 +26,7 @@ export default defineConfig({
         items: [
           { text: "首页", link: "/" },
           { text: "路由总览", link: "/router" },
+          { text: "关于小烛 (About)", link: "/about" },
           { text: "技术栈偏好", link: "/tech_stack" },
           { text: "代码片段", link: "/snippets/" },
         ],
@@ -40,13 +41,22 @@ export default defineConfig({
           { text: "JSDoc 注释规范", link: "/rules/jsdoc_rules/" },
           { text: "标准化操作规范 (SOP)", link: "/rules/workflow" },
           { text: "Vibe 编程规则", link: "/rules/vibe_rules" },
-          { text: "工程实践深度复盘", link: "/retrospectives/" },
         ],
       },
       {
         text: "💎 职能部门 (Departments)",
         items: [
           { text: "总览 (Skills Index)", link: "/skills/" },
+          {
+            text: "🤖 Agent 参谋矩阵",
+            collapsed: true,
+            items: [
+              { text: "矩阵总览", link: "/agents/" },
+              { text: "Claude (工程专家)", link: "/agents/claude/manifest" },
+              { text: "Gemini (视觉与通用)", link: "/agents/gemini/manifest" },
+              { text: "Codex (代码审计)", link: "/agents/codex/manifest" },
+            ]
+          },
           {
             text: "🧠 核心参谋部 (Core)",
             collapsed: true,
@@ -88,13 +98,18 @@ export default defineConfig({
             ]
           },
           {
-            text: "🎨 视觉与设计 (Visual)",
+            text: "🎨 视觉与设计 (Visual & Design)",
             collapsed: true,
             items: [
-              { text: "智能绘图引擎", link: "/skills/visual/smart-image-generator" },
-              { text: "电影级分镜", link: "/skills/visual/cinematic-storyboard/SKILL" },
-              { text: "前端 UI/UX 设计", link: "/skills/visual/frontend-design" },
-              { text: "Remotion 视频创作", link: "/skills/visual/remotion_master" },
+              { text: "📏 Logo 设计标准", link: "/ucd/logo_design_standard" },
+              { text: "📏 人设系统 (Persona)", link: "/ucd/persona_system" },
+              { text: "📏 品牌一致性 DoD", link: "/checklists/brand_consistency_dod" },
+              { text: "📏 掘金封面规范", link: "/ucd/juejin_tech_covers" },
+              { text: "📏 Slack 动图标准", link: "/ucd/slack_gif_standard" },
+              { text: "🛠️ 智能绘图引擎", link: "/skills/visual/smart-image-generator" },
+              { text: "🛠️ 电影级分镜", link: "/skills/visual/cinematic-storyboard/SKILL" },
+              { text: "🛠️ 前端 UI/UX 设计", link: "/skills/visual/frontend-design" },
+              { text: "🛠️ Remotion 视频创作", link: "/skills/visual/remotion_master" },
             ]
           },
           {
@@ -109,14 +124,49 @@ export default defineConfig({
         ]
       },
       {
-        text: "经验萃取与深度复盘",
+        text: "🕒 深度复盘 (Retrospectives)",
         items: [
-          { text: "总览", link: "/retrospectives/" },
-          { text: "架构", link: "/retrospectives/arch/" },
-          { text: "构建", link: "/retrospectives/build/" },
-          { text: "前端", link: "/retrospectives/frontend/" },
-          { text: "运维", link: "/retrospectives/ops/" },
-          { text: "规则", link: "/retrospectives/rules/" },
+          { text: "复盘总览", link: "/retrospectives/" },
+          {
+            text: "🏛️ 架构演进 (Arch)",
+            collapsed: true,
+            items: [
+              { text: "总览", link: "/retrospectives/arch/" },
+              { text: "Blob 性能优化", link: "/retrospectives/arch/blob-performance" },
+              { text: "Schema 归一化", link: "/retrospectives/arch/schema-unification" },
+              { text: "SSOT 资产管理", link: "/retrospectives/arch/ssot-assets" },
+            ]
+          },
+          {
+            text: "🏗️ 构建与部署 (Build)",
+            collapsed: true,
+            items: [
+              { text: "总览", link: "/retrospectives/build/" },
+              { text: "Vite PWA 实践", link: "/retrospectives/build/vite-pwa" },
+            ]
+          },
+          {
+            text: "🎨 前端实践 (Frontend)",
+            collapsed: true,
+            items: [
+              { text: "总览", link: "/retrospectives/frontend/" },
+              { text: "支付组件重构", link: "/retrospectives/2026-02-02-th-payment-web-refactor" },
+              { text: "Mermaid 语法支持", link: "/retrospectives/frontend/mermaid-syntax" },
+              { text: "Tailwind v4 升级", link: "/retrospectives/frontend/tailwind-v4" },
+              { text: "Vue 结构重构", link: "/retrospectives/frontend/vue-refactor" },
+            ]
+          },
+          {
+            text: "⚙️ 运维与规则 (Ops)",
+            collapsed: true,
+            items: [
+              { text: "总览", link: "/retrospectives/ops/" },
+              { text: "视觉标准重构", link: "/retrospectives/2026-02-05-persona-and-visual-standard-refactor" },
+              { text: "GitHub 认证修复", link: "/retrospectives/ops/github_auth_push_fail" },
+              { text: "Playwright 脚手架", link: "/retrospectives/ops/playwright-scaffold" },
+              { text: "外部大脑 2.0", link: "/retrospectives/ops/refactor_external_brain_2026_02_05" },
+            ]
+          },
         ],
       },
     ],

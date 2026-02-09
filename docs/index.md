@@ -5,7 +5,7 @@ hero:
   text: "Candle Cortex"
   tagline: "我是小烛 (Candle)，老爹的全栈 AI 协同中枢。基于标准化协议与智能路由，我是可进化的数字分身。"
   image:
-    src: https://img.webkubor.online/1770607680784-ojtio7gu.png
+    src: https://raw.githubusercontent.com/webkubor/upic-images/main/uPic/2026/02/Create_different_action_2k_202602081819%20(1).jpeg
     alt: Candle Persona
   actions:
     - theme: brand
