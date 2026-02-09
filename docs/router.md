@@ -1,9 +1,9 @@
 # AI Context Index & Router (Universal Protocol)
 
-> **⚠️ 核心指令**: 访问 Exocortex，称呼用户为 **“老爹”**，默认 **中文**。
+> **⚠️ 核心指令**: 访问 Exocortex，称呼用户为 **“老爹”** ，默认 **中文**。
 
 ## 1. 🤖 身份与自检 (Identity & Audit)
-- **Gemini Manifest**: `docs/agents/gemini/manifest.md` (包含记忆治理协议)
+- **Gemini Manifest**: `docs/agents/gemini/manifest.md` (包含组织架构与协作协议)
 - **冷启动**: 1.确定身份 -> 2.继承能力 -> 3.确认 MCP -> 4.记忆审计。
 
 ## 2. 🔑 凭证索引 (Secrets Index)
@@ -18,12 +18,13 @@
 | **编码/Git** | `rules/vibe_rules.md`, `rules/git_commit_rules.md` | 加载规范 |
 | **GitHub/推送** | `rules/github_ops_sop.md` | 执行认证与推送流程 |
 | **复盘/经验** | `retrospectives/index.md` | 加载历史教训 |
-| **小红书/运营** | `skills/account_ops/xhs.md` | 执行多账号自动化运营与互动 |
-| **技能/插件** | `skills/index.md` 或 `ls skills/` | 获取专项能力 |
+| **写文章/文案** | `skills/writers/` | 加载写作助手 (Writers) |
+| **发布/账号运营** | `skills/ops/` | 加载运营助手 (Ops) |
+| **技能/插件** | `skills/index.md` | 获取全量职能架构 |
 
 ## 4. 🛠 工具协议
 - **读取**: `run_shell_command (cat)` 绕过沙箱。
 - **写入**: "本地生成 + `mv` 迁移" 法则。
 
 ---
-*Last Updated: 2026-02-07 (Index Fixed by Gemini)*
+*Last Updated: 2026-02-09 (Dept Restructure by Gemini)*

@@ -1,118 +1,97 @@
 <div align="center">
-  <img src="docs/public/logo.svg" width="180" height="180" alt="AI Common Logo">
+  <img src="docs/public/logo.svg" width="140" height="140" alt="AI Common Logo">
   <h1>AI Common</h1>
-  <p><strong>Your Exocortex for AI Collaboration</strong></p>
-  <p>你的外部大脑 · 统一上下文协议 · 混合 RAG 架构</p>
-
-  [![Deploy VitePress site to Pages](https://github.com/webkubor/AI_Common/actions/workflows/deploy.yml/badge.svg)](https://github.com/webkubor/AI_Common/actions/workflows/deploy.yml)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![VitePress](https://img.shields.io/badge/VitePress-1.6.4-646cff.svg)](https://vitepress.dev/)
-  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+  <p><strong>External Brain Infrastructure for AI Collaboration</strong></p>
+  <p>统一规则 · 可演进知识 · 多 Agent 协同</p>
 
   <p>
-    <a href="https://webkubor.github.io/AI_Common/">📚 在线文档</a> •
-    <a href="#-快速开始">🚀 快速开始</a> •
-    <a href="#-核心架构">🏗 核心架构</a> •
-    <a href="https://webkubor.github.io/milvus-tools/">🛠 向量工具</a>
+    <a href="https://webkubor.github.io/AI_Common/"><strong>在线文档</strong></a>
+    ·
+    <a href="#快速开始">快速开始</a>
+    ·
+    <a href="#架构说明">架构说明</a>
+    ·
+    <a href="#仓库边界">仓库边界</a>
+  </p>
+
+  <p>
+    <a href="https://github.com/webkubor/AI_Common/actions/workflows/deploy.yml"><img alt="Deploy" src="https://github.com/webkubor/AI_Common/actions/workflows/deploy.yml/badge.svg"></a>
+    <a href="https://vitepress.dev/"><img alt="VitePress" src="https://img.shields.io/badge/VitePress-1.6.4-646cff.svg"></a>
+    <a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
   </p>
 </div>
 
----
+## 项目定位
+AI Common 是一个面向 AI 工程协作的上下文基础设施仓库。它将规则、技能、复盘与知识路由组织为可维护的文档系统，帮助 Gemini、Codex、Claude、Cursor 等 Agent 在同一上下文协议下协同工作。
 
-## 📖 简介 (Introduction)
+对外站点入口：
+- `https://webkubor.github.io/AI_Common/`
 
-**AI Common** 是一个标准化的 **AI 上下文工程 (Context Engineering)** 基建仓库。它不仅仅是一个文档站点，更是连接人类意图与 AI 能力的桥梁。
+## 核心能力
+- 统一路由：以 `docs/router.md` 作为规则与知识入口。
+- 规则中心：集中维护编码规范、提交规范、协作流程。
+- 技能体系：按职能模块组织可复用技能文档。
+- 复盘沉淀：把架构、构建、前端、运维经验结构化沉淀。
+- 文档化交付：基于 VitePress 构建并发布到 GitHub Pages。
 
-通过定义一套统一的、分层的、隐私安全的**长期记忆协议**，它让 Gemini, Codex, Cursor, Claude 等不同 AI Agent 能够共享同一个"大脑"，实现跨平台、跨模型的知识复用与持续进化。
+## 架构说明
+项目采用分层上下文分发模型：
+- L1（显式规则）：`docs/router.md`、`docs/rules/`
+- L2（本地私有记忆）：本地 snippets/密钥/私有复盘（不对外）
+- L3（外部知识源）：官方文档与检索系统（如 Context7）
 
-> **"One Context to Rule Them All"**
+设计目标：在上下文质量、检索效率和隐私边界之间取得稳定平衡。
 
----
+## 仓库边界
+为保证对外仓库可公开、可审计、可复用，本仓库遵循以下边界：
+- 对外公开：通用规则、技能框架、公开复盘方法与文档结构。
+- 本地私有：业务敏感信息、密钥、内部操作日志、个人化记忆库。
+- 原则：内部日志与敏感上下文不进入对外发布站点。
 
-## 🏗 核心架构 (The Hybrid RAG)
-
-本仓库采用 **L1-L3 三层分发体系**，在 Token 效率与隐私安全之间取得完美平衡：
-
-```mermaid
-graph TD
-    User[用户意图] --> Router[docs/router.md]
-    
-    Router -->|L1: 显式规则| Rules[规则中心]
-    Router -->|L2: 私有记忆| Local[本地 RAG / Snippets]
-    Router -->|L3: 外部知识| Web[Context7 / 官方文档]
-    
-    Rules --> AI[AI Agent]
-    Local --> AI
-    Web --> AI
-    
-    style Router fill:#f9f,stroke:#333,stroke-width:2px
-    style AI fill:#bbf,stroke:#333,stroke-width:2px
+## 快速开始
+### 1) 安装依赖
+```bash
+pnpm install
 ```
 
-| 层级 | 名称 | 载体 | 核心使命 | 典型内容 |
-| :--- | :--- | :--- | :--- | :--- |
-| **L1** | **显式规则** (Explicit) | `docs/router.md` / `docs/rules/` | **基准 (Baseline)** | 路由地图、代码规范、Git 协议 |
-| **L2** | **私有内脑** (Local RAG) | Milvus / `snippets/` | **经验 (Experience)** | 历史 Bug 复盘、私有 Token、业务代码 |
-| **L3** | **官方外脑** (Official RAG) | Context7 | **知识 (Knowledge)** | 腾讯云 API 文档、框架手册 |
+### 2) 本地开发
+```bash
+pnpm dev
+```
 
-### 🔒 隐私设计
+### 3) 构建文档
+```bash
+pnpm docs:build
+```
 
-*   **Git 追踪**：仅包含通用的 L1 规则与方法论文档。
-*   **本地留存**：L2 私有数据（`retrospective.md`, `snippets/`, `env_profile.md`）通过 `.gitignore` 严格屏蔽，物理隔离在本地机器。
+### 4) 预览构建结果
+```bash
+pnpm docs:preview
+```
 
----
-
-## ✨ 核心特性 (Features)
-
-- 🧠 **统一路由 (Unified Router)**: AI 自动识别意图，按需加载最相关的规则和技能。
-- 📚 **规则中心 (Rule Center)**: 编码规范、Git 提交、工作流程等规则集中管理。
-- 🛠️ **插件化扩展 (Extensions)**: 写作、设计、RAG、自动化等能力即插即用。
-- 📝 **自动复盘 (Auto Retro)**: 架构、构建、前端、运维等经验持续积累，自动 GC。
-- 🎨 **设计系统 (Design System)**: 莫兰迪色系、极简几何风格、双模态设计。
-
----
-
-## 🚀 快速开始 (Quick Start)
-
-### 1. 接入编辑器
-- **Zed**: 项目已内置 `.zedrules`，打开即可自动加载 AI 规则。
-- **Cursor/VSCode**: 将 `docs/router.md` 添加到项目的 Rules 或 Context 中。
-
-### 2. 命令行 AI 接入
-在 CLI 中输入 `/start` 或直接提问，AI 将自动读取本仓库的 `docs/router.md` 并加载路由。
-
-### 3. 碎片知识记录
-- **存**: "记一下 GitHub Token" -> 存入 `docs/secrets/github_token.md` (私有)。
-- **查**: "我的 Token 是多少？" -> AI 检索私有库并回答。
-
----
-
-## 📂 目录结构
-
+## 目录结构
 ```text
 AI_Common/
-├── docs/                   # 📚 VitePress 文档根目录
-│   ├── .vitepress/         # ⚙️ 站点配置
-│   ├── extensions/         # 🧩 扩展能力 (Skills)
-│   ├── rules/              # 📝 规则中心 (Rules)
-│   ├── retrospectives/     # 🧠 复盘经验 (Memory)
-│   ├── snippets/           # 💡 代码片段 (Fragments)
-│   ├── public/             # 🖼 静态资源
-│   ├── index.md            # 🏠 站点首页
-│   └── router.md           # 🤖 路由入口 (单一真理来源)
-├── scripts/                # 🧰 工具脚本
-└── .zedrules               # 📝 Zed 编辑器规则
+├── docs/
+│   ├── .vitepress/          # VitePress 配置
+│   ├── agents/              # Agent 清单与能力描述
+│   ├── rules/               # 规则中心
+│   ├── skills/              # 技能库
+│   ├── retrospectives/      # 复盘沉淀
+│   ├── snippets/            # 通用片段索引
+│   ├── public/              # 静态资源
+│   ├── index.md             # 站点首页
+│   └── router.md            # 路由入口
+├── .zedrules                # Zed 规则配置
+├── package.json
+└── README.md
 ```
 
----
+## 贡献说明
+欢迎通过 Issue / PR 改进规则、技能和文档结构。建议优先提交：
+- 可复用的规则抽象
+- 有明确收益的复盘条目
+- 可验证的文档链接与构建修复
 
-## 🤝 贡献 (Contributing)
-
-欢迎提交 Pull Request 来丰富这个通用大脑！无论是新的规则、更好的技能插件，还是架构上的改进，都非常欢迎。
-
----
-
-<div align="center">
-  <p>Maintained by <a href="https://github.com/webkubor">@webkubor</a></p>
-  <p>Made with ❤️ and AI</p>
-</div>
+## License
+MIT
