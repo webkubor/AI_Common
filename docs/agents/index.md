@@ -13,4 +13,4 @@
 - 核心配置与能力清单应记录在各自的 README.md 中。
 
 ## 📅 操作日志 (Operation Logs)
-- [2026-01-30](/operation-logs/2026-01-30) - Qwen3-TTS 环境搭建 (Gemini)
+- 操作日志仅保留在内部环境，不在对外仓库公开。
