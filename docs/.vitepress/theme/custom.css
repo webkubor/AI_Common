@@ -35,13 +35,20 @@
   --vp-c-brand-3: #D97706;
   --vp-c-brand-soft: rgba(251, 191, 36, 0.14);
 
-  --vp-c-bg: #0F172A;      /* Slate 900 */
-  --vp-c-bg-soft: #1E293B; /* Slate 800 */
-  --vp-c-bg-mute: #334155; /* Slate 700 */
+  --vp-c-bg: #0B0F1A;      /* 更深邃的底色 */
+  --vp-c-bg-soft: #161B26; 
+  --vp-c-bg-mute: #1F2937;
 
-  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-bg: rgba(22, 27, 38, 0.7);
   --glass-border: rgba(251, 191, 36, 0.15);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  
+  /* 注入背景层次感：弥散光斑 + 噪点网格 */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.05) 0px, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54 48c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM6 48c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM54 6c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM6 6c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4z' fill='%23f59e0b' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-attachment: fixed;
 }
 
 /* =========================================
@@ -135,11 +142,149 @@ a:hover {
 }
 
 /* =========================================
-   细节修正
+   首页 Hero 图片融合处理 (深度重构)
    ========================================= */
 
-/* 搜索框焦点 */
-.DocSearch-Input:focus {
+.VPHomeHero .image {
+  overflow: visible !important; /* 允许光晕溢出 */
+}
+
+.VPHomeHero .image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+/* 背景全能琥珀氛围光 */
+.VPHomeHero .image-container::before {
+  content: "";
+  position: absolute;
+  width: 180%; /* 扩大光晕 */
+  height: 180%;
+  background: radial-gradient(circle, var(--vp-c-brand-soft) 0%, transparent 70%);
+  z-index: -1;
+  filter: blur(60px);
+  animation: breathe 10s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+.VPHomeHero .VPImage {
+  border-radius: 40px !important; /* 更圆润 */
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: 
+    var(--glass-shadow),
+    0 0 40px rgba(245, 158, 11, 0.1);
+  backdrop-filter: blur(4px);
+  width: 100% !important; /* 解除限制，填满容器 */
+  height: auto !important;
+  max-width: 600px !important; /* 仍然给一个合理的 PC 端最大宽度防止溢出屏幕 */
+  object-fit: contain;
+  
+  /* 核心融合魔法：底部羽化过渡 */
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.VPHomeHero .VPImage:hover {
+  transform: scale(1.05) translateY(-10px) rotate(1deg); /* 增加一点旋转灵性 */
   border-color: var(--vp-c-brand-1) !important;
-  box-shadow: 0 0 0 2px var(--vp-c-brand-soft) !important;
+  box-shadow: 0 30px 60px rgba(245, 158, 11, 0.3) !important;
+  -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.15); }
+}
+
+/* =========================================
+   首页整体布局重构：卡片化与连续性
+   ========================================= */
+
+/* 1. 正文内容容器卡片化 */
+.VPHome .vp-doc {
+  max-width: 1152px !important; /* 与 Hero 对齐 */
+  margin: 40px auto !important;
+  padding: 40px 60px !important;
+  
+  /* 统一玻璃容器样式 */
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+}
+
+/* 2. 移除正文中生硬的分割线，改用柔和间距 */
+.VPHome .vp-doc hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+  margin: 60px 0;
+}
+
+/* 3. 组织架构 Grid 优化 */
+.dept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.dept-grid h3 {
+  margin-top: 0 !important;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--glass-border);
+  font-size: 1.2rem;
+  color: var(--vp-c-brand-1);
+}
+
+/* 4. 底部表格美化 */
+.VPHome table {
+  width: 100%;
+  border-collapse: separate; /* 允许圆角 */
+  border-spacing: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 20px 0;
+  background: rgba(0,0,0,0.2);
+}
+
+.VPHome th, .VPHome td {
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 16px 24px;
+  text-align: left;
+}
+
+.VPHome th {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+
+.VPHome tr:last-child td {
+  border-bottom: none;
+}
+
+.VPHome tr:hover td {
+  background: rgba(255,255,255,0.03);
+}
+
+/* 5. 标题与图标对齐 */
+.VPHome h2 {
+  border-top: none !important; /* 移除默认上边框 */
+  margin-top: 0 !important;
+  margin-bottom: 24px !important;
+  font-size: 2rem;
+  text-align: center; /* 标题居中更有仪式感 */
+  background: linear-gradient(120deg, var(--vp-c-brand-1), var(--vp-c-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
