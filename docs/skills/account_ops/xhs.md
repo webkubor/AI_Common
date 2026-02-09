@@ -16,7 +16,7 @@ priority: 1
 - **注入逻辑**: 
     - 读取指定账户的 JSON Cookies。
     - 使用 `browser_run_code` 执行 `page.context().addCookies(cookies)`。
-    - **隔离性**: 默认使用 `newContext()` 开启独立会话，支持账号双开。
+    - **注意**: 即使本地项目目录（如 `xhs-playwright`）缺失物理 Profile 文件夹，也可通过此逻辑完成逻辑登录。
 
 ### 2. 内容发布 (Publishing)
 - **入口**: `https://creator.xiaohongshu.com/publish/publish`
@@ -28,8 +28,8 @@ priority: 1
 
 ### 3. 数据感知 (Perception)
 - **笔记管理**: `https://creator.xiaohongshu.com/new/note-manager`
-- **容错提取**: 结构化选择器失效时，降级使用 `innerText('body')` 全文扫描。
+- **容错提取**: 结构化选择器失效时，降级使用 `innerText("body")` 全文扫描。
 
 ## ⚠️ 故障排查
-- **注入失败**: 检查 `page.context().browser()` 是否为空，若为空则降级为 Python 物理进程模式。
-- **验证码**: 遇到人机验证，立即调用 `debug_screenshot` 并告知老爹手动处理。
+- **注入失败**: 检查 `page.context().browser()` 是否为空。
+- **路径落差**: 若 `xhs-playwright` 目录下无 `profiles/`，属正常现象，系统已转向逻辑注入模式。

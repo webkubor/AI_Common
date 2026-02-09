@@ -19,22 +19,25 @@
 ## 🧠 核心能力 (Core Capabilities)
 
 - [深度思考 (Think)](./think-skill.md) - 苏格拉底式引导与多维分析，用于复杂问题拆解。
+- [技能孵化器 (Skill Creator)](./skill-creator.md) - 专门用于创建、优化和调试新技能模块的元能力。
+- [通用能力协议 (Common Manifest)](./common_manifest.md) - 定义跨 Agent 通用的基础行为准则。
 - [Claude 能力清单](../agents/claude/manifest.md) - Claude 模型的专属能力定义与协议。
 - [Codex 能力清单](../agents/codex/manifest.md) - Codex (工程向) 模型的专属能力定义。
 - [Gemini 能力清单](../agents/gemini/manifest.md) - Gemini 模型的专属能力定义。
 
 ## ✍️ 内容创作 (Content Creation)
 
-- [掘金文章助手](./juejin-writer.md) - 撰写幽默且硬核的技术文章，自动配图与排版。
+- [掘金文章助手](./account_ops/juejin.md) - 撰写幽默且硬核的技术文章，自动配图与排版。
 - [飞书文档助手](./feishu-writer.md) - 撰写结构清晰的团队内部技术文档。
 - [内部沟通专家](./internal-comms.md) - 编写周报、FAQ、Newsletter 等内部沟通材料。
-- [生成语音 / 生成声音 / TTS](./voice-generator.md) - 本地文字转语音/声音克隆，默认输出 wav 到 `/Users/webkubor/Documents/voice`。
 
 ## 🛠️ 工程与自动化 (Engineering & Automation)
 
 - [webapp-testing](./webapp-testing.md) - Web 应用自动化测试专家。
 - [wechat-writer](./wechat-writer.md) - 微信公众号（心语拾光）创作助手。
-- [gitlab-manager](./gitlab-manager.md) - GitLab 仓库与流水线管理专家。
+- [GitHub 运营助手](./account_ops/github.md) - 仓库同步、Issue 处理与社区活跃度维护。
+- [GitLab 管理员](./account_ops/gitlab.md) - GitLab 仓库与流水线管理专家。
+- [Supabase Master](./supabase-master.md) - 后端架构、数据库设计与 Edge Functions 开发。
 - [碎片知识管家](./snippet_master.md) - 管理零散的代码片段、配置备忘与临时灵感。
 - [PWA 专家](./pwa-master.md) - 为 Vite 项目提供标准化的 PWA 离线化改造方案。
 - [版本发布专家](./release_master.md) - 自动化处理版本升级、日志生成与 Git 发布。
@@ -49,5 +52,6 @@
 ## 🎨 视觉与设计系统 (Visual & Design)
 
 - [智能绘图引擎 (Smart-Image-Gen)](./smart-image-generator.md) - **统一绘图入口**。涵盖人像、Logo、GIF、技术封面等所有图像任务，动态匹配 `docs/ucd/` 规范。
+- [电影级分镜 (Cinematic Storyboard)](./cinematic-storyboard/SKILL.md) - 专业影视分镜设计与视觉叙事方案。
 - [Frontend Design](./frontend-design.md) - 前端 UI 设计技能。
 - [Remotion Master](./remotion_master.md) - 视频创作与渲染专家。
