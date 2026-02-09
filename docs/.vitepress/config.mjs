@@ -2,8 +2,8 @@ import { defineConfig } from "vitepress";
 
 export default defineConfig({
   lang: "zh-CN",
-  title: "AI Common",
-  description: "培养您的外部大脑：集成标准化操作规范 (SOP)、工程实践深度复盘与知识路由的 统一协同中枢。",
+  title: "小烛的外部大脑",
+  description: "小烛 (Candle) 的外部大脑：集成标准化操作规范 (SOP)、工程实践深度复盘与知识路由的 统一协同中枢。",
   base: "/AI_Common/",
   head: [["link", { rel: "icon", href: "/AI_Common/logo.svg" }]],
   themeConfig: {
@@ -13,7 +13,6 @@ export default defineConfig({
       { text: "路由总览", link: "/router" },
       { text: "规则中心", link: "/rules/" },
       { text: "技能库", link: "/skills/" },
-      { text: "项目索引", link: "/project_index" },
     ],
     sidebar: [
       {
@@ -22,7 +21,6 @@ export default defineConfig({
           { text: "首页", link: "/" },
           { text: "路由总览", link: "/router" },
           { text: "技术栈偏好", link: "/tech_stack" },
-          { text: "项目索引", link: "/project_index" },
           { text: "代码片段", link: "/snippets/" },
         ],
       },

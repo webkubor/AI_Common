@@ -1,187 +1,138 @@
 :root {
-  --vp-c-brand-1: #a79bc6;
-  --vp-c-brand-2: #8d81b1;
-  --vp-c-brand-3: #74689c;
-  --vp-c-brand-soft: rgba(167, 155, 198, 0.14);
-  --vp-font-family-base:
-    "IBM Plex Sans", "PingFang SC", "Noto Sans SC", system-ui, -apple-system,
-    sans-serif;
-  --vp-font-family-mono:
-    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
-  --glass-bg: rgba(255, 255, 255, 0.55);
-  --glass-border: rgba(255, 255, 255, 0.35);
-  --glass-shadow: 0 20px 40px rgba(10, 20, 40, 0.12);
+  /* 核心品牌色：烛光金/活力橙 - 代表生命力、希望与指引 */
+  --vp-c-brand-1: #F59E0B; /* Amber 500 */
+  --vp-c-brand-2: #D97706; /* Amber 600 */
+  --vp-c-brand-3: #B45309; /* Amber 700 */
+  --vp-c-brand-soft: rgba(245, 158, 11, 0.12);
+
+  /* 字体系统：现代、清晰 */
+  --vp-font-family-base: "Inter", "PingFang SC", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+  --vp-font-family-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* 玻璃拟态基础变量 */
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --glass-blur: 24px;
 }
 
+/* 暗色模式 - 深邃宇宙中的烛光 */
+.dark {
+  --vp-c-brand-1: #FCD34D; /* Amber 300 - 更亮，适合暗底 */
+  --vp-c-brand-2: #F59E0B; /* Amber 500 */
+  --vp-c-brand-3: #D97706; /* Amber 600 */
+  --vp-c-brand-soft: rgba(252, 211, 77, 0.12);
+
+  --glass-bg: rgba(15, 23, 42, 0.6); /* Slate 900 alpha */
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* 全局布局背景 - 动态流光 */
 .Layout {
-  background:
-    radial-gradient(
-      900px 600px at 20% 10%,
-      rgba(167, 155, 198, 0.25),
-      transparent 60%
-    ),
-    radial-gradient(
-      700px 520px at 90% 20%,
-      rgba(141, 129, 177, 0.18),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 700px at 60% 90%,
-      rgba(116, 104, 156, 0.18),
-      transparent 60%
-    ),
-    linear-gradient(180deg, #f7f7fb 0%, #eef3f9 100%);
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+  transition: background 0.5s ease;
+}
+
+.dark .Layout {
+  background-color: #020617; /* Slate 950 */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+}
+
+/* 首页 Hero 区域优化 */
+.VPHomeHero {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
-.Layout::before,
-.Layout::after {
-  content: "";
-  position: absolute;
-  inset: -20% -10% auto auto;
-  width: 60vw;
-  height: 60vw;
-  background:
-    radial-gradient(
-      circle at 30% 30%,
-      rgba(167, 155, 198, 0.35),
-      transparent 55%
-    ),
-    radial-gradient(
-      circle at 70% 50%,
-      rgba(141, 129, 177, 0.25),
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at 40% 70%,
-      rgba(116, 104, 156, 0.25),
-      transparent 60%
-    );
-  filter: blur(40px);
-  opacity: 0.5;
-  pointer-events: none;
-  transform: translate3d(0, 0, 0);
+/* 标题渐变效果 - 生命力 */
+.VPHomeHero .name {
+  background: linear-gradient(135deg, #F59E0B 0%, #F43F5E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.3));
 }
 
-.Layout::after {
-  inset: auto auto -25% -10%;
-  width: 55vw;
-  height: 55vw;
-  opacity: 0.4;
+.dark .VPHomeHero .name {
+  background: linear-gradient(135deg, #FCD34D 0%, #F43F5E 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 4px 12px rgba(252, 211, 77, 0.4));
 }
 
-.VPHome {
-  background: transparent;
+/* 功能卡片优化 - 悬浮发光 */
+.VPHomeFeature {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-/* 增加首页 Hero 区域的顶部内边距，避免与导航栏重叠 */
+.VPHomeFeature:hover {
+  transform: translateY(-4px);
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 12px 40px -12px var(--vp-c-brand-soft);
+}
+
+.VPHome .VPHomeFeature,
+.VPContent .vp-doc {
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+}
+
+/* 导航栏透明化处理 */
+.VPNavBar {
+  background-color: transparent !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.VPNavBar.has-sidebar .content {
+  background-color: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur));
+}
+
+/* 侧边栏样式 */
+.VPSidebar {
+  background-color: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur));
+  border-right: 1px solid var(--glass-border);
+}
+
+/* 按钮样式强化 */
+.VPButton.brand {
+  background: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-2) 100%);
+  border: none;
+  box-shadow: 0 4px 12px var(--vp-c-brand-soft);
+  transition: all 0.3s ease;
+}
+
+.VPButton.brand:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--vp-c-brand-soft);
+  filter: brightness(1.1);
+}
+
+/* 细节调整 */
 .VPHome .VPHomeHero {
-  padding-top: 128px !important;
-  padding-bottom: 64px !important;
+  padding-top: 120px !important;
+  padding-bottom: 80px !important;
 }
 
 @media (min-width: 640px) {
   .VPHome .VPHomeHero {
     padding-top: 160px !important;
-    padding-bottom: 80px !important;
+    padding-bottom: 100px !important;
   }
-}
-
-@media (min-width: 960px) {
-  .VPHome .VPHomeHero {
-    padding-top: 192px !important;
-    padding-bottom: 96px !important;
-  }
-}
-
-.VPHome .VPHomeHero .name {
-  letter-spacing: -0.04em;
-}
-
-.VPHome .VPHomeFeatures {
-  padding-bottom: 72px;
-}
-
-.VPHome .VPHomeFeature,
-.VPContent .vp-doc {
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
-
-/* 侧边栏优化 - 与导航栏保持一致的透明背景 */
-.VPSidebar {
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  background: rgba(45, 45, 60, 0.4) !important;
-  border-right: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
-
-/* 统一导航栏背景样式 - 解决左右分裂问题 */
-.VPNavBar,
-.VPNavBar *,
-.VPNavBar .container,
-.VPNavBar .content,
-.VPNavBar .curtain,
-.VPNavBar .VPNavBarTitle,
-.VPNavBar .VPNavBarMenu,
-.VPNavBar .VPNavBarMenuGroup,
-.VPNavBar.has-sidebar,
-.VPNavBar.has-sidebar *,
-.VPNavBar.has-sidebar .container,
-.VPNavBar.has-sidebar .content {
-  background: rgba(45, 45, 60, 0.4) !important;
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-}
-
-.VPNavBar {
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.VPHome .VPHomeFeature {
-  border-radius: 16px;
-}
-
-.VPContent .vp-doc {
-  border-radius: 18px;
-  padding: 24px;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-.dark {
-  --glass-bg: rgba(45, 45, 60, 0.75);
-  --glass-border: rgba(180, 180, 200, 0.15);
-  --glass-shadow: 0 24px 44px rgba(0, 0, 0, 0.6);
-
-  /* 优化暗色模式下的品牌色，使其更亮更清晰 */
-  --vp-c-brand-1: #a79bc6;
-  --vp-c-brand-2: #8d81b1;
-  --vp-c-brand-3: #74689c;
-}
-
-.dark .Layout {
-  background:
-    radial-gradient(
-      900px 600px at 20% 10%,
-      rgba(167, 155, 198, 0.15),
-      transparent 60%
-    ),
-    radial-gradient(
-      700px 520px at 90% 20%,
-      rgba(141, 129, 177, 0.15),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 700px at 60% 90%,
-      rgba(116, 104, 156, 0.15),
-      transparent 60%
-    ),
-    linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
 }

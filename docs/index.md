@@ -1,147 +1,116 @@
 ---
 layout: home
 hero:
-  name: "AI Common"
-  text: "webkubor 的 AI 大脑"
-  tagline: "集成标准化操作规范 (SOP)、工程实践深度复盘与知识路由，让 AI 和你一样聪明"
+  name: "小烛的外部大脑"
+  text: "Candle Cortex"
+  tagline: "我是小烛 (Candle)，老爹的全栈 AI 协同中枢。基于标准化协议与智能路由，我是可进化的数字分身。"
   image:
     src: /logo.svg
-    alt: AI Common Logo
+    alt: 小烛的外部大脑 Logo
   actions:
     - theme: brand
-      text: 开始探索
+      text: 🚀 激活大脑 (Router)
       link: /router
     - theme: alt
-      text: 查看规则
+      text: 📚 查阅规则 (Rules)
       link: /rules/
     - theme: alt
-      text: 关于作者
-      link: /about
+      text: 🧩 调用技能 (Skills)
+      link: /skills/
 
 features:
   - icon: 🧠
-    title: 智能路由
-    details: AI 自动识别意图，按需加载最相关的规则和技能，告别信息过载
-  - icon: 📚
-    title: 规则中心
-    details: 编码规范、Git 提交、标准化操作规范 (SOP) 等规则集中管理，确保一致性
-  - icon: 🛠️
-    title: 技能库
-    details: 写作、设计、RAG、自动化等能力插件化维护，随用随取
-  - icon: 📝
-    title: 深度复盘与经验萃取
-    details: 架构、构建、前端、运维等深度经验萃取，形成闭环沉淀，避免重复踩坑
+    title: Exocortex (外部大脑)
+    details: 基于 Context Protocol 的统一知识库，让所有 AI Agent 共享同一套记忆与规则。
+  - icon: 🚦
+    title: Intelligent Router (智能路由)
+    details: 意图识别系统的核心，根据任务自动挂载最相关的 SOP、凭证与技能。
+  - icon: 🛡️
+    title: Persona System (数字分身)
+    details: 统一的身份管理 (Candle/Xiao Zhu)，确保跨平台、跨模型的一致性人格。
+  - icon: 🔄
+    title: Auto-Evolution (自我进化)
+    details: 深度复盘 (Retrospective) 机制形成的闭环，让每一次报错都成为进化的养料。
 
 ---
 
-## 🆕 最近更新 (2026-02-07) 
+## 🏛️ 组织架构 (Organizational Structure)
 
-### 🛡️ 账号矩阵指挥中心 (Account Ops) 落地 
-- **统一凭证注册表**：建立 `/secrets/accounts_unified.md`，实现多平台（小红书、掘金、GitHub、GitLab）身份的一站式加密存储与动态注入。 
-- **账号操作特种技能**：在 `/skills/account_ops/` 下新增/优化了四大核心技能，支持 **Chrome MCP + Cookie 注入**，实现免登录全自动双开操作。 
-- **矩阵化运营**：打通小红书（司南烛/小烛）与掘金的账号墙，支持跨平台内容自动搬运与发布。 
+小烛的外部大脑不仅仅是文档，它是一套 **多 Agent 协同系统 (Multi-Agent Collaboration System)**。
 
---- 
-## 🎯 这是什么？
+不仅仅是写代码，任何与互联网相关的事项（运营、创作、管理）都能处理。**老爹只需要做决策和指明方向**，剩下的交给我们。
 
-**AI Common** 是 **webkubor 的 AI 大脑**——一个集成了 **标准化操作规范 (SOP)** 与 **深度复盘机制** 的统一知识管理系统。
+<div class="dept-grid">
 
-> 💡 **这是 webkubor 的方案分享**：通过这套系统，我成功培养了自己的专属 AI 大脑。现在我将这套方案分享给你，帮助你也能培养出属于自己的 AI 大脑。
+### 🧠 核心参谋部 (Core)
+> **"定义大脑的思考方式"**
+负责制定通用协议、孵化新技能以及深度思考任务。
+- **关键职能**: 深度思考 (Think), 技能孵化 (Skill Creator), 协议管理 (Manifest)
 
-### 🤖 对 AI 来说
-- **规则库**：编码规范、Git 提交规范、标准化操作规范 (SOP) 等显式规则
-- **技能库**：写作、设计、RAG、自动化等专项能力
-- **记忆库**：深度复盘记录、Bug 记录、经验教训
+### ✍️ 内容创作部 (Writers)
+> **"笔耕不辍，高效输出"**
+负责多平台的内容生产与文案打磨。
+- **关键职能**: 掘金专栏, 微信公众号, 飞书文档, 内部通讯
 
-### 👤 对 webkubor 来说
-- **知识库**：所有项目规则、规范、经验的一站式查询入口
-- **工具箱**：快速找到需要的技能和工具
-- **成长记录**：持续积累的技术深度复盘与经验萃取
+### 📢 账号运营部 (Ops)
+> **"连接世界，分发价值"**
+负责跨平台的账号管理、内容分发与自动化运营。
+- **关键职能**: 小红书矩阵 (XHS), GitHub/GitLab 运维, 掘金发布
 
----
+### 🛠️ 工程与自动化 (Eng)
+> **"构建基石，稳如磐石"**
+负责基础设施建设、全栈开发支持与质量保证。
+- **关键职能**: Web 应用测试, PWA 方案, 图片托管, 架构初始化
 
-## 💬 谈话记录
+### 🎨 视觉与设计 (Visual)
+> **"所见即所得，美学驱动"**
+负责所有视觉资产的生成、UI/UX 设计及视频创作。
+- **关键职能**: 智能绘图 (XHS Style), 电影分镜, 前端设计, Remotion 视频
 
-通过这几张截图，你可以看到我是如何通过“外部大脑”与 Agent 深度协作的：
+### 📚 知识管理 (Knowledge)
+> **"不仅记录，更是智慧"**
+负责向量数据库维护、碎片知识整理及自动复盘。
+- **关键职能**: Milvus 工具集, 自动复盘 (GC), 知识碎片管理
 
-### 1. 深度分析与规划
-![Gemini 深度分析](https://raw.githubusercontent.com/webkubor/upic-images/main/uPic/2026/01/%E6%88%AA%E5%B1%8F2026-01-28%2015.17.59.png)
-
-### 2. 外部大脑的协同反馈
-![Agent 协同反馈](https://raw.githubusercontent.com/webkubor/upic-images/main/uPic/2026/01/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260128152108_952_193.png)
-
----
-
-## 🚀 快速开始
-
-### 1. 了解路由机制
-从 [路由总览](/router) 开始，了解 AI 如何根据你的意图自动加载相关内容。
-
-### 2. 查看规则中心
-访问 [规则中心](/rules/)，了解编码规范、Git 提交规范等核心规则。
-
-### 3. 探索专项技能
-浏览 [技能库](/skills/)，发现写作、设计、RAG 等专项技能。
-
-### 4. 深度复盘与经验萃取
-查看 [深度复盘与经验萃取](/retrospectives/)，从历史经验中学习。
-
----
-
-## 📊 核心模块
-
-| 模块 | 说明 | 适用场景 |
-|------|------|----------|
-| **路由总览** | AI 的智能导航系统 | AI 自动识别意图，按需加载 |
-| **规则中心** | 编码、Git、SOP 规范 | 团队协作、代码审查 |
-| **技能库** | 写作、设计、RAG、自动化 | 特定任务、技能调用 |
-| **深度复盘** | 架构、构建、前端、运维复盘 | 问题排查、经验学习 |
-
----
-
-## 💡 使用场景
-
-### 场景 1：写代码
-AI 自动加载编码规范、Git 提交规范，确保代码质量和提交信息规范。
-
-### 场景 2：写文档
-AI 自动调用写作技能（掘金、飞书），按照规范格式生成文档。
-
-### 场景 3：解决问题
-AI 自动检索历史深度复盘和经验，快速找到类似问题的解决方案。
-
-### 场景 4：设计 Logo
-AI 自动调用 Logo 设计技能，按照莫兰迪色系和极简几何风格生成。
-
----
-
-## 🎨 设计理念
-
-- **统一入口**：所有规则、技能、深度复盘都通过路由总览统一管理
-- **按需加载**：AI 根据意图动态加载最相关的内容，避免信息过载
-- **持续迭代**：通过深度复盘机制持续积累经验，不断优化
-- **插件化**：扩展能力独立维护，灵活组合
-
----
-
-## 📚 更多资源
-
-- [技术栈偏好](/tech_stack) - 了解项目的技术栈和设计规范
-- [Milvus Tools](https://webkubor.github.io/milvus-tools/) - 向量数据库可视化工具
----
-
-## 🌟 关于这个方案
-
-这是 **webkubor** 在长期使用 AI 过程中总结出的一套方法论。通过将规则、技能、深度复盘系统化管理，我成功培养出了自己的专属 AI 大脑。现在，我将这套完整的方案分享给你，希望帮助你也能：
-
-- 🎯 **建立自己的知识体系**：不再让 AI 随意发挥，而是按照你的规则和风格工作
-- 🚀 **提升协作效率**：AI 能快速理解你的意图，减少沟通成本
-- 📈 **持续成长**：通过深度复盘机制，让 AI 和你一起不断进步
-
-**开始培养你的专属大脑吧！** 🧠✨
-
----
-
-<div style="text-align: center; margin-top: 3rem; opacity: 0.6;">
-  <small>由 <strong>webkubor</strong> 构建 · 基于 VitePress · Morandi 色系设计</small>
 </div>
+
+---
+
+## 🚀 核心价值
+
+### 1. 对 AI (Agents)
+- **SSOT (唯一真理源)**：不再需要猜测用户的偏好，一切规则都在 `docs/rules` 中定义。
+- **Standardized Skills (标准化技能)**：通过 MCP 与 Shell 脚本封装，复杂操作变成简单指令。
+- **Shared Memory (共享记忆)**：上一秒在 Claude 中修复的 Bug，下一秒 Gemini 就能避坑。
+
+### 2. 对老爹 (User)
+- **Context Injection (上下文注入)**：一键加载项目背景，零样本启动任务。
+- **Quality Assurance (质量保证)**：所有输出经过 SOP 校验，保持高水准。
+- **Asset Accumulation (资产沉淀)**：每一次对话都在为“外部大脑”增加神经元。
+
+---
+
+## 🗺️ 快速导航
+
+| 想要做什么？ | 推荐路径 |
+| :--- | :--- |
+| **开始一个新项目** | [项目初始化 SOP](/rules/project_initialization_sop) |
+| **查询代码规范** | [规则中心](/rules/) |
+| **运营小红书** | [小红书矩阵运营](/skills/ops/xhs) |
+| **复盘技术难题** | [深度复盘](/retrospectives/) |
+
+---
+
+<style>
+.dept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.dept-grid h3 {
+  margin-top: 0 !important;
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding-bottom: 0.5rem;
+}
+</style>
