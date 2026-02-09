@@ -1,57 +1,44 @@
-# 扩展能力 (Extensions)
+# 扩展能力 (Extensions) - AI 公司职能架构版
 
-这里汇集了 AI Common 的所有专项技能扩展。AI 助手可以根据任务需求，动态加载对应的技能模块。
+这里汇集了 AI Common 的所有专项技能扩展。按照职能部门分类，实现“创作-运营-工程”全链路闭环。
 
+## 🧠 核心参谋部 (Core Capabilities)
+负责逻辑分析、技能孵化与全局协议。
+- [深度思考 (Think)](./core/think-skill.md) - 苏格拉底式分析。
+- [技能孵化器 (Skill Creator)](./core/skill-creator.md) - 开发新技能。
+- [通用能力协议 (Common Manifest)](./core/common_manifest.md) - 基础行为准则。
 
-## 🔌 标准 MCP 协议 (Standard MCP Manifest)
+## ✍️ 内容创作部 (Content Creation / Writers)
+负责高质量文案输出。**Workflow**: 写完后请交接给“运营部”发布。
+- [掘金写作助手 (Writer)](./writers/juejin.md) - 爆款制造机。
+- [微信公众号助手 (Writer)](./writers/wechat.md) - 文艺风格"小博爷"。
+- [飞书文档助手 (Writer)](./writers/feishu.md) - 团队技术文档专家。
+- [内部沟通专家](./writers/internal-comms.md) - 周报、FAQ、Newsletter。
 
-为了确保不同 AI (Gemini/Claude/Cursor) 能统一调用本技能库，所有 Agent 环境必须安装以下标准 MCP 服务，以“拉平”底层能力差异：
+## 📢 账号运营部 (Account Ops)
+负责内容的分发、同步与账号维护。
+- [掘金发布助手 (Publisher)](./ops/juejin.md) - 一键同步至掘金。
+- [小红书运营 (Ops)](./ops/xhs.md) - 多账号矩阵自动化。
+- [GitHub 运营助手](./ops/github.md) - 仓库与社区维护。
+- [GitLab 管理员](./ops/gitlab.md) - 流水线与仓库管理。
 
-| MCP 服务 | 核心职能 | 对应技能/场景 |
-| :--- | :--- | :--- |
-| **context7** | 实时文档查询与库 ID 解析 | 通用编程、查阅最新 API |
-| **browser-use** | **[High-Level]** 自然语言浏览器操控 | AI Agent 自主浏览、通用网页自动化 |
-| **playwright** | **[Core]** 跨浏览器测试与交互 | `webapp-testing`、UI 验证、截图分析 (首选) |
-| **chrome-devtools** | **[Legacy]** 浏览器底层控制 | 仅用于特定调试、复用本地 Session |
-| **figma-developer** | 设计稿像素级读取 | `frontend-design`、UI 还原 |
-| **filesystem** | 文件系统读写 | (Native) 基础能力，所有技能的前置依赖 |
+## 🛠️ 工程与自动化部 (Engineering)
+负责基建、后端与全自动流程。
+- [webapp-testing](./engineering/webapp-testing.md) - 自动化测试专家。
+- [Supabase Master](./engineering/supabase-master.md) - 后端架构与数据库。
+- [PWA 专家](./engineering/pwa-master.md) - 离线化改造方案。
+- [VitePress 初始化](./engineering/vitepress-init.md) - 文档站快速搭建。
+- [图床大师 (Image Hosting)](./engineering/image-hosting-master.md) - 全自动资产分发。
 
-## 🧠 核心能力 (Core Capabilities)
+## 🎨 视觉与设计系统部 (Visual & Design)
+负责审美与视觉资产生成。
+- [智能绘图引擎](./visual/smart-image-generator.md) - **统一绘图入口**。
+- [电影级分镜](./visual/cinematic-storyboard/SKILL.md) - 视觉叙事方案。
+- [Frontend Design](./visual/frontend-design.md) - UI 设计还原。
+- [Remotion Master](./visual/remotion_master.md) - 视频代码化。
 
-- [深度思考 (Think)](./think-skill.md) - 苏格拉底式引导与多维分析，用于复杂问题拆解。
-- [技能孵化器 (Skill Creator)](./skill-creator.md) - 专门用于创建、优化和调试新技能模块的元能力。
-- [通用能力协议 (Common Manifest)](./common_manifest.md) - 定义跨 Agent 通用的基础行为准则。
-- [Claude 能力清单](../agents/claude/manifest.md) - Claude 模型的专属能力定义与协议。
-- [Codex 能力清单](../agents/codex/manifest.md) - Codex (工程向) 模型的专属能力定义。
-- [Gemini 能力清单](../agents/gemini/manifest.md) - Gemini 模型的专属能力定义。
-
-## ✍️ 内容创作 (Content Creation)
-
-- [掘金文章助手](./account_ops/juejin.md) - 撰写幽默且硬核的技术文章，自动配图与排版。
-- [飞书文档助手](./feishu-writer.md) - 撰写结构清晰的团队内部技术文档。
-- [内部沟通专家](./internal-comms.md) - 编写周报、FAQ、Newsletter 等内部沟通材料。
-
-## 🛠️ 工程与自动化 (Engineering & Automation)
-
-- [webapp-testing](./webapp-testing.md) - Web 应用自动化测试专家。
-- [wechat-writer](./wechat-writer.md) - 微信公众号（心语拾光）创作助手。
-- [GitHub 运营助手](./account_ops/github.md) - 仓库同步、Issue 处理与社区活跃度维护。
-- [GitLab 管理员](./account_ops/gitlab.md) - GitLab 仓库与流水线管理专家。
-- [Supabase Master](./supabase-master.md) - 后端架构、数据库设计与 Edge Functions 开发。
-- [碎片知识管家](./snippet_master.md) - 管理零散的代码片段、配置备忘与临时灵感。
-- [PWA 专家](./pwa-master.md) - 为 Vite 项目提供标准化的 PWA 离线化改造方案。
-- [版本发布专家](./release_master.md) - 自动化处理版本升级、日志生成与 Git 发布。
-- [VitePress 初始化](./vitepress-init.md) - 快速搭建标准化的 VitePress 文档站点。
-- [图床大师 (Image Hosting Master)](./image-hosting-master.md) - 自动决策 GitHub/R2 的全自动上传与资产分发工具。
-
-## 📚 知识管理 (Knowledge Management)
-
-- [自动复盘 (Auto Retro)](./auto-retro.md) - 自动记录 Bug 与经验，定期归档与 GC。
-- [Milvus 工具集](./milvus-toolkit.md) - 本地向量库的检索、入库与维护工具。
-
-## 🎨 视觉与设计系统 (Visual & Design)
-
-- [智能绘图引擎 (Smart-Image-Gen)](./smart-image-generator.md) - **统一绘图入口**。涵盖人像、Logo、GIF、技术封面等所有图像任务，动态匹配 `docs/ucd/` 规范。
-- [电影级分镜 (Cinematic Storyboard)](./cinematic-storyboard/SKILL.md) - 专业影视分镜设计与视觉叙事方案。
-- [Frontend Design](./frontend-design.md) - 前端 UI 设计技能。
-- [Remotion Master](./remotion_master.md) - 视频创作与渲染专家。
+## 📚 知识管理部 (Knowledge)
+负责历史教训复盘与碎片资产管理。
+- [自动复盘 (Auto Retro)](./knowledge/auto-retro.md) - 定期归档与经验提取。
+- [Milvus 工具集](./knowledge/milvus-toolkit.md) - 向量库检索与维护。
+- [碎片知识管家](./knowledge/snippet_master.md) - 代码片段与配置备忘。
