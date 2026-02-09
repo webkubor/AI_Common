@@ -5,6 +5,12 @@ export default defineConfig({
   title: "小烛的外部大脑",
   description: "小烛 (Candle) 的外部大脑：集成标准化操作规范 (SOP)、工程实践深度复盘与知识路由的 统一协同中枢。",
   base: "/AI_Common/",
+  srcExclude: [
+    "**/secrets/**",
+    "**/operation-logs/**",
+    "**/scripts/**",
+    "**/snippets/git_repos_inventory.md"
+  ],
   head: [["link", { rel: "icon", href: "/AI_Common/logo.svg" }]],
   themeConfig: {
     logo: "/logo.svg",
@@ -31,9 +37,10 @@ export default defineConfig({
           { text: "编码规范", link: "/rules/coding_rules" },
           { text: "Git 提交规范", link: "/rules/git_commit_rules" },
           { text: "隐私与忽略规范", link: "/rules/privacy_excludes" },
-          { text: "标准化操作规范 (SOP)", link: "/rules/standard_workflow" },
+          { text: "JSDoc 注释规范", link: "/rules/jsdoc_rules/" },
+          { text: "标准化操作规范 (SOP)", link: "/rules/workflow" },
           { text: "Vibe 编程规则", link: "/rules/vibe_rules" },
-          { text: "工程实践深度复盘", link: "/rules/workflow_retro" },
+          { text: "工程实践深度复盘", link: "/retrospectives/" },
         ],
       },
       {

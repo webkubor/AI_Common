@@ -1,138 +1,145 @@
 /* 
-  Candle Cortex Theme 
-  Theme Color: Amber/Orange (Warmth, Life, Intelligence)
+  Candle Cortex Theme - "Warm Technology"
+  Primary: Amber/Orange (Warmth, Intelligence)
+  Accent: Rose (Depth, Vitality)
 */
 
 :root {
-  /* 核心品牌色 - Amber 500/600/700 */
+  /* --- 1. 核心品牌色 (Amber 500/600/700) --- */
   --vp-c-brand-1: #F59E0B;
   --vp-c-brand-2: #D97706;
   --vp-c-brand-3: #B45309;
   --vp-c-brand-soft: rgba(245, 158, 11, 0.14);
   
-  /* 强调色 - Rose 500 (用于渐变末端) */
+  /* --- 2. 交互强调色 (Rose 500) --- */
   --vp-c-accent: #F43F5E;
 
-  /* 背景色覆盖 */
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, var(--vp-c-brand-1) 30%, var(--vp-c-accent));
+  /* --- 3. 背景与材质覆盖 --- */
+  --vp-c-bg: #FFFFFF;
+  --vp-c-bg-soft: #FFFBEB; /* 极浅奶黄底色 */
+  --vp-c-bg-mute: #FDE68A; /* Amber 200 */
 
-  /* 字体优化 */
-  --vp-font-family-base: "Inter", system-ui, -apple-system, sans-serif;
-  --vp-font-family-mono: "JetBrains Mono", monospace;
-  
   /* 玻璃拟态参数 */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.8);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(245, 158, 11, 0.2);
+  --glass-shadow: 0 8px 32px rgba(245, 158, 11, 0.12);
+  
+  /* 字体 */
+  --vp-font-family-base: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 .dark {
-  /* 暗色模式品牌色 - Amber 400/500/600 (更亮) */
+  /* --- 暗色模式品牌色 (Amber 400/500/600) --- */
   --vp-c-brand-1: #FBBF24;
   --vp-c-brand-2: #F59E0B;
   --vp-c-brand-3: #D97706;
   --vp-c-brand-soft: rgba(251, 191, 36, 0.14);
 
-  --glass-bg: rgba(30, 41, 59, 0.7); /* Slate 800 */
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --vp-c-bg: #0F172A;      /* Slate 900 */
+  --vp-c-bg-soft: #1E293B; /* Slate 800 */
+  --vp-c-bg-mute: #334155; /* Slate 700 */
+
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(251, 191, 36, 0.15);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* =========================================
-   全局样式覆盖
+   全局样式：颜色与交互
    ========================================= */
 
-/* 链接颜色 */
 a {
   color: var(--vp-c-brand-1);
-  transition: color 0.2s;
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 a:hover {
   color: var(--vp-c-brand-2);
 }
 
-/* 按钮样式重写 */
+/* 按钮：琥珀渐变 */
 .VPButton.brand {
   background-color: var(--vp-c-brand-1) !important;
-  background-image: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-2) 100%);
+  background-image: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-2) 100%) !important;
   border-color: transparent !important;
   color: white !important;
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+  transition: all 0.3s ease;
 }
 .VPButton.brand:hover {
-  background-image: linear-gradient(135deg, var(--vp-c-brand-2) 0%, var(--vp-c-brand-3) 100%);
-  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+  background-image: linear-gradient(135deg, var(--vp-c-brand-2) 0%, var(--vp-c-brand-3) 100%) !important;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
   transform: translateY(-1px);
 }
 
 /* =========================================
-   首页 (Home) 特有样式
+   组件装饰：玻璃拟态卡片
    ========================================= */
 
-/* 首页背景：温暖的光晕 */
-.Layout {
-  background-color: var(--vp-c-bg);
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 85% 30%, rgba(244, 63, 94, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 50% 90%, rgba(217, 119, 6, 0.05) 0%, transparent 50%);
-  background-attachment: fixed;
-}
-
-.dark .Layout {
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(251, 191, 36, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 85% 30%, rgba(244, 63, 94, 0.08) 0%, transparent 40%);
-}
-
-/* Hero 标题渐变 */
-.VPHomeHero .name {
-  background: -webkit-linear-gradient(120deg, var(--vp-c-brand-1) 30%, var(--vp-c-accent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* 特性卡片 (Feature Cards) */
-.VPHomeFeature {
+/* 特性卡片与通用容器 */
+.VPHomeFeature, .custom-block, .VPDocAside {
   background-color: var(--glass-bg) !important;
   border: 1px solid var(--glass-border) !important;
-  border-radius: 12px !important;
   backdrop-filter: blur(12px);
-  transition: all 0.3s ease;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .VPHomeFeature:hover {
   border-color: var(--vp-c-brand-1) !important;
-  box-shadow: 0 8px 24px var(--vp-c-brand-soft);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(245, 158, 11, 0.18);
 }
 
-/* 卡片图标背景 */
-.VPHomeFeature .icon {
-  background-color: var(--vp-c-brand-soft) !important;
-  color: var(--vp-c-brand-1) !important;
-  border-radius: 8px;
+/* 首页 Hero 标题 */
+.VPHomeHero .name {
+  background: linear-gradient(120deg, var(--vp-c-brand-1) 30%, var(--vp-c-accent)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 /* =========================================
-   文档页 (Doc) 样式
+   侧边栏 UI 优化：极简、圆润、单一指示
    ========================================= */
 
-/* 侧边栏当前激活项 */
-.VPSidebarItem.is-active > .item > .link,
-.VPSidebarItem.is-active > .item > .text {
-  color: var(--vp-c-brand-1) !important;
-}
+/* 1. 彻底停用自定义边框，防止双竖线 */
 .VPSidebarItem.is-active > .item {
-  border-left-color: var(--vp-c-brand-1) !important;
+  border-left: none !important;
 }
 
-/* 之前/之后 页脚链接 */
-.VPDocFooter .prev-next .link:hover .title {
+/* 2. 只修饰官方 indicator 竖线 */
+.VPSidebarItem.is-active > .item .indicator {
+  background-color: var(--vp-c-brand-1) !important;
+  width: 3px !important;
+  border-radius: 4px !important; /* 圆润化 */
+  left: -16px !important; /* 修正位置 */
+}
+
+/* 3. 文字样式：精致下划线 */
+.VPSidebarItem.is-active > .item .text {
   color: var(--vp-c-brand-1) !important;
+  font-weight: 600;
+  position: relative;
 }
 
-/* 修正 Logo 颜色 (如果是 SVG path 可以控制的话，但我们用了 img 标签，主要靠 SVG 内部颜色) */
-/* 这里不需要 CSS 控制 SVG 颜色，因为 SVG 本身已经改了 */
+.VPSidebarItem.is-active > .item .text::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px; /* 变细 */
+  background: var(--vp-c-brand-1);
+  border-radius: 1px;
+  transform: scaleX(1);
+}
+
+/* =========================================
+   细节修正
+   ========================================= */
+
+/* 搜索框焦点 */
+.DocSearch-Input:focus {
+  border-color: var(--vp-c-brand-1) !important;
+  box-shadow: 0 0 0 2px var(--vp-c-brand-soft) !important;
+}
