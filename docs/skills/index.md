@@ -33,8 +33,12 @@
 ## 🎨 视觉与设计系统部 (Visual & Design)
 负责审美与视觉资产生成。
 - [智能绘图引擎](./visual/smart-image-generator.md) - **统一绘图入口**。
-- [电影级分镜](./visual/cinematic-storyboard/SKILL.md) - 视觉叙事方案。
+- [剧本医生 (Script Doctor)](./visual/cinematic-storyboard/SKILL.md) - 分镜优化与视觉叙事。
 - [Frontend Design](./visual/frontend-design.md) - UI 设计还原。
+
+## 🎵 音频与多媒体部 (Audio & Multimedia)
+负责声音景观设计与 AI 音乐创作。
+- [AI 音乐工程师](./audio/music-engineer.md) - 词曲创作、BGM 生成与音频提示词。
 
 ## 📚 知识管理部 (Knowledge)
 负责历史教训复盘与碎片资产管理。
