@@ -33,7 +33,7 @@
 ## 🎨 视觉与设计系统部 (Visual & Design)
 负责审美与视觉资产生成。
 - [智能绘图引擎](./visual/smart-image-generator.md) - **统一绘图入口**。
-- [剧本医生 (Script Doctor)](./visual/cinematic-storyboard/SKILL.md) - 分镜优化与视觉叙事。
+- [剧本医生 (Script Doctor)](./visual/cinematic-storyboard.md) - 分镜优化与视觉叙事。
 - [Frontend Design](./visual/frontend-design.md) - UI 设计还原。
 
 ## 🎵 音频与多媒体部 (Audio & Multimedia)
