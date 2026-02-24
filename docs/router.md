@@ -13,6 +13,7 @@
 ## 3. 🔍 动态路由 (Dynamic Routing)
 | 意图 | 目标路径 (docs/) | 执行动作 |
 | :--- | :--- | :--- |
+| **动态记忆/日志** | `memory/journal/` | 加载近期上下文与即时决策 |
 | **安全/Token** | `rules/privacy_excludes.md`, `secrets/` | 加载脱敏规则与密钥 |
 | **项目初始化** | `tech_stack.md`, `rules/project_initialization_sop.md` | 加载架构与 SOP |
 | **编码/Git** | `rules/vibe_rules.md`, `rules/git_commit_rules.md` | 加载规范 |
@@ -27,4 +28,4 @@
 - **写入**: "本地生成 + `mv` 迁移" 法则。
 
 ---
-*Last Updated: 2026-02-09 (Dept Restructure by Gemini)*
+*Last Updated: 2026-02-24 (Optimized by memsearch mechanism)*
