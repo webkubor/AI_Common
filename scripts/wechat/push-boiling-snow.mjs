@@ -1,4 +1,4 @@
-import article from './articles/2026-02-19-boiling-snow.mjs';
+import article from './articles/boiling-snow.mjs';
 import { getAccessToken, uploadContentImage, uploadCoverImage, uploadDraft } from './utils.mjs';
 
 async function push() {
