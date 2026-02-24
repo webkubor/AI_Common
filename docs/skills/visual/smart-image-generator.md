@@ -1,7 +1,7 @@
 ---
 id: smart-image-generator
-triggers: ["画图", "生成图片", "image", "drawing", "logo", "封面", "小红书", "xhs"]
-mcp_requirements: ["nanobanana", "xhs-vision"]
+triggers: ["画图", "生成图片", "image", "drawing", "logo", "封面"]
+mcp_requirements: ["nanobanana"]
 priority: 1
 ---
 
@@ -17,7 +17,7 @@ priority: 1
 - **挂载**: 必须将所有参考图路径作为 `input_paths` 传入 **nanobanana** 的 `banana_generate` 工具。
 
 ### 2️⃣ Inject (审美注入)
-- **审美驱动**: 优先调度 **xhs-vision** 插件注入 "冷白皮"、"胶原蛋白" 等中式审美因子。
+- **审美驱动**: 依据 `docs/ucd/` 规范，手动注入镜头参数（如 85mm）、光影与肤色质感描述，而非依赖特定平台插件。
 - **规范依赖**: 必须加载 `docs/ucd/persona_system.md` 提取镜头与光影参数。
 
 ### 3️⃣ Generate (生成执行)

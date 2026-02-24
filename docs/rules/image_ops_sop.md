@@ -15,11 +15,6 @@
 - **红线**: 必须包含 `zero humans, zero faces`。采用 3D Isometric 风格。
 - **归档**: `~/Documents/juejin/assets/`
 
-### C. 审美类/生活方式 (Lifestyle & Aesthetic)
-- **工具**: `generate_xhs_image` (xhs-vision)
-- **特征**: 自动注入中式美学参数。
-- **归档**: `~/Desktop/xhs-output/`
-
 ## 2. 完工定义 (DoD)
 1. 图像已生成并符合对应场景规范。
 2. 图像已通过 `image-hosting-master` 上传并获取 HTTPS 链接。

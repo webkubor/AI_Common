@@ -47,8 +47,8 @@
     *   **必须**强制锁定 `docs/ucd/persona_refs/` 下的参考图。
     *   **必须**仅使用 `edit_image` (图生图) 模式，配合 `narrative prompt` 锁死骨相。
 2.  **工具边界原则 (Tool Boundary)**:
-    *   遇到扩展工具功能缺失（如 `xhs-vision` SDK 未集成），**严禁**尝试修改或编译其源码。
-    *   **降级策略**: 仅提取其 Prompt/Output 文本，手动组合调用核心工具 (`edit_image`) 执行。
+    *   遇到核心工具 (`nanobanana` 等) 功能缺失，**严禁**尝试修改或编译其源码。
+    *   **降级策略**: 提取其输出的文本/Prompt，通过 Shell 或其他基础工具组合执行。
 3.  **完工定义升级 (DoD - Definition of Done)**:
     *   图片生成任务严禁停留在“本地文件生成”。
     *   **必须**自动检索 `image-hosting-master` 技能触发上传逻辑，直到输出可访问的 HTTP 链接。

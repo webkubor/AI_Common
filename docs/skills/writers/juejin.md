@@ -20,7 +20,6 @@ license: Apache 2.0
 
 ### 2. 视觉先行 (Visual-First Protocol)
 - **原子化生成**: 严禁在封面图未就绪的情况下产出正文或执行发布。
-- **工具禁令**: 对于技术类文章，**严禁使用** `generate_xhs_image` (避免注入人像)。
 - **工具路径**: 必须使用 `generate_image` 配合 `juejin_tech_covers` 规范。
 - **视觉红线**: 封面必须是 **3D Isometric / 磨砂玻璃 / 抽象数据流**。Prompt 必须包含 `zero humans, zero faces`。
 
