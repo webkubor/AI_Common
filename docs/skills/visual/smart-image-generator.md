@@ -12,18 +12,17 @@ priority: 1
 所有绘图任务必须遵循 **A-I-G-U** 闭环模型，且必须明确调度 **nanobanana** MCP 服务：
 
 ### 1️⃣ Analyze (分析与锁相)
-- **人像一致性 (Character Consistency)**: 严格遵循 Imagen 3 人像一致性协议。
-- **动作**: 扫描 `docs/ucd/persona_refs/` 下的所有 3+ 张参考图。
-- **挂载**: 必须将所有参考图路径作为 `input_paths` 传入 **nanobanana** 的 `banana_generate` 工具。
+- **人像一致性 (Character Consistency)**: 严格遵循 Persona System SOP。
+- **动作**: 扫描 `docs/ucd/persona_refs/` 下的底稿。
+- **挂载**: 必须将参考图路径作为 `file` 参数传入 **nanobanana** 的 `edit_image` 工具。
 
 ### 2️⃣ Inject (审美注入)
-- **审美驱动**: 依据 `docs/ucd/` 规范，手动注入镜头参数（如 85mm）、光影与肤色质感描述，而非依赖特定平台插件。
-- **规范依赖**: 必须加载 `docs/ucd/persona_system.md` 提取镜头与光影参数。
+- **审美驱动**: 依据 `docs/ucd/persona_system.md` 规范，手动注入镜头参数（如 85mm）、光影与肤色质感描述。
 
 ### 3️⃣ Generate (生成执行)
 - **核心工具**: 强制调度 **nanobanana** MCP。
-- **函数**: `banana_generate`。
-- **提示词约束**: 必须包含 "Strictly maintain character consistency based on the attached reference images"，并描述 85mm 镜头、电影级光影。
+- **函数**: `edit_image` (锁相模式) 或 `generate_image` (技术封面模式)。
+- **提示词约束**: 必须包含 "Strictly maintain character consistency based on the attached reference image"。
 
 ### 4️⃣ Upload (自动分发)
 - **动作**: 生成后立即调用图床大师逻辑，上传至 `picx-images-hosting`，交付 Markdown 链接。
