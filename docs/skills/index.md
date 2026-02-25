@@ -23,10 +23,12 @@
 - [GitLab 管理员](./ops/gitlab.md) - 流水线与仓库管理。
 
 ## 🛠️ 工程与自动化部 (Engineering)
+
 负责基建、后端与全自动流程。
 - [webapp-testing](./engineering/webapp-testing.md) - 自动化测试专家。
 - [Supabase Master](./engineering/supabase-master.md) - 后端架构与数据库。
 - [PWA 专家](./engineering/pwa-master.md) - 离线化改造方案。
+- [WebMCP 改造专家](./engineering/webmcp-master.md) - 网页 AI 化与接口注入。
 - [VitePress 初始化](./engineering/vitepress-init.md) - 文档站快速搭建。
 - [图床大师 (Image Hosting)](./engineering/image-hosting-master.md) - 全自动资产分发。
 
@@ -37,6 +39,7 @@
 - [Frontend Design](./visual/frontend-design.md) - UI 设计还原。
 
 ## 🎵 音频与多媒体部 (Audio & Multimedia)
+
 负责声音景观设计与 AI 音乐创作。
 - [AI 音乐工程师](./audio/music-engineer.md) - 词曲创作、BGM 生成与音频提示词。
 
