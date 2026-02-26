@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 
 /**
- * 记忆哨兵模块 (Sentinel V2.3 - High Signal & Anti-Spam)
+ * 记忆哨兵模块 (Sentinel V2.4 - Time Aware & High Signal)
  * 
  * 优化点：
- * 1. 内容去重 (Deduplication)：相同内容绝不重复发送。
- * 2. 时间锁 (Rate Limiting)：5 分钟内强制冷却，防止高频骚扰。
- * 3. 增强 Lark 推送的消息卡片格式。
+ * 1. 推送时段限制：仅在 10:00 - 20:00 允许推送，不骚扰老爹休息。
+ * 2. 内容去重与 5 分钟冷却锁。
  */
 
 import fs from 'fs';
@@ -65,27 +64,30 @@ export async function sendToLark(title, body) {
     const webhookUrl = envContent.match(/LARK_WEBHOOK_URL=(.+)/)?.[1];
     if (!webhookUrl) return;
 
-    // --- 锁与去重逻辑 ---
-    const now = Date.now();
-    let lastNotif = { timestamp: 0, body: "" };
+    // --- 锁与时段校验 ---
+    const now = new Date();
+    const currentHour = now.getHours();
     
+    // 1. 推送时段限制 (10点 - 20点)
+    if (currentHour < 10 || currentHour >= 20) {
+      console.log(`ℹ️ 当前时段 (${currentHour}:00) 为静默期，小烛不打扰老爹，更新已入库。`);
+      return;
+    }
+
+    let lastNotif = { timestamp: 0, body: "" };
     if (fs.existsSync(NOTIF_LOCK_PATH)) {
       try {
         lastNotif = JSON.parse(fs.readFileSync(NOTIF_LOCK_PATH, 'utf-8'));
       } catch (e) {}
     }
 
-    // 1. 内容去重 (完全相同的内容不发)
+    // 2. 内容去重
     if (body.trim() === lastNotif.body.trim()) {
-      console.log("ℹ️ 小烛提示：汇报内容与上次完全一致，为了不吵老爹，本次已静默。");
       return;
     }
 
-    // 2. 5分钟强制冷却锁 (防止高频重复触发)
-    const cooldown = 5 * 60 * 1000; // 5分钟
-    if (now - lastNotif.timestamp < cooldown) {
-      const remaining = Math.round((cooldown - (now - lastNotif.timestamp)) / 1000);
-      console.log(`ℹ️ 小烛提示：还在推送冷却期呢，还剩 ${remaining} 秒，本次更新已记在日志里啦。`);
+    // 3. 冷却锁
+    if (Date.now() - lastNotif.timestamp < 5 * 60 * 1000) {
       return;
     }
 
@@ -110,8 +112,7 @@ export async function sendToLark(title, body) {
     });
 
     if (response.ok) {
-      // 发送成功后更新锁文件
-      fs.writeFileSync(NOTIF_LOCK_PATH, JSON.stringify({ timestamp: now, body: body.trim() }));
+      fs.writeFileSync(NOTIF_LOCK_PATH, JSON.stringify({ timestamp: Date.now(), body: body.trim() }));
     }
   } catch (e) {
     console.error('Lark 推送失败:', e.message);

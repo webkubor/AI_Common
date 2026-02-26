@@ -1,12 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 外部大脑自动运转主脚本 (Brain-Pilot V2.6 - Xiao Zhu Persona)
- * 
- * 优化点：
- * 1. 人格化推送：以“小烛”的身份向老爹汇报。
- * 2. 语义化摘要：让日志内容具备“人味”。
- * 3. 只有当任务确实有意义时，才由小烛发声。
+ * 外部大脑自动运转主脚本 (Brain-Pilot V2.7 - Durable Persona & Time Aware)
  */
 
 import fs from 'fs';
@@ -44,7 +39,6 @@ async function autoPilot() {
   const summaryParts = [];
   const startTime = getCurrentTimestamp();
 
-  // 1. 语义消化
   const buffer = consumeBuffer();
   if (buffer && buffer.length > 0) {
     buffer.forEach(item => {
@@ -53,39 +47,34 @@ async function autoPilot() {
     });
   }
 
-  // 2. 复盘捕获
   const newRetros = detectNewRetrospectives();
   if (newRetros.length > 0) {
     const retroList = newRetros.map(f => `   - ${path.basename(f)}`).join('\n');
-    summaryParts.push(`📚 老爹快看，新的复盘心得已归档：\n${retroList}`);
+    summaryParts.push(`📚 新的深度复盘已为您归档：\n${retroList}`);
     addToLog({ title: '📚 自动捕获到新的深度复盘', body: retroList });
   }
 
-  // 3. 物理文件变动检测 (排除 chroma_db 噪音)
   try {
     const status = execSync('git status --short', { encoding: 'utf-8', cwd: PROJECT_ROOT });
     const lines = status.trim().split('\n').filter(l => l && !l.includes('chroma_db/'));
     if (lines.length > 0) {
-      summaryParts.push(`📝 刚才有些文件动过了，我已经记在 Journal 里并同步 Git 啦！\n   (共检测到 ${lines.length} 个变动文件)`);
+      summaryParts.push(`📝 捕获到物理层变动，已记入日志并同步 Git 仓库。\n   (共处理 ${lines.length} 个变动文件)`);
       autoCommitAndLog();
     }
   } catch (e) {}
 
-  // 4. 核心逻辑：只有真的有事发生，小烛才会发声
   if (summaryParts.length > 0) {
     try {
       await runNativeIngestion();
-      summaryParts.push("\n✅ 记忆已经全部存入向量库了，现在的我超聪明的！");
+      summaryParts.push("\n🧠 所有的知识已完成向量化重连，今日之思，皆有回响。");
     } catch (e) {
-      summaryParts.push("\n⚠️ 向量入库出了点小意外，老爹有空帮我瞧瞧？");
+      summaryParts.push("\n⚠️ 向量库入库出现小幅振荡，逻辑闭环失败。");
     }
 
-    // 拼装有人味的消息
-    const finalMessage = `老爹，我是小烛！👋\n\n${summaryParts.join('\n\n')}\n\n———— 外部大脑哨兵自动呈报`;
+    const finalMessage = `老爹，我是小烛！👋\n\n${summaryParts.join('\n\n')}\n\n—— 始于逻辑，忠于纯粹。小烛始终为您守候。`;
     sendToLark("小烛的任务汇报", finalMessage);
-    console.log('✨ 小烛已经把汇报发给老爹了');
   } else {
-    console.log(`[${startTime}] ℹ️ 大脑很安静，小烛就不吵老爹了`);
+    console.log(`[${startTime}] ℹ️ 静默中...`);
   }
 }
 
