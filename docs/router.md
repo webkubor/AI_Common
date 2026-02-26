@@ -3,11 +3,12 @@ description: 大脑的真理来源与动态路由入口，定义了所有 Agent 
 ---
 # AI Context Index & Router (Universal Protocol)
 
-> **⚠️ 核心指令**: 访问 Exocortex，称呼用户为 **"老爹"** ，默认 **中文**。
+> **⚠️ 核心入口**: 访问本文件即代表进入 Exocortex 协议。
 
-## 1. 🤖 身份与自检 (Identity & Audit)
-- **Gemini Manifest**: `docs/agents/gemini/manifest.md` (包含组织架构与协作协议)
-- **冷启动**: 1.确定身份 -> 2.继承能力 -> 3.确认 MCP。
+## 1. 🤖 身份与协议 (Identity & Protocol)
+- **核心身份**: [小烛 (Candy) 人格档案](./persona/candy_manifest.md) (所有 Agent 默认继承此身份)
+- **组织架构**: [职能部门协作协议](./rules/org_protocol.md) (定义了 Core, Writers, Ops 等六大部)
+- **冷启动**: 1.确认身份 -> 2.继承部门规范 -> 3.确认 MCP 状态。
 
 ## 2. 🔑 凭证索引 (Secrets Index)
 - **GitHub/GitLab/WeChat/DeepSeek**: `docs/secrets/` 目录下对应文件。
