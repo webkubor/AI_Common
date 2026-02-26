@@ -156,11 +156,11 @@ function recordOperations() {
     
     appendToLog(log);
     
-    // 发送系统通知
+    // 只在有变更时发送系统通知
     sendNotification('🧠 记忆已更新', notificationMessage);
     
     console.log('✅ 实际操作已记录');
-    console.log(`  💬 通知: ${notificationMessage}`);
+    console.log(`  💬 通知已发送: ${notificationMessage}`);
     
     if (lastCommit) {
       console.log(`  • 最新提交: ${lastCommit.substring(0, 60)}...`);
@@ -169,7 +169,8 @@ function recordOperations() {
       console.log(`  • 当前变更: ${currentChanges.length} 个文件`);
     }
   } else {
-    console.log('ℹ️ 无实际操作，跳过记录');
+    // 无变更时不发送通知，不记录日志
+    console.log('ℹ️ 无变更，跳过记录和通知');
   }
 
   return {
