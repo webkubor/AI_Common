@@ -1,32 +1,32 @@
 #!/usr/bin/env node
 
 /**
- * 小烛终端 (XiaoZhu CLI V4.0 - Industrial Edition)
+ * 小烛终端 (XiaoZhu CLI V4.1 - Ultimate AI SDK)
  * 
- * 核心重构：
- * 1. 100% Node.js 环境：使用 ChromaDB Node SDK，彻底干掉 Python 脚本。
- * 2. 引入 Vercel AI SDK：使用 streamText 处理流式对话，代码更健壮、更优雅。
- * 3. 极致性能：原生异步调用，响应速度进一步提升。
+ * 核心升级：
+ * 1. 100% 工业级 Node.js 实现：使用 Vercel AI SDK 处理 Embedding 和 Chat。
+ * 2. 修复 ChromaDB 导出错误：通过 AI SDK 的 embed 函数手动获取向量并查询。
+ * 3. 语义化一致性：所有 AI 操作均通过统一的 Provider 接口完成。
  */
 
 import * as p from '@clack/prompts';
 import pc from 'picocolors';
 import os from 'os';
 import path from 'path';
-import { ChromaClient, OllamaEmbeddingFunction } from 'chromadb';
+import { ChromaClient } from 'chromadb';
 import { createOllama } from 'ollama-ai-provider';
-import { streamText } from 'ai';
+import { streamText, embed } from 'ai';
 
 const PROJECT_ROOT = '/Users/webkubor/Documents/AI_Common';
 const CHROMA_DATA_PATH = path.join(PROJECT_ROOT, 'chroma_db');
 const COLLECTION_NAME = 'ai_common_docs';
 
-// 1. 初始化 Ollama 驱动 (Vercel AI SDK)
+// 1. 初始化 Ollama 驱动
 const ollama = createOllama({
   baseURL: 'http://localhost:11434/api',
 });
 
-// 2. 超清块状 Logo (Candy 版)
+// 2. 超清块状 Logo
 const LOGO = `
   ${pc.magenta(' ██████')}   ${pc.magenta('█████')}   ${pc.magenta('███')}   ${pc.magenta('██')}  ${pc.magenta('██████')}   ${pc.magenta('██')}   ${pc.magenta('██')}
  ${pc.magenta('███  ░░')}  ${pc.magenta('███ ░░█')}  ${pc.magenta('░████ ░██')}  ${pc.magenta('░██  ░██')}  ${pc.magenta('░░██ ██')}
@@ -39,14 +39,13 @@ async function main() {
   console.clear();
   console.log(LOGO);
   
-  // 实时系统参数
   const totalMem = (os.totalmem() / 1024 / 1024 / 1024).toFixed(1);
   const freeMem = (os.freemem() / 1024 / 1024 / 1024).toFixed(1);
   const usedMem = (totalMem - freeMem).toFixed(1);
   const platform = os.platform() === 'darwin' ? 'macOS' : os.platform();
   
   console.log(` ${pc.dim('┌────────────────────────────────────────────────────────────────────────────┐')}`);
-  console.log(` ${pc.dim('│')}  ${pc.magenta('⚡ 运行状态')}: ${pc.green('在线')}        ${pc.dim('│')}  ${pc.magenta('🧠 记忆引擎')}: ${pc.white('ChromaDB')}    ${pc.dim('│')}  ${pc.magenta('✨ 核心版本')}: ${pc.white('v4.0')}      ${pc.dim('│')}`);
+  console.log(` ${pc.dim('│')}  ${pc.magenta('⚡ 运行状态')}: ${pc.green('在线')}        ${pc.dim('│')}  ${pc.magenta('🧠 记忆中枢')}: ${pc.white('ChromaDB')}    ${pc.dim('│')}  ${pc.magenta('✨ 核心版本')}: ${pc.white('v4.1')}      ${pc.dim('│')}`);
   console.log(` ${pc.dim('│')}  ${pc.magenta('💻 系统架构')}: ${pc.white(platform + '/Arm64')}  ${pc.dim('│')}  ${pc.magenta('💾 内存实况')}: ${pc.white(usedMem + '/' + totalMem + 'G')}   ${pc.dim('│')}  ${pc.magenta('🔥 对话模型')}: ${pc.white('DeepSeek-R1')} ${pc.dim('│')}`);
   console.log(` ${pc.dim('└────────────────────────────────────────────────────────────────────────────┘')}\n`);
 
@@ -66,23 +65,22 @@ async function main() {
   }
 
   const s = p.spinner();
-  s.start(pc.magenta('🔮 正在翻阅外部大脑...'));
+  s.start(pc.magenta('🔮 正在穿透记忆维度...'));
 
   try {
-    // --- 1. 使用原生 SDK 检索 ChromaDB ---
+    // --- 1. 使用 Vercel AI SDK 获取用户请求的向量 ---
     let context = "暂无背景";
     try {
-      const embedder = new OllamaEmbeddingFunction({
-        url: "http://localhost:11434/api/embeddings",
-        model: "nomic-embed-text"
+      const { embedding } = await embed({
+        model: ollama.textEmbeddingModel('nomic-embed-text'),
+        value: userRequest,
       });
+
+      // --- 2. 查询 ChromaDB ---
       const client = new ChromaClient({ path: CHROMA_DATA_PATH });
-      const collection = await client.getCollection({ 
-        name: COLLECTION_NAME, 
-        embeddingFunction: embedder 
-      });
+      const collection = await client.getCollection({ name: COLLECTION_NAME });
       const results = await collection.query({ 
-        queryTexts: [userRequest], 
+        queryEmbeddings: [embedding], 
         nResults: 3 
       });
       
@@ -95,7 +93,7 @@ async function main() {
 
     s.stop(pc.magenta('✨ 语义重组完成！老爹请看：'));
 
-    // --- 2. 使用 Vercel AI SDK 执行流式对话 ---
+    // --- 3. 执行流式对话 ---
     process.stdout.write(`\n ${pc.magenta('🕯️')} ${pc.bold(pc.white('Candy 的汇报:'))}\n`);
     process.stdout.write(` ${pc.dim('————————————————————————————————————————————————————————————————————————————')}\n\n `);
 
