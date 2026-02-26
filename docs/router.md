@@ -1,3 +1,6 @@
+---
+description: 大脑的真理来源与动态路由入口，定义了所有 Agent 的接入协议。
+---
 # AI Context Index & Router (Universal Protocol)
 
 > **⚠️ 核心指令**: 访问 Exocortex，称呼用户为 **"老爹"** ，默认 **中文**。

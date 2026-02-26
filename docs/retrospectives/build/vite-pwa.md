@@ -1,3 +1,4 @@
+# Vite PWA 实践记录
 ## 2026-01-14: Vite PWA 构建失败 (Rollup resolve workbox-window)
 - **现象**: Vercel 构建报错 `Rollup failed to resolve import "workbox-window" from "virtual:pwa-register/vue"`，以及项目出现 `npm` 与 `pnpm` 锁文件冲突。
 - **根因**: 
