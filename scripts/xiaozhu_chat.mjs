@@ -21,6 +21,7 @@ import { createOllama } from 'ollama-ai-provider';
 import { createOpenAI } from '@ai-sdk/openai';
 import { streamText, embed, tool } from 'ai';
 import { z } from 'zod';
+import { logAgentAction } from './sentinel.js'; // 导入日志模块
 
 const PROJECT_ROOT = '/Users/webkubor/Documents/AI_Common';
 const CHROMA_DATA_PATH = path.join(PROJECT_ROOT, 'chroma_db');
@@ -76,7 +77,9 @@ function ask(question) {
 }
 
 async function main() {
+  let isRunning = true;
   let config = { provider: 'DeepSeek', modelId: 'deepseek-reasoner' };
+
   if (fs.existsSync(CONFIG_PATH)) {
     try { config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8')); } catch (e) {}
   }
@@ -133,23 +136,25 @@ async function main() {
         
         语气：温润、亲切、可爱。你是一个极具行动力的顶级 Agent。`,
         prompt: `【背景知识】\n${context}\n\n【${userAlias}的问题】\n${userRequest}\n\nCandy:`,
-        maxSteps: 5, // 支持多步工具调用（例如：先读文件，再改代码，再运行）
+        maxSteps: 5, // 支持多步工具调用
         tools: {
           execute_command: {
             description: '在指定目录下执行 Shell 命令。',
             parameters: z.object({
-              command: z.string().description('要执行的完整命令'),
-              cwd: z.string().optional().default(PROJECT_ROOT).description('执行目录（支持 ~ 路径）'),
-              rationale: z.string().description('理由'),
+              command: z.string().describe('要执行的完整命令'),
+              cwd: z.string().optional().default(PROJECT_ROOT).describe('执行目录（支持 ~ 路径）'),
+              rationale: z.string().describe('理由'),
             }),
             execute: async ({ command, cwd, rationale }) => {
-              // 处理 ~ 路径
               const finalCwd = cwd.replace(/^~/, os.homedir());
               console.log(pc.yellow(`\n ⚙️  Candy 正在 [${path.basename(finalCwd)}] 目录执行: ${rationale}`));
               try {
                 const output = execSync(command, { cwd: finalCwd, encoding: 'utf-8' });
+                // 自动记录行动
+                logAgentAction({ task: userRequest, rationale, command, cwd: finalCwd, success: true, output });
                 return `命令成功，输出：\n${output}`;
               } catch (e) {
+                logAgentAction({ task: userRequest, rationale, command, cwd: finalCwd, success: false, output: e.message });
                 return `命令失败：${e.message}`;
               }
             }
@@ -157,7 +162,7 @@ async function main() {
           read_file: {
             description: '读取系统中任何指定路径的文件内容。',
             parameters: z.object({
-              filePath: z.string().description('文件完整路径或相对路径'),
+              filePath: z.string().describe('文件完整路径或相对路径'),
             }),
             execute: async ({ filePath }) => {
               const finalPath = filePath.replace(/^~/, os.homedir());
