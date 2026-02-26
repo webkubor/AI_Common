@@ -27,9 +27,8 @@ def query_brain(user_query):
     # 拼装返回
     context = ""
     for doc in results['documents'][0]:
-        context += f"---
-{doc}
-"
+        # 修复之前的换行语法错误
+        context += f"---\n{doc}\n"
     
     return context
 

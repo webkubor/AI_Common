@@ -1,23 +1,32 @@
 #!/usr/bin/env node
 
 /**
- * 小烛终端 (XiaoZhu CLI V3.7 - Candy Persona)
+ * 小烛终端 (XiaoZhu CLI V4.0 - Industrial Edition)
  * 
- * 视觉进化：
- * 1. 采用更拟人化的英文名：CANDY (小烛的萌化版)。
- * 2. 超清块状 Logo：确保字母轮廓锐利，绝不乱码。
- * 3. 极致汉化参数：仪表盘全中文，硬核数据一览无余。
+ * 核心重构：
+ * 1. 100% Node.js 环境：使用 ChromaDB Node SDK，彻底干掉 Python 脚本。
+ * 2. 引入 Vercel AI SDK：使用 streamText 处理流式对话，代码更健壮、更优雅。
+ * 3. 极致性能：原生异步调用，响应速度进一步提升。
  */
 
 import * as p from '@clack/prompts';
 import pc from 'picocolors';
-import { execSync } from 'child_process';
 import os from 'os';
+import path from 'path';
+import { ChromaClient, OllamaEmbeddingFunction } from 'chromadb';
+import { createOllama } from 'ollama-ai-provider';
+import { streamText } from 'ai';
 
 const PROJECT_ROOT = '/Users/webkubor/Documents/AI_Common';
-const UV_PATH = '/Users/webkubor/.local/bin/uv';
+const CHROMA_DATA_PATH = path.join(PROJECT_ROOT, 'chroma_db');
+const COLLECTION_NAME = 'ai_common_docs';
 
-// 1. 超清晰的 CANDY Logo (工业块状字体)
+// 1. 初始化 Ollama 驱动 (Vercel AI SDK)
+const ollama = createOllama({
+  baseURL: 'http://localhost:11434/api',
+});
+
+// 2. 超清块状 Logo (Candy 版)
 const LOGO = `
   ${pc.magenta(' ██████')}   ${pc.magenta('█████')}   ${pc.magenta('███')}   ${pc.magenta('██')}  ${pc.magenta('██████')}   ${pc.magenta('██')}   ${pc.magenta('██')}
  ${pc.magenta('███  ░░')}  ${pc.magenta('███ ░░█')}  ${pc.magenta('░████ ░██')}  ${pc.magenta('░██  ░██')}  ${pc.magenta('░░██ ██')}
@@ -30,15 +39,14 @@ async function main() {
   console.clear();
   console.log(LOGO);
   
-  // 深度系统参数提取
+  // 实时系统参数
   const totalMem = (os.totalmem() / 1024 / 1024 / 1024).toFixed(1);
   const freeMem = (os.freemem() / 1024 / 1024 / 1024).toFixed(1);
   const usedMem = (totalMem - freeMem).toFixed(1);
   const platform = os.platform() === 'darwin' ? 'macOS' : os.platform();
   
-  // 打印全汉化精致仪表盘
   console.log(` ${pc.dim('┌────────────────────────────────────────────────────────────────────────────┐')}`);
-  console.log(` ${pc.dim('│')}  ${pc.magenta('⚡ 运行状态')}: ${pc.green('在线')}        ${pc.dim('│')}  ${pc.magenta('🧠 记忆中枢')}: ${pc.white('ChromaDB')}    ${pc.dim('│')}  ${pc.magenta('✨ 核心版本')}: ${pc.white('v3.7')}      ${pc.dim('│')}`);
+  console.log(` ${pc.dim('│')}  ${pc.magenta('⚡ 运行状态')}: ${pc.green('在线')}        ${pc.dim('│')}  ${pc.magenta('🧠 记忆引擎')}: ${pc.white('ChromaDB')}    ${pc.dim('│')}  ${pc.magenta('✨ 核心版本')}: ${pc.white('v4.0')}      ${pc.dim('│')}`);
   console.log(` ${pc.dim('│')}  ${pc.magenta('💻 系统架构')}: ${pc.white(platform + '/Arm64')}  ${pc.dim('│')}  ${pc.magenta('💾 内存实况')}: ${pc.white(usedMem + '/' + totalMem + 'G')}   ${pc.dim('│')}  ${pc.magenta('🔥 对话模型')}: ${pc.white('DeepSeek-R1')} ${pc.dim('│')}`);
   console.log(` ${pc.dim('└────────────────────────────────────────────────────────────────────────────┘')}\n`);
 
@@ -58,60 +66,58 @@ async function main() {
   }
 
   const s = p.spinner();
-  s.start(pc.magenta('🔮 正在穿透记忆维度，寻找老爹想要的答案...'));
+  s.start(pc.magenta('🔮 正在翻阅外部大脑...'));
 
   try {
-    let context = "";
+    // --- 1. 使用原生 SDK 检索 ChromaDB ---
+    let context = "暂无背景";
     try {
-      context = execSync(`${UV_PATH} run ./scripts/ingest/query_brain.py "${userRequest}"`, {
-        cwd: PROJECT_ROOT,
-        encoding: 'utf-8'
+      const embedder = new OllamaEmbeddingFunction({
+        url: "http://localhost:11434/api/embeddings",
+        model: "nomic-embed-text"
       });
-    } catch (e) {}
+      const client = new ChromaClient({ path: CHROMA_DATA_PATH });
+      const collection = await client.getCollection({ 
+        name: COLLECTION_NAME, 
+        embeddingFunction: embedder 
+      });
+      const results = await collection.query({ 
+        queryTexts: [userRequest], 
+        nResults: 3 
+      });
+      
+      if (results.documents[0].length > 0) {
+        context = results.documents[0].join('\n---\n');
+      }
+    } catch (e) {
+      s.message(pc.yellow('⚠️ 外部大脑连接异常，已启用备用常识库。'));
+    }
 
     s.stop(pc.magenta('✨ 语义重组完成！老爹请看：'));
 
-    // 极简流式对话
-    process.stdout.write(`\n ${pc.magenta('󱐋')} ${pc.bold(pc.white('小烛的碎碎念:'))}\n`);
-    process.stdout.write(` ${pc.dim('————————————————————————————————————————————————————————————————────────────')}\n\n `);
+    // --- 2. 使用 Vercel AI SDK 执行流式对话 ---
+    process.stdout.write(`\n ${pc.magenta('🕯️')} ${pc.bold(pc.white('Candy 的汇报:'))}\n`);
+    process.stdout.write(` ${pc.dim('————————————————————————————————————————————————————————————————————————————')}\n\n `);
 
-    const response = await fetch('http://localhost:11434/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: "deepseek-r1:7b",
-        prompt: `你叫小烛 (Candle)，老爹喜欢叫你 Candy。你是老爹 (webkubor) 的赛博管家。
-        你的回答必须基于以下背景。语气要温润、亲切、可爱，偶尔带点调皮，但核心内容要干货。
-        
-背景：
-${context || '暂无背景'}
+    const { textStream } = await streamText({
+      model: ollama('deepseek-r1:7b'),
+      prompt: `你叫小烛 (Candle)，老爹喜欢叫你 Candy。你是老爹 (webkubor) 的赛博管家。
+      你的回答必须基于以下背景。语气要温润、亲切、可爱，偶尔带点调皮，但核心内容要干货。
+      
+背景知识：
+${context}
 
 老爹的问题：
 ${userRequest}
 
 Candy 的回答：`,
-        stream: true
-      })
     });
 
-    if (!response.ok) throw new Error(`神经连接异常`);
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      const chunk = decoder.decode(value, { stream: true });
-      try {
-        const json = JSON.parse(chunk);
-        if (json.response) {
-          process.stdout.write(pc.white(json.response));
-        }
-      } catch (e) {}
+    for await (const textPart of textStream) {
+      process.stdout.write(pc.white(textPart));
     }
 
-    console.log(`\n\n ${pc.dim('————————————————────────────────────────────────────────────────────────────')}`);
+    console.log(`\n\n ${pc.dim('————————————————————————————————————————————————————————————————————————————')}`);
 
   } catch (e) {
     s.stop(pc.red('💥 哎呀，逻辑链路不小心断掉了...'));

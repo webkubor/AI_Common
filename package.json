@@ -13,6 +13,9 @@
   },
   "dependencies": {
     "@clack/prompts": "^1.0.1",
+    "ai": "^6.0.101",
+    "chromadb": "^3.3.1",
+    "ollama-ai-provider": "^1.2.0",
     "picocolors": "^1.1.1"
   }
 }
