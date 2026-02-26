@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 
 /**
- * 大脑实际操作记录器
+ * 带通知的操作记录器
  * 
- * 记录内容：
- * - Git 提交（commit message + 变更文件）
- * - 文件操作（新增、修改、删除）
- * - 目录结构变化
- * - 脚本执行历史
+ * 功能：
+ * - 记录实际操作
+ * - 发送 macOS 系统通知
+ * - 显示"记忆已更新"提示
  */
 
 import fs from 'fs';
@@ -54,9 +53,19 @@ function appendToLog(content) {
   fs.appendFileSync(logPath, content + '\n\n');
 }
 
+function sendNotification(title, message) {
+  try {
+    // macOS 系统通知
+    const script = `display notification "${message}" with title "${title}" sound name "Glass"`;
+    execSync(`osascript -e '${script}'`);
+  } catch (error) {
+    // 通知失败不影响主流程
+  }
+}
+
 function getLastCommit() {
   try {
-    const commit = execSync('git log -1 --pretty=format:"%h - %s (%cr)"', {
+    const commit = execSync('git log -1 --pretty=format:"%h - %s"', {
       encoding: 'utf-8',
       cwd: PROJECT_ROOT
     });
@@ -98,6 +107,7 @@ function recordOperations() {
   const currentChanges = getCurrentChanges();
 
   let hasOperations = false;
+  let notificationMessage = '';
   let log = `## 🔄 实际操作记录 - ${getCurrentTimestamp()}\n\n`;
 
   // 记录最后一次提交
@@ -117,6 +127,7 @@ function recordOperations() {
     }
 
     hasOperations = true;
+    notificationMessage = `Git 提交: ${commitFiles.length} 个文件`;
   }
 
   // 记录当前未提交的变更
@@ -131,15 +142,25 @@ function recordOperations() {
     log += '\n';
 
     hasOperations = true;
+    if (notificationMessage) {
+      notificationMessage += `, 未提交: ${currentChanges.length} 个`;
+    } else {
+      notificationMessage = `未提交变更: ${currentChanges.length} 个文件`;
+    }
   }
 
-  // 如果有操作，记录到日志
+  // 如果有实际操作，记录到日志并发送通知
   if (hasOperations) {
     log += `**记录时间**: ${getCurrentTimestamp()}\n`;
     log += `\n---\n`;
     
     appendToLog(log);
+    
+    // 发送系统通知
+    sendNotification('🧠 记忆已更新', notificationMessage);
+    
     console.log('✅ 实际操作已记录');
+    console.log(`  💬 通知: ${notificationMessage}`);
     
     if (lastCommit) {
       console.log(`  • 最新提交: ${lastCommit.substring(0, 60)}...`);
@@ -148,15 +169,20 @@ function recordOperations() {
       console.log(`  • 当前变更: ${currentChanges.length} 个文件`);
     }
   } else {
-    console.log('ℹ️ 无新操作，跳过记录');
+    console.log('ℹ️ 无实际操作，跳过记录');
   }
 
-  return hasOperations;
+  return {
+    hasOperations,
+    commits: lastCommit ? 1 : 0,
+    changes: currentChanges.length,
+    fileOps: commitFiles.length
+  };
 }
 
 // 如果作为命令行运行
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('📋 大脑实际操作记录器');
+  console.log('📋 大脑实际操作记录器（带通知）');
   console.log('='.repeat(60));
   recordOperations();
   console.log('\n='.repeat(60));
