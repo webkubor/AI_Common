@@ -28,7 +28,6 @@
   - `@example`: 提供使用示例
   - `@typedef`: 定义复杂类型
   - `@template`: 泛型类型说明
-- **详细规范**: 参见 [JSDoc/TSDoc 中文注释规范](./jsdoc_rules/index.md)
 
 ## 2. 结构与可维护性
 
