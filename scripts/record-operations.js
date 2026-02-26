@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 /**
- * 实际操作记录器
+ * 大脑实际操作记录器
  * 
- * 功能：记录用户对大脑的实际操作
- * - Git 提交记录
- * - 文件增删改
+ * 记录内容：
+ * - Git 提交（commit message + 变更文件）
+ * - 文件操作（新增、修改、删除）
  * - 目录结构变化
  * - 脚本执行历史
  */
@@ -34,7 +34,7 @@ function getLogPath() {
   return path.join(DOCS_DIR, 'memory', 'journal', `${today}.md`);
 }
 
-function appendToLog(content) {
+function ensureJournalExists() {
   const logPath = getLogPath();
   const journalDir = path.dirname(logPath);
 
@@ -42,22 +42,43 @@ function appendToLog(content) {
     fs.mkdirSync(journalDir, { recursive: true });
   }
 
+  if (!fs.existsSync(logPath)) {
+    const header = `# ${getCurrentDate()}: 操作日志\n\n`;
+    fs.writeFileSync(logPath, header);
+  }
+}
+
+function appendToLog(content) {
+  ensureJournalExists();
+  const logPath = getLogPath();
   fs.appendFileSync(logPath, content + '\n\n');
 }
 
-function getRecentGitCommits() {
+function getLastCommit() {
   try {
-    const commits = execSync('git log --oneline --since="10 minutes ago"', {
+    const commit = execSync('git log -1 --pretty=format:"%h - %s (%cr)"', {
       encoding: 'utf-8',
       cwd: PROJECT_ROOT
     });
-    return commits.trim().split('\n').filter(Boolean);
+    return commit.trim();
+  } catch (error) {
+    return null;
+  }
+}
+
+function getLastCommitFiles() {
+  try {
+    const files = execSync('git diff-tree --no-commit-id --name-status -r HEAD', {
+      encoding: 'utf-8',
+      cwd: PROJECT_ROOT
+    });
+    return files.trim().split('\n').filter(Boolean);
   } catch (error) {
     return [];
   }
 }
 
-function getGitChanges() {
+function getCurrentChanges() {
   try {
     const changes = execSync('git status --short', {
       encoding: 'utf-8',
@@ -69,127 +90,77 @@ function getGitChanges() {
   }
 }
 
-function getRecentFileOperations() {
-  try {
-    // 检测最近 10 分钟的文件操作
-    const added = execSync('find docs -name "*.md" -mmin -10 -type f', {
-      encoding: 'utf-8',
-      cwd: PROJECT_ROOT
-    }).trim().split('\n').filter(Boolean);
-
-    const modified = execSync('find docs -name "*.md" -mmin -10 -type f', {
-      encoding: 'utf-8',
-      cwd: PROJECT_ROOT
-    }).trim().split('\n').filter(Boolean);
-
-    return {
-      added: added.length,
-      modified: modified.length,
-      files: [...new Set([...added, ...modified])]
-    };
-  } catch (error) {
-    return { added: 0, modified: 0, files: [] };
-  }
-}
-
-function getDirectoryChanges() {
-  try {
-    const dirs = execSync('find docs -type d -mmin -10', {
-      encoding: 'utf-8',
-      cwd: PROJECT_ROOT
-    }).trim().split('\n').filter(Boolean);
-
-    return dirs.map(d => d.replace('docs/', ''));
-  } catch (error) {
-    return [];
-  }
-}
-
-function recordActualOperations() {
+function recordOperations() {
   console.log('📝 记录实际操作...\n');
 
-  const commits = getRecentGitCommits();
-  const changes = getGitChanges();
-  const fileOps = getRecentFileOperations();
-  const dirChanges = getDirectoryChanges();
+  const lastCommit = getLastCommit();
+  const commitFiles = getLastCommitFiles();
+  const currentChanges = getCurrentChanges();
 
-  // 构建操作记录
-  let operations = `## 🔄 实际操作记录 - ${getCurrentTimestamp()}\n\n`;
+  let hasOperations = false;
+  let log = `## 🔄 实际操作记录 - ${getCurrentTimestamp()}\n\n`;
 
-  // Git 提交
-  if (commits.length > 0) {
-    operations += `### Git 提交\n`;
-    commits.forEach(c => {
-      operations += `- ${c}\n`;
-    });
-    operations += '\n';
-  }
+  // 记录最后一次提交
+  if (lastCommit) {
+    log += `### 📦 最新提交\n`;
+    log += `\`\`\`\n${lastCommit}\n\`\`\`\n\n`;
 
-  // 文件变更
-  if (changes.length > 0) {
-    operations += `### 文件变更 (${changes.length} 个)\n`;
-    changes.slice(0, 10).forEach(c => {
-      operations += `- ${c}\n`;
-    });
-    if (changes.length > 10) {
-      operations += `- ... 共 ${changes.length} 个\n`;
+    if (commitFiles.length > 0) {
+      log += `**变更文件** (${commitFiles.length} 个):\n`;
+      commitFiles.slice(0, 10).forEach(f => {
+        log += `- ${f}\n`;
+      });
+      if (commitFiles.length > 10) {
+        log += `- ... 共 ${commitFiles.length} 个\n`;
+      }
+      log += '\n';
     }
-    operations += '\n';
+
+    hasOperations = true;
   }
 
-  // 文件操作
-  if (fileOps.files.length > 0) {
-    operations += `### 文件操作\n`;
-    operations += `- 新增/修改：${fileOps.files.length} 个文件\n`;
-    fileOps.files.slice(0, 5).forEach(f => {
-      operations += `  - ${f.replace(PROJECT_ROOT + '/', '')}\n`;
+  // 记录当前未提交的变更
+  if (currentChanges.length > 0) {
+    log += `### 📝 当前变更 (未提交)\n`;
+    currentChanges.slice(0, 10).forEach(c => {
+      log += `- ${c}\n`;
     });
-    if (fileOps.files.length > 5) {
-      operations += `  - ... 共 ${fileOps.files.length} 个\n`;
+    if (currentChanges.length > 10) {
+      log += `- ... 共 ${currentChanges.length} 个\n`;
     }
-    operations += '\n';
+    log += '\n';
+
+    hasOperations = true;
   }
 
-  // 目录变化
-  if (dirChanges.length > 0) {
-    operations += `### 目录结构变化\n`;
-    dirChanges.slice(0, 5).forEach(d => {
-      operations += `- ${d}\n`;
-    });
-    if (dirChanges.length > 5) {
-      operations += `- ... 共 ${dirChanges.length} 个\n`;
-    }
-    operations += '\n';
-  }
-
-  // 如果有实际操作，记录到日志
-  if (commits.length > 0 || changes.length > 0 || fileOps.files.length > 0 || dirChanges.length > 0) {
-    operations += `**状态**: 检测到实际操作\n`;
-    appendToLog(operations + '\n---\n');
+  // 如果有操作，记录到日志
+  if (hasOperations) {
+    log += `**记录时间**: ${getCurrentTimestamp()}\n`;
+    log += `\n---\n`;
+    
+    appendToLog(log);
     console.log('✅ 实际操作已记录');
-    console.log(`  • Git 提交: ${commits.length} 个`);
-    console.log(`  • 文件变更: ${changes.length} 个`);
-    console.log(`  • 文件操作: ${fileOps.files.length} 个`);
-    console.log(`  • 目录变化: ${dirChanges.length} 个`);
+    
+    if (lastCommit) {
+      console.log(`  • 最新提交: ${lastCommit.substring(0, 60)}...`);
+    }
+    if (currentChanges.length > 0) {
+      console.log(`  • 当前变更: ${currentChanges.length} 个文件`);
+    }
   } else {
-    console.log('ℹ️ 无实际操作，跳过记录');
+    console.log('ℹ️ 无新操作，跳过记录');
   }
 
-  return {
-    commits: commits.length,
-    changes: changes.length,
-    fileOps: fileOps.files.length,
-    dirChanges: dirChanges.length
-  };
+  return hasOperations;
 }
 
 // 如果作为命令行运行
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('📋 实际操作记录器');
+  console.log('📋 大脑实际操作记录器');
   console.log('='.repeat(60));
-  recordActualOperations();
+  recordOperations();
   console.log('\n='.repeat(60));
 }
 
 // 导出供其他脚本调用
-export { recordActualOperations };
+export { recordOperations };
