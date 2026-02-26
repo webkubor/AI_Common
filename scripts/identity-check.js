@@ -36,8 +36,8 @@ function checkIdentity() {
       const content = fs.readFileSync(manifestPath, 'utf-8');
       
       // 提取身份信息
-      const nameMatch = content.match(/当前身份[：:]\s*(.+)/);
-      const coreMatch = content.match(/核心代号[：:]\s*(.+)/);
+      const nameMatch = content.match(/\*\*当前身份\*\*[：:]\s*(.+)/);
+      const coreMatch = content.match(/\*\*核心代号\*\*[：:]\s*(.+)/);
       
       identities[agent] = {
         exists: true,
