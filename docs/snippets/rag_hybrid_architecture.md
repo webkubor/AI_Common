@@ -16,7 +16,7 @@
 *   **一句话**: 它是 AI 的**“出厂设置”**，保证 AI 一上来就是“懂你”的状态。
 
 #### 🛤️ L1：私有 RAG (Private Memory) - **优先检索**
-> **载体**: Local Milvus (`milvus-toolkit`)
+> **载体**: ChromaDB (`scripts/ingest/`)
 > **核心使命**: **沉淀经验，隐私回溯。**
 
 *   **解决什么痛点？**

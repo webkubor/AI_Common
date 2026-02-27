@@ -49,5 +49,5 @@ description: 外部大脑的职能部门化扩展能力，按角色定义 AI Age
 ## 📚 知识管理部 (Knowledge)
 负责历史教训复盘与碎片资产管理。
 - [自动复盘 (Auto Retro)](./knowledge/auto-retro.md) - 定期归档与经验提取。
-- [Milvus 工具集](./knowledge/milvus-toolkit.md) - 向量库检索与维护。
+- **ChromaDB (本地 RAG)** - 向量库检索与自动化入库 (通过 `scripts/ingest/` 维护)。
 - [碎片知识管家](./knowledge/snippet_master.md) - 代码片段与配置备忘。

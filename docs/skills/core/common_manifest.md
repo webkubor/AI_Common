@@ -18,8 +18,8 @@
 | **Auto-Retro** | `docs/skills/auto-retro.md` | 自动复盘、经验萃取与 GC。 | **L2** |
 | **Snippet-Master** | `docs/skills/snippet_master.md` | 碎片化知识与代码片段管理。 | **L2** |
 | **Vibe-Checker** | `docs/rules/vibe_rules.md` | 编码风格与交付质量对齐。 | **L1** |
-| **Milvus-Toolkit** | `docs/skills/milvus-toolkit.md` | 向量库检索与长期记忆入库。 | **L2** |
-| **Standard-Workflow**| `docs/rules/standard_workflow.md` | 遵循“计划-执行-复盘”闭环流程。 | **L1** |
+| **Chroma-RAG** | `scripts/ingest/` | 本地向量库检索与长期记忆入库。 | **L2** |
+| **Standard-Workflow** | `docs/rules/standard_workflow.md` | 遵循“计划-执行-复盘”闭环流程。 | **L1** |
 
 ## ✍️ 通用协作技能 (Collaboration Skills)
 - **Feishu-Writer (L2)**: 团队文档撰写。
