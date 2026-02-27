@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 记忆哨兵模块 (Sentinel V3.0 - High-Sensitivity)
+ * 记忆哨兵模块 (Sentinel V3.1 - Memory Hub Edition)
  */
 
 import fs from 'fs';
@@ -11,11 +11,11 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DOCS_DIR = path.join(__dirname, '../docs');
-const BUFFER_PATH = path.join(__dirname, '../.context_buffer.json');
-const SECRETS_DIR = path.join(__dirname, '../docs/secrets');
-const NOTIF_LOCK_PATH = path.join(__dirname, '../.last_notif.json');
-const OPS_LOG_DIR = path.join(DOCS_DIR, 'memory/journal/actions');
+const DOCS_DIR = path.join(__dirname, '../../docs'); // 注意路径层级变化
+const BUFFER_PATH = path.join(__dirname, '../../.context_buffer.json');
+const SECRETS_DIR = path.join(__dirname, '../../docs/secrets');
+const NOTIF_LOCK_PATH = path.join(__dirname, '../../.last_notif.json');
+const LOGS_DIR = path.join(DOCS_DIR, 'memory/logs');
 
 export function getCurrentTimestamp() {
   return new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
@@ -23,13 +23,15 @@ export function getCurrentTimestamp() {
 
 export function getLogPath() {
   const today = new Date().toISOString().split('T')[0];
-  return path.join(DOCS_DIR, 'memory', 'journal', `${today}.md`);
+  return path.join(LOGS_DIR, `${today}.md`);
 }
 
 export function logAgentAction(action) {
-  if (!fs.existsSync(OPS_LOG_DIR)) fs.mkdirSync(OPS_LOG_DIR, { recursive: true });
+  const actionsDir = path.join(LOGS_DIR, 'raw');
+  if (!fs.existsSync(actionsDir)) fs.mkdirSync(actionsDir, { recursive: true });
+  
   const today = new Date().toISOString().split('T')[0];
-  const logFile = path.join(OPS_LOG_DIR, `candy-${today}.md`);
+  const logFile = path.join(actionsDir, `candy-${today}.md`);
   if (!fs.existsSync(logFile)) fs.writeFileSync(logFile, `# 小烛行动日志 - ${today}\n\n`);
 
   const entry = `\n### ⚡️ 物理操作 - ${getCurrentTimestamp()}\n- **任务**: ${action.task || '未命名'}\n- **执行**: \`${action.command}\`\n- **结果**: ${action.success ? '✅' : '❌'}\n---\n`;
@@ -58,15 +60,12 @@ export async function sendToLark(title, body) {
     const webhookUrl = envContent.match(/LARK_WEBHOOK_URL=(.+)/)?.[1];
     if (!webhookUrl) return;
 
-    // --- 灵敏度调整 ---
-    // 1. 取消小时限制 (不再限制 10-20 点)
-    // 2. 降低防抖阈值 (从 5 分钟降至 30 秒)
     let lastNotif = { timestamp: 0, body: "" };
     if (fs.existsSync(NOTIF_LOCK_PATH)) {
       try { lastNotif = JSON.parse(fs.readFileSync(NOTIF_LOCK_PATH, 'utf-8')); } catch (e) {}
     }
     if (body.trim() === lastNotif.body.trim()) return;
-    if (Date.now() - lastNotif.timestamp < 30 * 1000) return; // 30s 冷却
+    if (Date.now() - lastNotif.timestamp < 30 * 1000) return;
 
     const payload = {
       msg_type: "post",

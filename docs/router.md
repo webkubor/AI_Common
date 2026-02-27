@@ -17,29 +17,22 @@ description: 大脑的真理来源与动态路由入口，定义了所有 Agent 
 ## 3. 🔍 动态路由 (Dynamic Routing)
 | 意图 | 目标路径 (docs/) | 执行动作 |
 | :--- | :--- | :--- |
-| **执行日志/进度** | `memory/journal/` | 记录任务状态、操作轨迹、每日小结 |
-| **复盘/经验** | `memory/retrospectives/` | 加载历史教训、知识总结、深度复盘 |
-| **业务运营/方案** | `memory/operations/` | 加载运营方案、执行计划、策略文档 |
-| **知识库自检** | `rules/external-health-check.md` | 检查路径、链接、结构完整性 |
-| **安全/Token** | `rules/privacy_excludes.md`, `secrets/` | 加载脱敏规则与密钥 |
-| **项目初始化** | `tech_stack.md`, `rules/project_initialization_sop.md` | 加载架构与 SOP |
-| **编码/Git** | `rules/vibe_rules.md`, `rules/git_commit_rules.md` | 加载规范 |
-| **GitHub/推送** | `rules/github_ops_sop.md` | 执行认证与推送流程 |
-| **技能/插件** | `skills/index.md` | 获取全量职能架构 |
+| **🧠 大脑操作记录** | `memory/logs/` | 记录 Agent 的主动操作、任务进度、决策轨迹 |
+| **📚 知识总结/复盘** | `memory/knowledge/` | 沉淀深度复盘、避坑指南、架构分析 |
+| **🎭 业务方案/计划** | `memory/plans/` | 存放运营方案、执行策略、策略文档 |
+| **⚖️ 核心规则中心** | `rules/` | 加载编码规范、SOP、协作协议 |
+| **🛠️ 初始化与工具** | `tech_stack.md`, `scripts/` | 加载技术栈、执行环境初始化 |
+| **📡 通信与推送** | `docs/secrets/lark.env` | 配置飞书战报推送 |
 
 ## 4. 🛠 工具协议 (Tooling Protocol)
-- **物理访问**: `run_shell_command (cat / ls / grep)` 绕过沙箱，用于精确读取。
-- **语义搜索 (RAG)**: 当面对模糊查询（如“昨天干了啥”、“XX 规则是什么”）时，**Agent 应优先调用** `python3 scripts/ingest/query_brain.py "查询"` 获取语义关联的上下文。
+- **物理访问**: `run_shell_command (cat / ls / grep)`。
+- **语义搜索 (RAG)**: 面对模糊查询时，**Agent 应优先调用** `python3 scripts/ingest/query_brain.py "查询"` 获取上下文。
 - **写入**: 遵循“本地生成 + `mv` 迁移”法则。
 
 ## 5. 🧠 记忆哨兵机制 (Memory Sentinel)
-
-> **原则**: 模型无关的自动记录，记录所有操作、进度、状态。
-
-### 执行方式
-- **自动记录**: 每个操作都记录到 `memory/journal/YYYY-MM-DD.md`
-- **自动驾驶**: PM2 托管 `scripts/auto-pilot.js` 每 5 分钟执行一次“同步-入库-推送”闭环。
+- **自动记录**: Agent 的每一个主动 Task 必须记入 `memory/logs/YYYY-MM-DD.md`。
+- **自动同步**: 每 5 分钟执行一次 Git 同步与推送。
 
 ---
 *Last Updated: 2026-02-27*
-- **智力档位**: v3.8.0 (Hardcore Edition)
+- **版本**: v4.5.0 (Intelligence Isolation)
