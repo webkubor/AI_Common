@@ -23,6 +23,15 @@ function getCompactTime() {
   return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 }
 
+function detectNewRetrospectives() {
+  try {
+    const result = execSync('find docs/retrospectives -name "*.md" -mmin -10', {
+      encoding: 'utf-8', cwd: PROJECT_ROOT
+    });
+    return result.trim().split('\n').filter(f => f && !f.includes('index.md'));
+  } catch (e) { return []; }
+}
+
 function getBrainVersion() {
   try {
     const content = fs.readFileSync(HISTORY_PATH, 'utf-8');
@@ -60,7 +69,7 @@ function getDiffSnippet(file) {
       encoding: 'utf-8', cwd: PROJECT_ROOT
     });
     const snippet = diff.trim().split('\n').filter(l => l.trim()).join('; ');
-    return snippet ? `\n   >> "${snippet.substring(0, 80)}..."` : "";
+    return snippet ? `\n   >> "${snippet.substring(0, 80).replace(/\n/g, ' ')}..."` : "";
   } catch (e) { return ""; }
 }
 
@@ -80,17 +89,16 @@ async function autoPilot() {
   const brainVersion = getBrainVersion();
   const routerMap = getRouterMap();
 
-  // 1. Tasks (Only Log High-Signal Tasks to Journal)
+  // 1. Tasks
   const buffer = consumeBuffer();
   if (buffer && buffer.length > 0) {
     buffer.forEach(item => {
       summaryParts.push(`⚡️ Task: ${item.task}\n> ${item.description}`);
-      // 只有这种有意义的任务才记入 Journal
       addToLog({ title: item.task, body: item.description });
     });
   }
 
-  // 2. Git Stats (Don't log to Journal anymore, Git history is enough)
+  // 2. Git Stats
   try {
     const status = execSync('git status --short', { encoding: 'utf-8', cwd: PROJECT_ROOT });
     const lines = status.trim().split('\n').filter(l => l && !l.includes('chroma_db/'));
@@ -122,7 +130,7 @@ async function autoPilot() {
     }
   } catch (e) {}
 
-  // 3. New Retrospectives
+  // 3. Retro
   const newRetros = detectNewRetrospectives();
   if (newRetros.length > 0) {
     const list = newRetros.map(f => `- ${path.basename(f)}`).join('\n');
@@ -134,9 +142,7 @@ async function autoPilot() {
     let modeLabel = "✅ Semantic";
     try {
       await runNativeIngestion();
-    } catch (e) {
-      modeLabel = "🚨 Physical";
-    }
+    } catch (e) { modeLabel = "🚨 Physical"; }
 
     sendToLark(`[${timeLabel}] Brain ${brainVersion} | ${modeLabel}`, summaryParts.join('\n\n'));
   } else {
