@@ -46,3 +46,5 @@ docs/skills/visual/cinematic-storyboard/cast_refs/*
 docs/skills/visual/cinematic-storyboard/assets/*
 
 /chroma_db/
+.last_notif.json
+.context_buffer.json

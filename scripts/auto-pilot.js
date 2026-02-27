@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 外部大脑自动运转主脚本 (Brain-Pilot V3.9 - High-Signal Journaling)
+ * 外部大脑自动运转主脚本 (Brain-Pilot V4.0 - Explicit Journaling)
  */
 
 import fs from 'fs';
@@ -54,7 +54,7 @@ function getRouterMap() {
 }
 
 function getSemanticIntent(filePath, routerMap) {
-  if (filePath === 'docs/router.md') return '⚠️ 入口协议 (Router)';
+  if (filePath === 'docs/router.md') return '⚠️ 入口协议';
   if (filePath === 'docs/BRAIN_HISTORY.md') return '📜 大脑演化史';
   for (const [route, intent] of Object.entries(routerMap)) {
     if (filePath.startsWith('docs/' + route) || filePath.startsWith(route)) return intent;
@@ -69,7 +69,7 @@ function getDiffSnippet(file) {
       encoding: 'utf-8', cwd: PROJECT_ROOT
     });
     const snippet = diff.trim().split('\n').filter(l => l.trim()).join('; ');
-    return snippet ? `\n   >> "${snippet.substring(0, 80).replace(/\n/g, ' ')}..."` : "";
+    return snippet ? `\n   >> "${snippet.substring(0, 100).replace(/\n/g, ' ')}..."` : "";
   } catch (e) { return ""; }
 }
 
@@ -85,6 +85,7 @@ async function runNativeIngestion() {
 
 async function autoPilot() {
   const summaryParts = [];
+  const journalEntries = [];
   const timeLabel = getCompactTime();
   const brainVersion = getBrainVersion();
   const routerMap = getRouterMap();
@@ -94,21 +95,22 @@ async function autoPilot() {
   if (buffer && buffer.length > 0) {
     buffer.forEach(item => {
       summaryParts.push(`⚡️ Task: ${item.task}\n> ${item.description}`);
-      addToLog({ title: item.task, body: item.description });
+      journalEntries.push(`### ⚡️ ${item.task}\n${item.description}`);
     });
   }
 
-  // 2. Git Stats
+  // 2. Git & Physical Changes
   try {
+    // 忽略状态文件
     const status = execSync('git status --short', { encoding: 'utf-8', cwd: PROJECT_ROOT });
-    const lines = status.trim().split('\n').filter(l => l && !l.includes('chroma_db/'));
+    const lines = status.trim().split('\n').filter(l => l && !l.includes('chroma_db/') && !l.includes('.last_notif.json'));
     
     if (lines.length > 0) {
       const stats = execSync('git diff --numstat', { encoding: 'utf-8', cwd: PROJECT_ROOT })
                     .trim().split('\n')
                     .reduce((acc, line) => {
-                      const [add, del, file] = line.split('\t');
-                      acc[file] = `(+${add}/-${del})`;
+                      const parts = line.split('\t');
+                      if (parts.length >= 3) acc[parts[2]] = `(+${parts[0]}/-${parts[1]})`;
                       return acc;
                     }, {});
 
@@ -123,22 +125,28 @@ async function autoPilot() {
         return `- [${intent}] ${file} ${stats[file] || ''}${snippet}`;
       }).join('\n');
 
-      const intentSummary = Array.from(intents).join(' | ');
-      summaryParts.push(`📝 Sync [${intentSummary}]:\n${fileList}\n📊 Total: ${totalStat || 'New'}`);
+      summaryParts.push(`📝 Sync [${Array.from(intents).join(' | ')}]:\n${fileList}\n📊 Total: ${totalStat || 'New'}`);
+      
+      // 核心：将物理变更记录到日记本，但保持极简
+      journalEntries.push(`### 📝 变更同步 (${Array.from(intents).join(' | ')})\n${fileList}\n> ${totalStat || '全量新增'}`);
       
       autoCommitAndLog();
     }
-  } catch (e) {}
+  } catch (e) { console.error('Git 操作异常:', e.message); }
 
   // 3. Retro
   const newRetros = detectNewRetrospectives();
   if (newRetros.length > 0) {
     const list = newRetros.map(f => `- ${path.basename(f)}`).join('\n');
     summaryParts.push(`📚 Retro:\n${list}`);
-    addToLog({ title: '新深度复盘归档', body: list });
+    journalEntries.push(`### 📚 深度复盘入库\n${list}`);
   }
 
+  // 4. Final Processing & Lark
   if (summaryParts.length > 0) {
+    // 写入日记本
+    journalEntries.forEach(entry => addToLog({ title: '大脑同步记录', body: entry }));
+
     let modeLabel = "✅ Semantic";
     try {
       await runNativeIngestion();
