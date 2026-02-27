@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 外部大脑自动运转主脚本 (Brain-Pilot V4.2 - Advanced UI Edition)
+ * 外部大脑自动运转主脚本 (Brain-Pilot V4.3 - Intelligence Briefing Edition)
  */
 
 import fs from 'fs';
@@ -39,12 +39,12 @@ function getRouterMap() {
 }
 
 function getSemanticIntent(filePath, routerMap) {
-  if (filePath === 'docs/router.md') return '⚠️ 入口协议';
-  if (filePath === 'docs/BRAIN_HISTORY.md') return '📜 大脑演化史';
+  if (filePath === 'docs/router.md') return '入口协议';
+  if (filePath === 'docs/BRAIN_HISTORY.md') return '大脑演化史';
   for (const [route, intent] of Object.entries(routerMap)) {
     if (filePath.startsWith('docs/' + route) || filePath.startsWith(route)) return intent;
   }
-  return '🛠 基础架构';
+  return '基础架构';
 }
 
 function getDiffSnippet(file) {
@@ -54,7 +54,7 @@ function getDiffSnippet(file) {
       encoding: 'utf-8', cwd: PROJECT_ROOT
     });
     const snippet = diff.trim().split('\n').filter(l => l.trim()).join('; ');
-    return snippet ? `\n   > "${snippet.substring(0, 80).replace(/\n/g, ' ')}..."` : "";
+    return snippet ? `\n   「 ${snippet.substring(0, 100).replace(/\n/g, ' ')} 」` : "";
   } catch (e) { return ""; }
 }
 
@@ -72,17 +72,15 @@ async function autoPilot() {
   const brainVersion = getBrainVersion();
   const routerMap = getRouterMap();
   const startTime = getCurrentTimestamp();
-
-  console.log(`[${startTime}] 🔄 正在生成高级战报...`);
+  const timeLabel = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
 
   const buffer = consumeBuffer();
-  const tasks = buffer ? buffer.map(item => `⚡️ ${item.task}\n  "${item.description}"`).join('\n') : "";
-
+  
   try {
     const status = execSync('git status --short', { encoding: 'utf-8', cwd: PROJECT_ROOT });
     const lines = status.trim().split('\n').filter(l => l && !l.includes('chroma_db/') && !l.includes('.last_notif.json'));
     
-    if (lines.length > 0 || tasks) {
+    if (lines.length > 0 || (buffer && buffer.length > 0)) {
       const stats = execSync('git diff --numstat', { encoding: 'utf-8', cwd: PROJECT_ROOT })
                     .trim().split('\n')
                     .reduce((acc, line) => {
@@ -91,47 +89,53 @@ async function autoPilot() {
                       return acc;
                     }, {});
 
-      const totalStat = execSync('git diff --shortstat', { encoding: 'utf-8', cwd: PROJECT_ROOT }).trim() || "New Assets";
+      const totalStat = execSync('git diff --shortstat', { encoding: 'utf-8', cwd: PROJECT_ROOT }).trim();
       
-      // 按意图分组
+      // 1. 组装任务块
+      let taskSection = "";
+      if (buffer && buffer.length > 0) {
+        taskSection = buffer.map(item => `⚡️ **任务达成**: ${item.task}\n> ${item.description}`).join('\n\n') + "\n\n━━━━━━━━━━━━━━\n\n";
+      }
+
+      // 2. 组装变更块 (按意图分组)
       const groupedFiles = {};
       lines.forEach(line => {
         const file = line.substring(3).trim();
         const intent = getSemanticIntent(file, routerMap);
         if (!groupedFiles[intent]) groupedFiles[intent] = [];
-        groupedFiles[intent].push({ name: file, stat: stats[file] || "", snippet: getDiffSnippet(file) });
+        groupedFiles[intent].push({ name: file.replace('docs/', ''), stat: stats[file] || "", snippet: getDiffSnippet(file) });
       });
 
-      // 组装高级 UI
-      let message = tasks ? `${tasks}\n\n` : "";
-      
+      let changeSection = "";
       for (const [intent, files] of Object.entries(groupedFiles)) {
-        message += `■ ${intent}\n`;
+        changeSection += `📁 **${intent}**\n`;
         files.forEach(f => {
-          message += `  • ${f.name}  ${f.stat}${f.snippet}\n`;
+          changeSection += `• ${f.name}  *${f.stat}* ${f.snippet}\n`;
         });
-        message += `\n`;
+        changeSection += `\n`;
       }
 
-      message += `---\n📊 ${totalStat}`;
+      // 3. 汇总信息
+      const finalBody = `${taskSection}${changeSection}━━━━━━━━━━━━━━\n📊 **统计**: ${totalStat || '全量同步'}`;
 
-      // 记录日志
-      addToLog({ title: '大脑同步', body: message });
-
-      // 执行提交
+      // 4. 提交 Git
       const intents = Object.keys(groupedFiles).join(' & ');
       execSync(`git add . && git commit -m "auto: ${intents || 'sync'} at ${startTime}"`, { cwd: PROJECT_ROOT });
 
-      // 推送
+      // 5. 智力同步
       let modeLabel = "Semantic ✅";
       try {
         await runNativeIngestion();
       } catch (e) { modeLabel = "Physical 🚨"; }
 
-      sendToLark(`${brainVersion} | ${modeLabel}`, message);
-      console.log(`🚀 高级战报已送达！`);
+      // 6. 发送 (标题极简)
+      sendToLark(`[${timeLabel}] Brain ${brainVersion} | ${modeLabel}`, finalBody);
+      
+      // 同时记录到 Journal
+      addToLog({ title: '大脑同步', body: finalBody });
+      console.log(`🚀 智能简报已送达飞书！`);
     }
-  } catch (e) { console.error('⚠️ 自动驾驶异常:', e.message); }
+  } catch (e) { console.error('⚠️ 自动驾驶运行异常:', e.message); }
 }
 
 autoPilot();
