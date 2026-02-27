@@ -21,6 +21,21 @@
   </p>
 </div>
 
+## 🚀 2026 核心演变 (Major Evolutions)
+
+### 1. 🧠 向量库架构大统一 (Vector DB Refactor)
+- **弃用**: 彻底清理了旧有的 Milvus 远程依赖及其相关脚本。
+- **启用**: 全面切换至 **ChromaDB (Local)**，实现知识库的物理隔离与本地闭环。
+- **Embedding**: 集成 **Ollama (nomic-embed-text)** 方案，显著提升语义检索的私密性与响应速度。
+
+### 2. ⚡️ 自动驾驶仪 V2.8 (Hardcore Auto-Pilot)
+- **推送重构**: 飞书 (Lark) 通知逻辑从“文艺话术”升级为“硬核实料”。
+- **透明追踪**: 实时推送具体的物理变更（Git Status 文件列表）与原子化任务达成状态。
+- **逻辑闭环**: 强化了“操作 -> 日志 -> 提交 -> 向量化 -> 推送”的完整链路。
+
+### 3. 🧹 废弃链路清理
+- 清除了所有 Milvus 残留脚本与过时文档（`milvus-toolkit.md` 等），确保代码仓库的高信号量。
+
 ## 项目定位
 AI Common 是一个面向 AI 工程协作的上下文基础设施仓库。它将规则、技能、复盘与知识路由组织为可维护的文档系统，帮助 Gemini、Codex、Claude、Cursor 等 Agent 在同一上下文协议下协同工作。
 
@@ -49,24 +64,34 @@ AI Common 是一个面向 AI 工程协作的上下文基础设施仓库。它将
 - 原则：内部日志与敏感上下文不进入对外发布站点。
 
 ## 快速开始
-### 1) 安装依赖
+
+### 🚀 一键初始化 (推荐)
+如果你是第一次使用本仓库，或者更换了新环境，请执行一键初始化脚本。它会自动检查并配置 pnpm、uv、Ollama 模型、ChromaDB 知识入库：
+
 ```bash
-pnpm install
+chmod +x scripts/init-project.sh
+./scripts/init-project.sh
 ```
 
-### 2) 本地开发
+### 1) 手动安装依赖
+```bash
+pnpm install
+uv sync
+```
+
+### 2) 拉取语义模型 (Ollama)
+```bash
+ollama pull nomic-embed-text
+```
+
+### 3) 本地开发 (VitePress)
 ```bash
 pnpm dev
 ```
 
-### 3) 构建文档
+### 4) 语义检索探测 (RAG Probe)
 ```bash
-pnpm docs:build
-```
-
-### 4) 预览构建结果
-```bash
-pnpm docs:preview
+./scripts/rag_probe.sh "你的查询"
 ```
 
 ## 目录结构

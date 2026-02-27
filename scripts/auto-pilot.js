@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 外部大脑自动运转主脚本 (Brain-Pilot V2.8 - Hardcore & Informative)
+ * 外部大脑自动运转主脚本 (Brain-Pilot V3.5 - Router-Aware)
  */
 
 import fs from 'fs';
@@ -15,14 +15,33 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = '/Users/webkubor/Documents/AI_Common';
 const UV_PATH = '/Users/webkubor/.local/bin/uv';
+const ROUTER_PATH = path.join(PROJECT_ROOT, 'docs/router.md');
 
-function detectNewRetrospectives() {
+function getCompactTime() {
+  const now = new Date();
+  return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+}
+
+// 核心增强：解析 router.md 获取语义映射
+function getRouterMap() {
   try {
-    const result = execSync('find docs/retrospectives -name "*.md" -mmin -10', {
-      encoding: 'utf-8', cwd: PROJECT_ROOT
-    });
-    return result.trim().split('\n').filter(f => f && !f.includes('index.md'));
-  } catch (e) { return []; }
+    const content = fs.readFileSync(ROUTER_PATH, 'utf-8');
+    const tableRegex = /\| \*\*([^*]+)\*\* \| `([^`]+)` \|/g;
+    const map = {};
+    let match;
+    while ((match = tableRegex.exec(content)) !== null) {
+      map[match[2].trim()] = match[1].trim();
+    }
+    return map;
+  } catch (e) { return {}; }
+}
+
+function getSemanticIntent(filePath, routerMap) {
+  if (filePath === 'docs/router.md') return '⚠️ 入口协议 (Router)';
+  for (const [route, intent] of Object.entries(routerMap)) {
+    if (filePath.startsWith('docs/' + route) || filePath.startsWith(route)) return intent;
+  }
+  return '🛠 基础架构';
 }
 
 async function runNativeIngestion() {
@@ -37,47 +56,55 @@ async function runNativeIngestion() {
 
 async function autoPilot() {
   const summaryParts = [];
-  const startTime = getCurrentTimestamp();
+  const timeLabel = getCompactTime();
+  const routerMap = getRouterMap();
 
-  // 1. 语义任务捕获
+  // 1. Tasks
   const buffer = consumeBuffer();
   if (buffer && buffer.length > 0) {
-    buffer.forEach(item => {
-      summaryParts.push(`⚡️ 任务达成：${item.task}\n   > ${item.description}`);
-      addToLog({ title: `🚀 Agent 语义同步: ${item.task}`, body: item.description });
-    });
+    buffer.forEach(item => summaryParts.push(`⚡️ Task: ${item.task}\n> ${item.description}`));
   }
 
-  // 2. 物理变更捕获
+  // 2. Git Stats with Intent Analysis
   try {
     const status = execSync('git status --short', { encoding: 'utf-8', cwd: PROJECT_ROOT });
     const lines = status.trim().split('\n').filter(l => l && !l.includes('chroma_db/'));
+    
     if (lines.length > 0) {
-      const changedFiles = lines.map(line => `   - ${line.substring(3).trim()}`).join('\n');
-      summaryParts.push(`📝 变更同步：\n${changedFiles}`);
+      const stats = execSync('git diff --numstat', { encoding: 'utf-8', cwd: PROJECT_ROOT })
+                    .trim().split('\n')
+                    .reduce((acc, line) => {
+                      const [add, del, file] = line.split('\t');
+                      acc[file] = `(+${add}/-${del})`;
+                      return acc;
+                    }, {});
+
+      const totalStat = execSync('git diff --shortstat', { encoding: 'utf-8', cwd: PROJECT_ROOT }).trim();
+      const intents = new Set();
+      
+      const fileList = lines.map(line => {
+        const file = line.substring(3).trim();
+        const intent = getSemanticIntent(file, routerMap);
+        intents.add(intent);
+        return `- [${intent}] ${file} ${stats[file] || ''}`;
+      }).join('\n');
+
+      const intentSummary = Array.from(intents).join(' | ');
+      summaryParts.push(`📝 Sync [${intentSummary}]:\n${fileList}\n📊 Stats: ${totalStat || 'New'}`);
+      
       autoCommitAndLog();
     }
   } catch (e) {}
 
-  // 3. 深度复盘捕获
-  const newRetros = detectNewRetrospectives();
-  if (newRetros.length > 0) {
-    const retroList = newRetros.map(f => `   - ${path.basename(f)}`).join('\n');
-    summaryParts.push(`📚 复盘入库：\n${retroList}`);
-  }
-
   if (summaryParts.length > 0) {
     try {
       await runNativeIngestion();
-      summaryParts.push("\n✅ 知识已向量化重连 (ChromaDB)");
-    } catch (e) {
-      summaryParts.push("\n⚠️ 向量库同步波动");
-    }
+      summaryParts.push("✅ Vectorized (Chroma)");
+    } catch (e) { summaryParts.push("⚠️ Vector Error"); }
 
-    const finalMessage = `老爹，小烛汇报！⚡️\n\n${summaryParts.join('\n\n')}\n\n—— 效率第一，逻辑至上。`;
-    sendToLark("小烛的任务汇报", finalMessage);
+    sendToLark(`[${timeLabel}] AI_Sync`, summaryParts.join('\n\n'));
   } else {
-    console.log(`[${startTime}] ℹ️ 静默中...`);
+    console.log(`[${getCurrentTimestamp()}] ℹ️ Silent...`);
   }
 }
 

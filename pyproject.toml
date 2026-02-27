@@ -1,0 +1,15 @@
+[project]
+name = "ai-common"
+version = "0.1.0"
+description = "External Brain Infrastructure for AI Collaboration"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "chromadb>=0.4.0",
+    "requests>=2.31.0",
+    "pathlib>=1.0.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
