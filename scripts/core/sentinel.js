@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 记忆哨兵模块 (Sentinel V3.1 - Memory Hub Edition)
+ * 记忆哨兵模块 (Sentinel V3.2 - Silent Mode Restored)
  */
 
 import fs from 'fs';
@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DOCS_DIR = path.join(__dirname, '../../docs'); // 注意路径层级变化
+const DOCS_DIR = path.join(__dirname, '../../docs');
 const BUFFER_PATH = path.join(__dirname, '../../.context_buffer.json');
 const SECRETS_DIR = path.join(__dirname, '../../docs/secrets');
 const NOTIF_LOCK_PATH = path.join(__dirname, '../../.last_notif.json');
@@ -41,7 +41,9 @@ export function logAgentAction(action) {
 export function ensureJournalExists() {
   const logPath = getLogPath();
   if (!fs.existsSync(path.dirname(logPath))) fs.mkdirSync(path.dirname(logPath), { recursive: true });
-  if (!fs.existsSync(logPath)) fs.writeFileSync(logPath, `# ${new Date().toISOString().split('T')[0]}: 操作日志\n\n`);
+  if (!fs.existsSync(logPath)) {
+    fs.writeFileSync(logPath, `# ${new Date().toISOString().split('T')[0]}: 操作日志\n\n`);
+  }
 }
 
 export function addToLog(content, options = { notify: false }) {
@@ -60,12 +62,23 @@ export async function sendToLark(title, body) {
     const webhookUrl = envContent.match(/LARK_WEBHOOK_URL=(.+)/)?.[1];
     if (!webhookUrl) return;
 
+    // --- 恢复原有规则：防打扰与频率限制 ---
+    const now = new Date();
+    const currentHour = now.getHours();
+    
+    // 1. 工作时间限制: 10:00 - 20:00
+    if (currentHour < 10 || currentHour >= 20) return;
+
     let lastNotif = { timestamp: 0, body: "" };
     if (fs.existsSync(NOTIF_LOCK_PATH)) {
       try { lastNotif = JSON.parse(fs.readFileSync(NOTIF_LOCK_PATH, 'utf-8')); } catch (e) {}
     }
+
+    // 2. 内容去重
     if (body.trim() === lastNotif.body.trim()) return;
-    if (Date.now() - lastNotif.timestamp < 30 * 1000) return;
+
+    // 3. 5 分钟冷却期 (300,000 ms)
+    if (Date.now() - lastNotif.timestamp < 5 * 60 * 1000) return;
 
     const payload = {
       msg_type: "post",
