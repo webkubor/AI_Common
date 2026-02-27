@@ -15,6 +15,7 @@
 - **包管理器**: pnpm (强制首选)
 - **状态管理**: Pinia (推荐 Setup Store 模式)
 - **后端/BaaS**: CloudBase (腾讯云开发 - 首选，微信生态最佳)，用于 Serverless 数据持久化
+- **向量数据库 (Vector DB)**: ChromaDB (本地持久化)，配合 Ollama (nomic-embed-text) 实现 RAG 语义检索
 - **工具库**: VueUse (优先使用)
 - **测试**: 按项目实际选择（未固定）
 - **代码规范**: **StandardJS** (无分号, 2空格, 单引号)
