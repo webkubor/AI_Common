@@ -71,7 +71,7 @@ export async function sendToLark(title, body) {
     const payload = {
       msg_type: "post",
       content: {
-        post: { zh_cn: { title: title, content: [[{ tag: "text", text: body.substring(0, 1000) }]] } }
+        post: { zh_cn: { title: `🧠 大脑同步: ${title}`, content: [[{ tag: "text", text: body.substring(0, 1000) }]] } }
       }
     };
 
