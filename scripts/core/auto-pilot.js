@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 外部大脑自动运转主脚本 (Brain-Pilot V4.8 - Full Chinese Edition)
+ * 外部大脑自动运转主脚本 (Brain-Pilot V4.9 - Lark Optimized Edition)
  */
 
 import fs from 'fs';
@@ -89,57 +89,58 @@ async function autoPilot() {
                       return acc;
                     }, {});
 
-      // 提取总统计并翻译
+      // 清理总统计中的英文和多余符号
       let totalStat = execSync('git diff --shortstat', { encoding: 'utf-8', cwd: PROJECT_ROOT }).trim();
-      totalStat = totalStat.replace(/files? changed/, '个文件变更')
-                           .replace(/insertions?\(\+\)/, '行新增')
-                           .replace(/deletions?\(-\)/, '行删除')
-                           .replace(/,/, '，');
+      totalStat = totalStat.replace(/files? changed/, '个文件变动')
+                           .replace(/insertions?\(\+\)/, '新增')
+                           .replace(/deletions?\(-\)/, '删除')
+                           .replace(/,/, ' |');
       
       let message = "";
 
-      // 1. 任务部分
+      // 1. 任务汇报
       if (buffer && buffer.length > 0) {
         buffer.forEach(item => {
-          message += `🎯 **任务达成**: ${item.task}\n${item.description}\n\n`;
+          message += `【 任务达成 】\n${item.task}\n> ${item.description}\n\n`;
         });
       }
 
-      // 2. 变更部分
+      // 2. 变更详情
       const groupedFiles = {};
       rawLines.forEach(line => {
-        const file = line.substring(3).trim(); // 稳健截取
+        // 使用更精确的截取逻辑，避开 status 标志位
+        const file = line.substring(3).trim(); 
         const intent = getSemanticIntent(file, routerMap);
         if (!groupedFiles[intent]) groupedFiles[intent] = [];
         groupedFiles[intent].push({ name: file, stat: stats[file] || "", snippet: getDiffSnippet(file) });
       });
 
       for (const [intent, files] of Object.entries(groupedFiles)) {
-        message += `⚡️ **${intent}**\n`;
+        message += `[ ${intent} ]\n`;
         files.forEach(f => {
-          message += `   • ${f.name}  ${f.stat}${f.snippet}\n`;
+          message += `  - ${f.name} ${f.stat}${f.snippet}\n`;
         });
         message += `\n`;
       }
 
-      message += `━━━━━━━━━━━━━━\n`;
-      message += `📊 **统计**: ${totalStat || '全量同步'}`;
+      message += `------------------------------\n`;
+      message += `数据汇总: ${totalStat || '全量同步完成'}`;
 
       // 执行提交
       const intents = Object.keys(groupedFiles).join(' & ');
       execSync(`git add . && git commit -m "auto: ${intents || 'sync'} at ${startTime}"`, { cwd: PROJECT_ROOT });
 
-      // 模式翻译
-      let modeLabel = "语义模式 ✅";
+      // 模式判定
+      let modeLabel = "语义模式";
       try {
         await runNativeIngestion();
-      } catch (e) { modeLabel = "物理模式 🚨"; }
+      } catch (e) { modeLabel = "物理模式"; }
 
-      // 推送
-      sendToLark(`大脑版本 ${brainVersion} | ${modeLabel}`, message);
+      // 推送 (标题带关键词和核心状态)
+      sendToLark(`${brainVersion} | ${modeLabel}`, message);
       
       addToLog({ title: '大脑同步', body: message });
-      console.log(`🚀 全中文战报已送达！`);
+      console.log(`🚀 飞书定制版战报已送达！`);
     }
   } catch (e) { console.error('⚠️ 运行异常:', e.message); }
 }
