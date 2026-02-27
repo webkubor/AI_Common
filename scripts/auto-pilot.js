@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 外部大脑自动运转主脚本 (Brain-Pilot V4.0 - Explicit Journaling)
+ * 外部大脑自动运转主脚本 (Brain-Pilot V4.1 - Real-time Change Detection)
  */
 
 import fs from 'fs';
@@ -9,7 +9,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync, spawn } from 'child_process';
 import { consumeBuffer, addToLog, getCurrentTimestamp, sendToLark } from './sentinel.js';
-import { autoCommitAndLog } from './auto-commit.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,15 +20,6 @@ const HISTORY_PATH = path.join(PROJECT_ROOT, 'docs/BRAIN_HISTORY.md');
 function getCompactTime() {
   const now = new Date();
   return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-}
-
-function detectNewRetrospectives() {
-  try {
-    const result = execSync('find docs/retrospectives -name "*.md" -mmin -10', {
-      encoding: 'utf-8', cwd: PROJECT_ROOT
-    });
-    return result.trim().split('\n').filter(f => f && !f.includes('index.md'));
-  } catch (e) { return []; }
 }
 
 function getBrainVersion() {
@@ -65,6 +55,7 @@ function getSemanticIntent(filePath, routerMap) {
 function getDiffSnippet(file) {
   try {
     if (!file.endsWith('.md')) return "";
+    // 抓取本次变动新增的内容
     const diff = execSync(`git diff -U0 "${file}" | grep "^+[^+]" | sed "s/^+//g" | head -n 3`, {
       encoding: 'utf-8', cwd: PROJECT_ROOT
     });
@@ -85,27 +76,29 @@ async function runNativeIngestion() {
 
 async function autoPilot() {
   const summaryParts = [];
-  const journalEntries = [];
   const timeLabel = getCompactTime();
   const brainVersion = getBrainVersion();
   const routerMap = getRouterMap();
 
-  // 1. Tasks
+  console.log(`[${getCurrentTimestamp()}] 🔄 正在扫描本地变更...`);
+
+  // 1. 语义任务捕获 (来自 Agent 交互)
   const buffer = consumeBuffer();
   if (buffer && buffer.length > 0) {
     buffer.forEach(item => {
       summaryParts.push(`⚡️ Task: ${item.task}\n> ${item.description}`);
-      journalEntries.push(`### ⚡️ ${item.task}\n${item.description}`);
+      addToLog({ title: `🎯 ${item.task}`, body: item.description });
     });
   }
 
-  // 2. Git & Physical Changes
+  // 2. 物理变更捕获 (来自老爹本地修改)
   try {
-    // 忽略状态文件
     const status = execSync('git status --short', { encoding: 'utf-8', cwd: PROJECT_ROOT });
     const lines = status.trim().split('\n').filter(l => l && !l.includes('chroma_db/') && !l.includes('.last_notif.json'));
     
     if (lines.length > 0) {
+      console.log(`📊 发现 ${lines.length} 个本地变动文件`);
+      
       const stats = execSync('git diff --numstat', { encoding: 'utf-8', cwd: PROJECT_ROOT })
                     .trim().split('\n')
                     .reduce((acc, line) => {
@@ -114,7 +107,7 @@ async function autoPilot() {
                       return acc;
                     }, {});
 
-      const totalStat = execSync('git diff --shortstat', { encoding: 'utf-8', cwd: PROJECT_ROOT }).trim();
+      const totalStat = execSync('git diff --shortstat', { encoding: 'utf-8', cwd: PROJECT_ROOT }).trim() || "New Files Detected";
       const intents = new Set();
       
       const fileList = lines.map(line => {
@@ -125,36 +118,37 @@ async function autoPilot() {
         return `- [${intent}] ${file} ${stats[file] || ''}${snippet}`;
       }).join('\n');
 
-      summaryParts.push(`📝 Sync [${Array.from(intents).join(' | ')}]:\n${fileList}\n📊 Total: ${totalStat || 'New'}`);
+      // 组装推送内容
+      const intentSummary = Array.from(intents).join(' | ');
+      summaryParts.push(`📝 Sync [${intentSummary}]:\n${fileList}\n📊 Total: ${totalStat}`);
       
-      // 核心：将物理变更记录到日记本，但保持极简
-      journalEntries.push(`### 📝 变更同步 (${Array.from(intents).join(' | ')})\n${fileList}\n> ${totalStat || '全量新增'}`);
-      
-      autoCommitAndLog();
-    }
-  } catch (e) { console.error('Git 操作异常:', e.message); }
+      // --- 关键：先写日记本 ---
+      addToLog({ 
+        title: `📁 物理同步 (${intentSummary})`, 
+        body: `${fileList}\n\n> 统计: ${totalStat}` 
+      });
 
-  // 3. Retro
-  const newRetros = detectNewRetrospectives();
-  if (newRetros.length > 0) {
-    const list = newRetros.map(f => `- ${path.basename(f)}`).join('\n');
-    summaryParts.push(`📚 Retro:\n${list}`);
-    journalEntries.push(`### 📚 深度复盘入库\n${list}`);
+      // --- 关键：再执行 Git Commit ---
+      const commitMsg = `auto: ${intentSummary} synchronized at ${getCurrentTimestamp()}`;
+      execSync(`git add . && git commit -m "${commitMsg}"`, { cwd: PROJECT_ROOT });
+      console.log(`✅ Git 自动提交完成: ${commitMsg}`);
+    }
+  } catch (e) {
+    console.error('⚠️ 物理同步过程异常:', e.message);
   }
 
-  // 4. Final Processing & Lark
+  // 3. 结果汇总与推送
   if (summaryParts.length > 0) {
-    // 写入日记本
-    journalEntries.forEach(entry => addToLog({ title: '大脑同步记录', body: entry }));
-
     let modeLabel = "✅ Semantic";
     try {
       await runNativeIngestion();
     } catch (e) { modeLabel = "🚨 Physical"; }
 
-    sendToLark(`[${timeLabel}] Brain ${brainVersion} | ${modeLabel}`, summaryParts.join('\n\n'));
+    // 关键词【大脑】已包含在 sentinel.js 标题前缀中
+    sendToLark(`Brain ${brainVersion} | ${modeLabel}`, summaryParts.join('\n\n'));
+    console.log(`🚀 推送已发出！`);
   } else {
-    console.log(`[${getCurrentTimestamp()}] ℹ️ Silent...`);
+    console.log(`ℹ️ 本次扫描无变动，保持静默。`);
   }
 }
 
