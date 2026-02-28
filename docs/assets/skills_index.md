@@ -9,7 +9,7 @@
 - **核心专家**: XHS Hacker, Juejin Architect, Soul Weaver, Brand Alchemist.
 
 ## 🤖 2. AI 原生空间改造专家 (AI-Modification)
-- **Repo**: [webkubor/gemini-skill-ai-native](https://github.com/webkubor/gemini-skill-ai-native)
+- **Repo**: [webkubor/ai-modification-expert](https://github.com/webkubor/ai-modification-expert)
 - **核心专家**: llms.txt Expert, WebMCP Expert.
 
 ## 🎵 3. 金牌音乐制作人 (Audio Music)
@@ -44,6 +44,10 @@
 - **Repo**: [webkubor/knowledge-navigator-expert](https://github.com/webkubor/knowledge-navigator-expert)
 - **核心专家**: Socratic Guide, RAG Orchestrator.
 
+## ☁️ 11. 云端资产分发专家 (File Hosting)
+- **Repo**: [webkubor/file-hosting-expert](https://github.com/webkubor/file-hosting-expert)
+- **核心专家**: Cloudflare R2 Architect, CDN Delivery Expert.
+
 ---
 *Last Updated: 2026-02-28*
-- **状态**: 十大专家全线重塑、开源、备案完毕。
+- **状态**: 11 大专家全线重塑、开源、打包、备案完毕。
