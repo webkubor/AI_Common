@@ -16,7 +16,8 @@ function parseArgs(argv) {
     agent: 'Gemini',
     alias: 'Candy',
     status: '[ 执行中 ] 活跃',
-    dryRun: false
+    dryRun: false,
+    forceSwitch: false
   };
 
   for (let i = 0; i < argv.length; i++) {
@@ -27,6 +28,7 @@ function parseArgs(argv) {
     else if (token === '--alias' && argv[i + 1]) args.alias = argv[++i];
     else if (token === '--status' && argv[i + 1]) args.status = argv[++i];
     else if (token === '--dry-run') args.dryRun = true;
+    else if (token === '--force-switch') args.forceSwitch = true;
     else if (token === '--help' || token === '-h') args.help = true;
   }
 
@@ -104,9 +106,16 @@ function buildRow({ nodeId, workspace, task, time, status }) {
   return `| ${nodeId} | \`${workspace}\` | ${task} | ${time} | ${status} |`;
 }
 
+function extractAgentFromNode(node) {
+  const text = stripMarkdown(node).toLowerCase();
+  if (text.includes('gemini')) return 'Gemini';
+  if (text.includes('codex')) return 'Codex';
+  return 'Unknown';
+}
+
 function printHelp() {
   console.log('用法:');
-  console.log('  node scripts/actions/fleet-claim.mjs --workspace <path> --task <任务描述> [--agent Gemini] [--alias Candy] [--status "[ 执行中 ] 活跃"]');
+  console.log('  node scripts/actions/fleet-claim.mjs --workspace <path> --task <任务描述> [--agent Gemini] [--alias Candy] [--status "[ 执行中 ] 活跃"] [--force-switch]');
   console.log('示例:');
   console.log('  node scripts/actions/fleet-claim.mjs --workspace "$PWD" --task "修复登录流程" --agent Gemini');
 }
@@ -145,6 +154,22 @@ function main() {
   }
 
   const sameWorkspaceRow = parsedRows.find(row => row.workspace === args.workspace);
+  if (sameWorkspaceRow) {
+    const existingAgent = extractAgentFromNode(sameWorkspaceRow.node);
+    if (existingAgent !== 'Unknown' && existingAgent !== args.agent && !args.forceSwitch) {
+      console.error(JSON.stringify({
+        ok: false,
+        code: 'identity_mismatch',
+        workspace: args.workspace,
+        existingNode: stripMarkdown(sameWorkspaceRow.node),
+        existingAgent,
+        incomingAgent: args.agent,
+        hint: '同一路径已存在不同模型登记。若确认发生模型切换，请追加 --force-switch。'
+      }, null, 2));
+      process.exit(2);
+    }
+  }
+
   let number;
   if (sameWorkspaceRow) {
     const nodeText = stripMarkdown(sameWorkspaceRow.node);
