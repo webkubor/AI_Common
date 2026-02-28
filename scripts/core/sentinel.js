@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * 记忆哨兵模块 (Sentinel V3.2 - Silent Mode Restored)
+ * 记忆哨兵模块 (Sentinel V4.0 - Evidence Chain Edition)
+ * 核心变更: 强制引入引用声明 (Citations) 与证据链追踪 (Evidence Trace)
  */
 
 import fs from 'fs';
@@ -26,6 +27,9 @@ export function getLogPath() {
   return path.join(LOGS_DIR, `${today}.md`);
 }
 
+/**
+ * 记录 Agent 的物理操作，增加强制引用声明
+ */
 export function logAgentAction(action) {
   const actionsDir = path.join(LOGS_DIR, 'raw');
   if (!fs.existsSync(actionsDir)) fs.mkdirSync(actionsDir, { recursive: true });
@@ -34,7 +38,12 @@ export function logAgentAction(action) {
   const logFile = path.join(actionsDir, `candy-${today}.md`);
   if (!fs.existsSync(logFile)) fs.writeFileSync(logFile, `# 小烛行动日志 - ${today}\n\n`);
 
-  const entry = `\n### ⚡️ 物理操作 - ${getCurrentTimestamp()}\n- **任务**: ${action.task || '未命名'}\n- **执行**: \`${action.command}\`\n- **结果**: ${action.success ? '✅' : '❌'}\n---\n`;
+  // 注入引用声明与物理路径
+  const citations = action.citations && action.citations.length > 0 
+    ? action.citations.map(c => `\`${c}\``).join(', ') 
+    : '⚠️ 逻辑推演 (无物理引用)';
+  
+  const entry = `\n### ⚡️ 物理操作 - ${getCurrentTimestamp()}\n- **任务**: ${action.task || '未命名'}\n- **参考**: ${citations}\n- **执行**: \`${action.command}\`\n- **结果**: ${action.success ? '✅' : '❌'}\n---\n`;
   fs.appendFileSync(logFile, entry);
 }
 
@@ -46,10 +55,19 @@ export function ensureJournalExists() {
   }
 }
 
+/**
+ * 记录执行日志，增加证据链展示
+ */
 export function addToLog(content, options = { notify: false }) {
   ensureJournalExists();
   const logPath = getLogPath();
-  const entry = `\n## 🔄 ${content.title || '系统记录'} - ${getCurrentTimestamp()}\n\n${content.body}\n\n---\n`;
+  
+  // 注入证据链展示 (Sources Searched)
+  const evidence = content.sources && content.sources.length > 0 
+    ? `\n> **[Sources Searched]**: ${content.sources.map(s => `\`${s}\``).join(' | ')}\n` 
+    : '';
+  
+  const entry = `\n## 🔄 ${content.title || '系统记录'} - ${getCurrentTimestamp()}\n${evidence}\n${content.body}\n\n---\n`;
   fs.appendFileSync(logPath, entry);
   if (options.notify) sendToLark(content.title, content.body);
 }
@@ -62,11 +80,9 @@ export async function sendToLark(title, body) {
     const webhookUrl = envContent.match(/LARK_WEBHOOK_URL=(.+)/)?.[1];
     if (!webhookUrl) return;
 
-    // --- 恢复原有规则：防打扰与频率限制 ---
     const now = new Date();
     const currentHour = now.getHours();
     
-    // 1. 工作时间限制: 10:00 - 20:00
     if (currentHour < 10 || currentHour >= 20) return;
 
     let lastNotif = { timestamp: 0, body: "" };
@@ -74,10 +90,8 @@ export async function sendToLark(title, body) {
       try { lastNotif = JSON.parse(fs.readFileSync(NOTIF_LOCK_PATH, 'utf-8')); } catch (e) {}
     }
 
-    // 2. 内容去重
     if (body.trim() === lastNotif.body.trim()) return;
 
-    // 3. 5 分钟冷却期 (300,000 ms)
     if (Date.now() - lastNotif.timestamp < 5 * 60 * 1000) return;
 
     const payload = {

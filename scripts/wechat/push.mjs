@@ -2,53 +2,49 @@
 import article from './articles/2026-01-28-return.mjs';
 import { getAccessToken, uploadContentImage, uploadCoverImage, uploadDraft } from './utils.mjs';
 
-async function push() {
-  console.log(`🚀 Starting push for: ${article.meta.title}`);
+/**
+ * 微信推送核心逻辑 (肢体插件化)
+ */
+export async function push(params = {}) {
+  const targetArticle = params.article || article;
+  console.log(`🚀 肢体启动：开始处理微信推送 [${targetArticle.meta.title}]`);
   
-  // 1. Get Token
-  console.log('1. Getting Token...');
+  // 1. 获取 Token
   const token = await getAccessToken();
-  console.log('✅ Token obtained.');
 
-  // 2. Upload Images
-  console.log('2. Uploading Images...');
-  
-  // 2a. Upload Cover (Needs Media ID)
-  console.log(`   - Uploading Cover: ${article.meta.cover_image}`);
-  const thumbMediaId = await uploadCoverImage(token, article.meta.cover_image, 'cover.png');
-  console.log('     ✅ Cover uploaded:', thumbMediaId);
+  // 2. 上传封面
+  console.log(`   - 正在上传封面...`);
+  const thumbMediaId = await uploadCoverImage(token, targetArticle.meta.cover_image, 'cover.png');
 
-  // 2b. Upload Content Images (Needs URL)
+  // 3. 上传正文图片
   const imageUrls = {};
-  for (const [key, path] of Object.entries(article.localImages)) {
-    console.log(`   - Uploading Content Image [${key}]: ${path}`);
+  for (const [key, path] of Object.entries(targetArticle.localImages)) {
+    console.log(`   - 正在同步素材 [${key}]...`);
     const url = await uploadContentImage(token, path, key + '.png');
     imageUrls[key] = url;
-    console.log('     ✅ Uploaded:', url);
   }
 
-  // 3. Render HTML with real URLs
-  console.log('3. Rendering HTML with remote URLs...');
-  const finalHtml = article.content(imageUrls);
-
-  // 4. Create Draft payload
+  // 4. 渲染与上传草稿
+  console.log('   - 正在生成远程草稿...');
+  const finalHtml = targetArticle.content(imageUrls);
   const payload = {
     articles: [
       {
-        title: article.meta.title,
-        author: article.meta.author,
-        digest: article.meta.digest,
+        title: targetArticle.meta.title,
+        author: targetArticle.meta.author,
+        digest: targetArticle.meta.digest,
         content: finalHtml,
         thumb_media_id: thumbMediaId
       }
     ]
   };
 
-  // 5. Push
-  console.log('4. Pushing Draft...');
   const draftId = await uploadDraft(token, payload);
-  console.log('✅ Draft pushed successfully!');
-  console.log('Draft ID:', draftId);
+  console.log('✅ 肢体动作完成：微信草稿已就绪。');
+  return draftId;
 }
 
-push().catch(console.error);
+// 兼容老爹手动 node push.mjs 的习惯
+if (process.argv[1].endsWith('push.mjs')) {
+  push().catch(console.error);
+}
