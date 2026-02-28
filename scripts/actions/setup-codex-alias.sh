@@ -115,13 +115,21 @@ alias gemini-brain="${ROOT_DIR}/scripts/actions/gemini-with-fleet.sh"
 alias brain-gate='cd "${ROOT_DIR}" && pnpm run health:gate'
 
 cdxb() {
-  local _task="\${*:-待分配任务}"
-  "${ROOT_DIR}/scripts/actions/codex-with-fleet.sh" --task "\$_task"
+  local _task="待分配任务"
+  if [[ \$# -gt 0 && "\$1" != --* ]]; then
+    _task="\$1"
+    shift
+  fi
+  "${ROOT_DIR}/scripts/actions/codex-with-fleet.sh" --task "\$_task" "\$@"
 }
 
 gmb() {
-  local _task="\${*:-待分配任务}"
-  "${ROOT_DIR}/scripts/actions/gemini-with-fleet.sh" --task "\$_task"
+  local _task="待分配任务"
+  if [[ \$# -gt 0 && "\$1" != --* ]]; then
+    _task="\$1"
+    shift
+  fi
+  "${ROOT_DIR}/scripts/actions/gemini-with-fleet.sh" --task "\$_task" "\$@"
 }
 $END_MARK
 EOF

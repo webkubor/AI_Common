@@ -89,10 +89,13 @@ if [[ "$DRY_RUN" == "1" ]]; then
   exit 0
 fi
 
-for arg in "${PASS_ARGS[@]}"; do
-  if [[ "$arg" == "--help" || "$arg" == "-h" || "$arg" == "--version" || "$arg" == "-V" ]]; then
-    exec codex "${PASS_ARGS[@]}"
-  fi
-done
+if [[ ${#PASS_ARGS[@]} -gt 0 ]]; then
+  for arg in "${PASS_ARGS[@]}"; do
+    if [[ "$arg" == "--help" || "$arg" == "-h" || "$arg" == "--version" || "$arg" == "-V" ]]; then
+      exec codex "${PASS_ARGS[@]}"
+    fi
+  done
+  exec codex "${PASS_ARGS[@]}" "$BOOTSTRAP_PROMPT"
+fi
 
-exec codex "${PASS_ARGS[@]}" "$BOOTSTRAP_PROMPT"
+exec codex "$BOOTSTRAP_PROMPT"

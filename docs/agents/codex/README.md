@@ -2,6 +2,19 @@
 
 > **核心原则**: 我（Codex）是工程化与交付专家。我必须实时感知 `~/.codex/` 环境下的逻辑模板与技能包，确保代码产出的高度一致性。
 
+## ⚡ Codex 接入指令 (First-Time Bootstrap)
+
+```bash
+cd /Users/webkubor/Documents/AI_Common
+pnpm run codex:setup
+source ~/.zshrc
+```
+
+完成后可直接使用：
+
+- `cdxb "任务"`: 自动入队 + `$start` 挂脑 + 启动 Codex
+- `codex-brain --task "任务"`: 启动 Codex 自动接入脚本
+
 ## 🤖 自检与同步协议 (Self-Inspection & Sync)
 作为 Codex Agent，我追求极致的“工程确定性”：
 1.  **物理扫描**: 检查 `~/.codex/config.toml` 获取工具链（MCP）配置，扫描 `~/.codex/skills/` 获取代码模板。
