@@ -11,7 +11,8 @@
     "health:verify": "node scripts/maintenance/verify-health.js",
     "health:gate": "node scripts/maintenance/health-gate.js",
     "fleet:claim": "node scripts/actions/fleet-claim.mjs",
-    "gemini:auto": "scripts/actions/gemini-with-fleet.sh"
+    "gemini:auto": "scripts/actions/gemini-with-fleet.sh",
+    "codex:auto": "scripts/actions/codex-with-fleet.sh"
   },
   "devDependencies": {
     "vitepress": "^1.6.4",

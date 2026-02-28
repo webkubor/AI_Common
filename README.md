@@ -109,5 +109,11 @@ Gemini 自动启动（先挂牌再进入 Gemini）：
 /Users/webkubor/Documents/AI_Common/scripts/actions/gemini-with-fleet.sh --task "你的当前任务"
 ```
 
+Codex 自动启动（先挂牌再进入 Codex）：
+
+```bash
+/Users/webkubor/Documents/AI_Common/scripts/actions/codex-with-fleet.sh --task "你的当前任务"
+```
+
 ---
 *Last Updated: 2026-02-28 (The Exocortex MCP Edition)*
