@@ -28,10 +28,11 @@ MISSING_COUNT=0
 INSTALLED_COUNT=0
 
 for SKILL_PAIR in "${CORE_SKILLS[@]}"; do
+    # 解析技能名与仓库地址
     SKILL_NAME=$(echo "$SKILL_PAIR" | cut -d'|' -f1)
     REPO_URL=$(echo "$SKILL_PAIR" | cut -d'|' -f2)
 
-    # 检查技能名是否匹配
+    # 检查当前技能是否已安装
     if echo "$INSTALLED_SKILLS" | grep -E "^$SKILL_NAME " > /dev/null; then
         echo "✅ [已就绪] $SKILL_NAME"
         ((INSTALLED_COUNT++))

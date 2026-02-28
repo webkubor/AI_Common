@@ -63,7 +63,7 @@ uv run ./scripts/ingest/chroma_ingest.py
 if command -v "pm2" &> /dev/null; then
   printf "${GREEN}🔄 正在启动大脑自动驾驶仪 (PM2)...${NC}\n"
   pm2 delete brain-cortex-pilot 2>/dev/null || true
-  pm2 start scripts/auto-pilot.js --name brain-cortex-pilot --cron-restart="*/5 * * * *" --no-autorestart
+  pm2 start scripts/core/auto-pilot.js --name brain-cortex-pilot --cron-restart="*/5 * * * *" --no-autorestart
   pm2 save
 fi
 
