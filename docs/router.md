@@ -13,6 +13,23 @@ description: 大脑的真理来源与动态路由入口，定义了所有 Agent 
 - **多开与防撞车并线 (Multi-Agent Sync)**: [🚦星际舰队编排板](./memory/fleet_status.md)。任何在其他目录唤醒的外派 Agent (如 Codex 等) **必须在开工前到此完成挂牌登记与环视，以防跨项目修改冲突。**
 - **冷启动**: 1.确认身份 -> 2.继承部门规范 -> 3.到编排板挂牌并检查碰撞 -> 4.启动执行。
 
+### 1.1 🚦 Agent Team 入队机制（零配置可用）
+
+- **无需别名/无需启动脚本**: 任何 Agent 仅凭文档即可入队，直接执行：
+
+```bash
+cd /Users/webkubor/Documents/AI_Common
+pnpm run fleet:claim -- --workspace "$PWD" --task "你的当前任务" --agent "Codex" --alias "Codex"
+```
+
+- **模型参数示例**:
+  - Gemini: `--agent "Gemini" --alias "Candy"`
+  - Claude: `--agent "Claude" --alias "Claude"`
+  - Codex: `--agent "Codex" --alias "Codex"`
+- **执行中补报**: 若 Agent 已经在执行任务但尚未登记，允许立即执行同一命令补报入队。
+- **任务回填**: 初始为“待分配任务”时，拿到明确需求后必须再次执行 `fleet:claim` 回填任务字段。
+- **模型防漂移**: 同一路径若已登记为其他模型，默认拒绝覆盖；确认切换时追加 `--force-switch`。
+
 ## 2. 🔑 凭证索引 (Secrets Index)
 
 - **GitHub/GitLab/WeChat/DeepSeek**: `brain/secrets/` 目录下对应文件。
@@ -41,6 +58,6 @@ description: 大脑的真理来源与动态路由入口，定义了所有 Agent 
 - **自动同步**: 每 5 分钟执行一次 Git 同步与推送。
 
 ---
-*Last Updated: 2026-02-27*
+*Last Updated: 2026-02-28*
 
-- **版本**: v4.5.0 (Intelligence Isolation)
+- **版本**: v4.6.0 (Fleet Self-Registration)
