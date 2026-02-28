@@ -115,5 +115,11 @@ Codex 自动启动（先挂牌再进入 Codex）：
 /Users/webkubor/Documents/AI_Common/scripts/actions/codex-with-fleet.sh --task "你的当前任务"
 ```
 
+说明：
+
+- 会先自动执行 `fleet:claim`（注册到 agent team 编排板）。
+- 默认自动注入 `$start`，让 Codex 冷启动就挂载 `router.md`。
+- 可用 `--dry-run` 仅预览入队结果与注入提示，不启动 Codex。
+
 ---
 *Last Updated: 2026-02-28 (The Exocortex MCP Edition)*
