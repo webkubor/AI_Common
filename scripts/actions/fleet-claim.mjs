@@ -35,13 +35,24 @@ function parseArgs(argv) {
   args.workspace = path.resolve(args.workspace);
   args.task = sanitizeCell(args.task);
   args.status = sanitizeCell(args.status);
-  args.agent = sanitizeCell(args.agent);
+  args.agent = normalizeAgent(sanitizeCell(args.agent));
   args.alias = sanitizeCell(args.alias);
   return args;
 }
 
 function sanitizeCell(value) {
   return String(value ?? '').replace(/\|/g, '｜').trim();
+}
+
+function normalizeAgent(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return 'Unknown';
+  const lower = raw.toLowerCase();
+  if (lower.includes('gemini')) return 'Gemini';
+  if (lower.includes('codex')) return 'Codex';
+  if (lower.includes('claude')) return 'Claude';
+  if (lower.includes('opencode')) return 'OpenCode';
+  return raw;
 }
 
 function nowLocal() {
@@ -65,9 +76,21 @@ function stripMarkdown(value) {
 function parseTableRow(line) {
   const parts = line.split('|').slice(1, -1).map(s => s.trim());
   if (parts.length < 5) return null;
+  if (parts.length >= 6) {
+    return {
+      raw: line,
+      node: parts[0],
+      agent: normalizeAgent(parts[1]),
+      workspace: stripMarkdown(parts[2]),
+      task: parts[3],
+      time: parts[4],
+      status: parts[5]
+    };
+  }
   return {
     raw: line,
     node: parts[0],
+    agent: extractAgentFromNode(parts[0]),
     workspace: stripMarkdown(parts[1]),
     task: parts[2],
     time: parts[3],
@@ -102,14 +125,16 @@ function buildNodeId(number, alias, agent) {
   return `**${alias}-${number} (${agent})**`;
 }
 
-function buildRow({ nodeId, workspace, task, time, status }) {
-  return `| ${nodeId} | \`${workspace}\` | ${task} | ${time} | ${status} |`;
+function buildRow({ nodeId, agent, workspace, task, time, status }) {
+  return `| ${nodeId} | ${agent} | \`${workspace}\` | ${task} | ${time} | ${status} |`;
 }
 
 function extractAgentFromNode(node) {
   const text = stripMarkdown(node).toLowerCase();
   if (text.includes('gemini')) return 'Gemini';
   if (text.includes('codex')) return 'Codex';
+  if (text.includes('claude')) return 'Claude';
+  if (text.includes('opencode')) return 'OpenCode';
   return 'Unknown';
 }
 
@@ -155,7 +180,7 @@ function main() {
 
   const sameWorkspaceRow = parsedRows.find(row => row.workspace === args.workspace);
   if (sameWorkspaceRow) {
-    const existingAgent = extractAgentFromNode(sameWorkspaceRow.node);
+    const existingAgent = sameWorkspaceRow.agent || extractAgentFromNode(sameWorkspaceRow.node);
     if (existingAgent !== 'Unknown' && existingAgent !== args.agent && !args.forceSwitch) {
       console.error(JSON.stringify({
         ok: false,
@@ -188,6 +213,7 @@ function main() {
   const nodeId = buildNodeId(number, args.alias, args.agent);
   const rowLine = buildRow({
     nodeId,
+    agent: args.agent,
     workspace: args.workspace,
     task: args.task,
     time: nowLocal(),
@@ -213,6 +239,7 @@ function main() {
     file: fleetFile,
     machineNumber: number,
     nodeId: stripMarkdown(nodeId),
+    agent: args.agent,
     workspace: args.workspace,
     task: args.task,
     dryRun: args.dryRun

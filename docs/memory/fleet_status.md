@@ -9,13 +9,13 @@
 
 *Agent 请严格遵守下方表格格式进行登记/更新，若发现超期僵尸任务可主动清理。*
 
-| 节点 ID (模型/别名) | 物理坐标 (绝对工作路径) | 当前执行的核心任务 (含目标) | 领命时间 | 状态与锁 (Status & Locks) |
-| :--- | :--- | :--- | :--- | :--- |
-| **Candy-Prime (0号机/Gemini)** | `/Users/webkubor/Documents/AI_Common` | 队长编排与冲突仲裁 | 2026-02-28 17:12 | [ 队长锁 ] 活跃 |
-| **Candy-1 (Gemini)** | `/Users/webkubor/Desktop/omni-chatbot-sdk` | 深度接入外部大脑：建立项目索引、规则沉淀与记忆链条初始化 | 2026-02-28 18:10 | [ 执行中 ] 活跃 |
-| **Candy-2 (Gemini)** | `/Users/webkubor/Desktop/skills` | 技能路由排查与规则对齐 | 2026-02-28 17:52 | [ 执行中 ] 活跃 |
-| **Codex-3 (Codex)** | `/Users/webkubor/Desktop/create` | 待分配任务 | 2026-02-28 18:11 | [ 执行中 ] 活跃 |
-| *(示例节点)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
+| 节点 ID (模型/别名) | 模型标签 (Agent) | 物理坐标 (绝对工作路径) | 当前执行的核心任务 (含目标) | 领命时间 | 状态与锁 (Status & Locks) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Candy-Prime (0号机/Gemini)** | Gemini | `/Users/webkubor/Documents/AI_Common` | 队长编排与冲突仲裁 | 2026-02-28 17:12 | [ 队长锁 ] 活跃 |
+| **Candy-1 (Gemini)** | Gemini | `/Users/webkubor/Desktop/omni-chatbot-sdk` | 深度接入外部大脑：建立项目索引、规则沉淀与记忆链条初始化 | 2026-02-28 18:10 | [ 执行中 ] 活跃 |
+| **Candy-2 (Gemini)** | Gemini | `/Users/webkubor/Desktop/skills` | 技能路由排查与规则对齐 | 2026-02-28 17:52 | [ 执行中 ] 活跃 |
+| **Codex-3 (Codex)** | Codex | `/Users/webkubor/Desktop/create` | 待分配任务 | 2026-02-28 18:11 | [ 执行中 ] 活跃 |
+| *(示例节点)* | *(Gemini/Codex/Claude...)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
 
 ---
 
