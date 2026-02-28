@@ -50,4 +50,5 @@ docs/skills/visual/cinematic-storyboard/assets/*
 .context_buffer.json
 docs/memory/logs/
 docs/memory/plans/
-docs/memory/
+docs/memory/*
+!docs/memory/fleet_status.md

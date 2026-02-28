@@ -8,13 +8,41 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const DOCS_DIR = path.join(__dirname, '../../docs');
-const rootDir = path.join(__dirname, '..');
+const SKIP_DIRS = new Set(['.vitepress', 'node_modules', 'dist', 'build']);
+
+function normalizeToMdPath(rawLink, baseFile = path.join(DOCS_DIR, 'router.md')) {
+  if (!rawLink) return null;
+  const link = rawLink.trim();
+  if (!link || link.startsWith('http://') || link.startsWith('https://') || link.startsWith('#')) {
+    return null;
+  }
+
+  let absPath;
+  if (link.startsWith('/')) {
+    absPath = path.join(DOCS_DIR, link.replace(/^\/+/, ''));
+  } else {
+    absPath = path.resolve(path.dirname(baseFile), link);
+  }
+
+  const candidates = [];
+  if (path.extname(absPath)) {
+    candidates.push(absPath);
+  } else {
+    candidates.push(`${absPath}.md`);
+    candidates.push(path.join(absPath, 'index.md'));
+  }
+
+  const found = candidates.find(p => fs.existsSync(p) && !fs.statSync(p).isDirectory());
+  if (!found) return null;
+  return path.relative(DOCS_DIR, found);
+}
 
 function getAllMarkdownFiles(dir) {
   const files = [];
   const items = fs.readdirSync(dir, { withFileTypes: true });
 
   for (const item of items) {
+    if (item.isDirectory() && SKIP_DIRS.has(item.name)) continue;
     const fullPath = path.join(dir, item.name);
     if (item.isDirectory()) {
       files.push(...getAllMarkdownFiles(fullPath));
@@ -27,36 +55,30 @@ function getAllMarkdownFiles(dir) {
 }
 
 function getIndexedFiles() {
-  const indexFiles = [];
+  const indexFiles = new Set();
 
   const routerPath = path.join(DOCS_DIR, 'router.md');
   const indexPath = path.join(DOCS_DIR, 'index.md');
 
   if (fs.existsSync(routerPath)) {
     const content = fs.readFileSync(routerPath, 'utf-8');
-    const routerMdMatches = content.matchAll(/docs\/[^)]+\.md/g);
-    for (const match of routerMdMatches) {
-      const relativePath = match[0].replace('docs/', '').replace('docs\\', '');
-      if (relativePath) indexFiles.push(relativePath);
+    const routerLinks = content.matchAll(/\]\(([^)]+)\)/g);
+    for (const match of routerLinks) {
+      const relativePath = normalizeToMdPath(match[1], routerPath);
+      if (relativePath) indexFiles.add(relativePath);
     }
   }
 
   if (fs.existsSync(indexPath)) {
     const content = fs.readFileSync(indexPath, 'utf-8');
-    const indexMdMatches = content.matchAll(/link: ["']\/[^"']+["']/g);
+    const indexMdMatches = content.matchAll(/link:\s*["']([^"']+)["']/g);
     for (const match of indexMdMatches) {
-      const link = match[0];
-      const linkMatch = link.match(/\/([a-z-\/]+\.md)/);
-      if (linkMatch) {
-        const relativePath = linkMatch[1];
-        if (!indexFiles.includes(relativePath)) {
-          indexFiles.push(relativePath);
-        }
-      }
+      const relativePath = normalizeToMdPath(match[1], indexPath);
+      if (relativePath) indexFiles.add(relativePath);
     }
   }
 
-  return [...new Set(indexFiles)];
+  return [...indexFiles];
 }
 
 function checkSidebarConfig() {
@@ -65,13 +87,14 @@ function checkSidebarConfig() {
 
   const content = fs.readFileSync(configPath, 'utf-8');
 
-  const items = [];
-  const linkMatches = content.matchAll(/link: ["']\/([a-z-\/]+\.md)["']/g);
+  const items = new Set();
+  const linkMatches = content.matchAll(/link:\s*["']([^"']+)["']/g);
   for (const match of linkMatches) {
-    items.push(match[1]);
+    const normalized = normalizeToMdPath(match[1], configPath);
+    if (normalized) items.add(normalized);
   }
 
-  return [...new Set(items)];
+  return [...items];
 }
 
 function checkFrontmatter(name, content) {
@@ -144,7 +167,7 @@ function analyzeStructure() {
     const dir = relativePath.split('/')[0];
 
     if (!categories[dir]) categories[dir] = [];
-    categories[dir].push(file);
+    categories[dir].push(relativePath);
   }
 
   for (const [category, files] of Object.entries(categories)) {

@@ -7,7 +7,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DOCS_DIR = path.join(__dirname, '../docs');
+const DOCS_DIR = path.join(__dirname, '../../docs');
+const SKIP_DIRS = new Set(['.vitepress', 'node_modules', 'dist', 'build']);
 
 // 颜色输出
 const colors = {
@@ -23,6 +24,35 @@ function log(color, message) {
   console.log(`${color}${message}${colors.reset}`);
 }
 
+function shouldSkipDir(name) {
+  return SKIP_DIRS.has(name);
+}
+
+function normalizeToMdPath(rawLink, baseFile) {
+  if (!rawLink) return null;
+  const link = rawLink.trim();
+  if (!link || link.startsWith('http://') || link.startsWith('https://') || link.startsWith('#')) return null;
+
+  let absPath;
+  if (link.startsWith('/')) {
+    absPath = path.join(DOCS_DIR, link.replace(/^\/+/, ''));
+  } else {
+    absPath = path.resolve(path.dirname(baseFile), link);
+  }
+
+  const candidates = [];
+  if (path.extname(absPath)) {
+    candidates.push(absPath);
+  } else {
+    candidates.push(`${absPath}.md`);
+    candidates.push(path.join(absPath, 'index.md'));
+  }
+
+  const found = candidates.find(p => fs.existsSync(p) && !fs.statSync(p).isDirectory());
+  if (!found) return null;
+  return path.relative(DOCS_DIR, found);
+}
+
 function checkDocCompliance() {
   log(colors.cyan, '\n📄 检查文档是否遵循标准规范...');
 
@@ -30,6 +60,7 @@ function checkDocCompliance() {
   const items = fs.readdirSync(DOCS_DIR, { withFileTypes: true });
 
   for (const item of items) {
+    if (item.isDirectory() && shouldSkipDir(item.name)) continue;
     const fullPath = path.join(DOCS_DIR, item.name);
     if (item.isDirectory()) {
       markdownFiles.push(...getAllMarkdownFiles(fullPath));
@@ -80,6 +111,7 @@ function getAllMarkdownFiles(dir) {
   const items = fs.readdirSync(dir, { withFileTypes: true });
 
   for (const item of items) {
+    if (item.isDirectory() && shouldSkipDir(item.name)) continue;
     const fullPath = path.join(dir, item.name);
     if (item.isDirectory()) {
       files.push(...getAllMarkdownFiles(fullPath));
@@ -105,10 +137,13 @@ function checkRouterUpdates() {
 
     if (lastUpdated === today) {
       log(colors.green, `✅ router.md 今天已更新 (${lastUpdated})`);
-    } else if (lastUpdated === '2026-02-26') {
-      log(colors.cyan, `ℹ️  router.md 最后更新: 2026-02-26 (今天)`);
     } else {
-      log(colors.yellow, `⚠️  router.md 未更新 (最后: ${lastUpdated})`);
+      const days = Math.floor((now - new Date(lastUpdated)) / (1000 * 60 * 60 * 24));
+      if (Number.isFinite(days) && days <= 2) {
+        log(colors.cyan, `ℹ️  router.md 最近已更新 (${lastUpdated}, ${days} 天前)`);
+      } else {
+        log(colors.yellow, `⚠️  router.md 未更新 (最后: ${lastUpdated})`);
+      }
     }
   }
 
@@ -116,23 +151,27 @@ function checkRouterUpdates() {
 }
 
 function checkMemoryJournal() {
-  log(colors.cyan, '\n🔍 检查 memory/journal 内容...');
+  log(colors.cyan, '\n🔍 检查 memory 记录目录...');
 
   const journalDir = path.join(DOCS_DIR, 'memory', 'journal');
-  if (!fs.existsSync(journalDir)) {
-    log(colors.red, '❌ memory/journal/ 目录不存在');
+  const logsDir = path.join(DOCS_DIR, 'memory', 'logs');
+  const targetDir = fs.existsSync(journalDir) ? journalDir : logsDir;
+  const targetLabel = fs.existsSync(journalDir) ? 'memory/journal' : 'memory/logs';
+
+  if (!fs.existsSync(targetDir)) {
+    log(colors.red, '❌ memory 记录目录不存在 (journal/logs 均缺失)');
     return 0;
   }
 
-  const files = fs.readdirSync(journalDir);
+  const files = fs.readdirSync(targetDir);
   const markdownFiles = files.filter(f => f.endsWith('.md'));
 
   if (markdownFiles.length === 0) {
-    log(colors.yellow, '⚠️  memory/journal/ 为空');
+    log(colors.yellow, `⚠️  ${targetLabel}/ 为空`);
     return 0;
   }
 
-  log(colors.green, `✅ memory/journal/ 包含 ${markdownFiles.length} 个文件`);
+  log(colors.green, `✅ ${targetLabel}/ 包含 ${markdownFiles.length} 个文件`);
   markdownFiles.forEach(f => log(colors.green, `  • ${f}`));
 
   return markdownFiles.length;
@@ -141,29 +180,31 @@ function checkMemoryJournal() {
 function checkUnreferencedFiles() {
   log(colors.cyan, '\n🔍 检查可能未被引用的文件...');
 
-  const importantDirs = ['rules', 'skills', 'agents'];
   const allMarkdownFiles = getAllMarkdownFiles(DOCS_DIR);
   const referencedFiles = new Set();
 
-  // 添加已知的引用源
-  const routerPath = path.join(DOCS_DIR, 'router.md');
-  const indexPath = path.join(DOCS_DIR, 'index.md');
+  const referenceSources = [
+    path.join(DOCS_DIR, 'router.md'),
+    path.join(DOCS_DIR, 'index.md')
+  ];
 
-  [routerPath, indexPath].forEach(path => {
-    const content = fs.readFileSync(path, 'utf-8');
-    const matches = content.matchAll(/docs\/[^)]+\.md/g);
-    for (const match of matches) {
-      referencedFiles.add(match[0].replace('docs/', '').replace('docs\\', ''));
+  referenceSources.forEach(sourceFile => {
+    if (!fs.existsSync(sourceFile)) return;
+    const content = fs.readFileSync(sourceFile, 'utf-8');
+    const mdLinks = content.matchAll(/\]\(([^)]+)\)/g);
+    for (const match of mdLinks) {
+      const normalized = normalizeToMdPath(match[1], sourceFile);
+      if (normalized) referencedFiles.add(normalized);
     }
   });
 
-  // 检查 sidebar
   const configPath = path.join(DOCS_DIR, '.vitepress', 'config.mjs');
   if (fs.existsSync(configPath)) {
     const configContent = fs.readFileSync(configPath, 'utf-8');
-    const linkMatches = configContent.matchAll(/link: ["']\/([a-z-\/]+\.md)["']/g);
+    const linkMatches = configContent.matchAll(/link:\s*["']([^"']+)["']/g);
     for (const match of linkMatches) {
-      referencedFiles.add(match[1]);
+      const normalized = normalizeToMdPath(match[1], configPath);
+      if (normalized) referencedFiles.add(normalized);
     }
   }
 

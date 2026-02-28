@@ -59,17 +59,30 @@ function verifyRouterPaths() {
   }
 
   const content = fs.readFileSync(routerPath, 'utf-8');
-  // 匹配类似 `docs/memory/logs/` 或 `docs/rules/xxx.md` 的路径
-  const matches = content.match(/docs\/[a-zA-Z0-9_\-\/]+\.?[a-z]*/g) || [];
+  const matches = [];
+  const linkPattern = /\]\(([^)]+)\)/g;
+  let linkMatch;
+  while ((linkMatch = linkPattern.exec(content)) !== null) {
+    matches.push(linkMatch[1].trim());
+  }
 
   const issues = [];
   let validCount = 0;
 
   for (const match of matches) {
-    const relPath = match.replace('docs/', '');
-    const fullPath = path.join(DOCS_DIR, relPath);
-    
-    if (fs.existsSync(fullPath)) {
+    if (!match || match.startsWith('http://') || match.startsWith('https://') || match.startsWith('#')) {
+      continue;
+    }
+
+    const normalized = match.replace(/\\/g, '/');
+    const resolved = path.resolve(path.dirname(routerPath), normalized);
+    const candidates = [
+      resolved,
+      `${resolved}.md`,
+      path.join(resolved, 'index.md')
+    ];
+
+    if (candidates.some(p => fs.existsSync(p))) {
       validCount++;
     } else {
       issues.push(`无效引用: ${match}`);
@@ -94,7 +107,7 @@ function checkCriticalDirectories() {
   const dirs = [
     { name: 'Rules', path: path.join(DOCS_DIR, 'rules') },
     { name: 'Memory Logs', path: path.join(DOCS_DIR, 'memory/logs') },
-    { name: 'Secrets', path: path.join(DOCS_DIR, 'secrets') },
+    { name: 'Secrets', path: path.join(PROJECT_ROOT, 'brain/secrets') },
     { name: 'UCD (Aesthetics)', path: path.join(DOCS_DIR, 'ucd') },
     { name: 'Core Scripts', path: path.join(SCRIPTS_DIR, 'core') }
   ];
@@ -149,7 +162,7 @@ function runHealthCheck() {
   issues.critical.push(...verifyRouterPaths());
   issues.warnings.push(...checkVectorStore());
 
-  log('\n' + '='.repeat(50));
+  log(colors.cyan, '\n' + '='.repeat(50));
   if (issues.critical.length === 0) {
     log(colors.green, '🎉 外部大脑核心架构健康！');
   } else {
