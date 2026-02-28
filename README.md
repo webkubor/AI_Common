@@ -141,6 +141,7 @@ source ~/.zshrc
 - `cdxb "任务"`: 自动入队 + `$start` 挂脑 + 启动 Codex
 - `gmb "任务"`: 自动入队 + 启动 Gemini
 - `clb "任务"`: 自动入队 + 启动 Claude
+- `handoverc "Codex-3 (Codex)"`: 一键移交 0 号机队长
 - `brain-gate`: 在 AI_Common 执行健康门禁
 
 ---

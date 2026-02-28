@@ -28,6 +28,7 @@ usage() {
     - gmb "任务描述"
     - claude-brain
     - clb "任务描述"
+    - handoverc "节点ID"
     - brain-gate
 EOF
 }
@@ -143,6 +144,16 @@ clb() {
   fi
   "${ROOT_DIR}/scripts/actions/claude-with-fleet.sh" --task "\$_task" "\$@"
 }
+
+handoverc() {
+  if [[ \$# -lt 1 ]]; then
+    echo '用法: handoverc "Codex-3 (Codex)" [--dry-run]'
+    return 1
+  fi
+  local _node="\$1"
+  shift
+  cd "${ROOT_DIR}" && pnpm run fleet:handover -- --to-node "\$_node" "\$@"
+}
 $END_MARK
 EOF
 
@@ -163,3 +174,4 @@ echo "🗂 备份文件: $BACKUP_FILE"
 echo "♻️ 让配置生效: source \"$RC_FILE\""
 echo "🚀 启动 Codex 并自动入脑: cdxb \"你的任务\""
 echo "🚀 启动 Claude 并自动入脑: clb \"你的任务\""
+echo "👑 移交 0 号机队长: handoverc \"Codex-3 (Codex)\""

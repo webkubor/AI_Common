@@ -37,6 +37,27 @@
 3. 若判定为高冲突（同一路径且同一文件族），0 号机应先发出冲突预警，再建议队列顺序，不得默默并行开工。
 4. 战略建议生效后，0 号机再登记自己的锁范围；若锁范围变化，需立即补写更新条目。
 
+#### 🔁 队长移交流程 (Captain Handover Trigger)
+
+当老爹决定把 0 号机移交给其他正在执行的 Agent，可触发：
+
+```bash
+cd /Users/webkubor/Documents/AI_Common
+pnpm run fleet:handover -- --to-node "Codex-3 (Codex)"
+```
+
+或按路径 + 模型移交：
+
+```bash
+pnpm run fleet:handover -- --to-workspace "/绝对路径" --to-agent "Gemini"
+```
+
+规则：
+
+1. 目标节点会被提升为 `Xxx-Prime (0号机/模型)` 且自动加 `[ 队长锁 ] 活跃`。
+2. 原 0 号机会自动降级为普通机号并保持活跃执行状态。
+3. 建议先用 `--dry-run` 预演，再正式执行。
+
 ### 🧭 非 0 号机开工前必读流程 (Non-Prime Start Checklist)
 
 1. 先读本区最新一条“当班战略建议”，再决定是否开工。

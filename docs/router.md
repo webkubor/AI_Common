@@ -29,6 +29,33 @@ pnpm run fleet:claim -- --workspace "$PWD" --task "你的当前任务" --agent "
 - **执行中补报**: 若 Agent 已经在执行任务但尚未登记，允许立即执行同一命令补报入队。
 - **任务回填**: 初始为“待分配任务”时，拿到明确需求后必须再次执行 `fleet:claim` 回填任务字段。
 - **同路径并行提示**: 同一路径若已登记其他模型，系统会给出冲突告警（终端 + 系统通知），但不拦截启动与登记。
+- **队长移交触发**: 需要把 0 号机队长移交给其他正在执行的 Agent 时，执行：
+
+```bash
+cd /Users/webkubor/Documents/AI_Common
+pnpm run fleet:handover -- --to-node "Codex-3 (Codex)"
+```
+
+或按路径移交：
+
+```bash
+pnpm run fleet:handover -- --to-workspace "/绝对路径" --to-agent "Claude"
+```
+
+### 1.2 🗣 AI 口令触发（免手打命令）
+
+当用户在对话里发出以下口令时，Agent 应直接执行队长移交，不要求用户再手打命令：
+
+1. `移交队长给 <节点>`（例：`移交队长给 Codex-3 (Codex)`）
+2. `把 0 号机交给 <节点>`
+3. `队长切到 <节点>`
+
+执行规范：
+
+1. 优先按节点名执行：`pnpm run fleet:handover -- --to-node "<节点>"`
+2. 若用户给的是路径/模型，则执行：`pnpm run fleet:handover -- --to-workspace "<路径>" --to-agent "<模型>"`
+3. 若目标不唯一（同名或信息不全），先让用户补充一次目标，再执行。
+4. 执行完成后必须回报：`from -> to`、目标路径、时间戳。
 
 ## 2. 🔑 凭证索引 (Secrets Index)
 

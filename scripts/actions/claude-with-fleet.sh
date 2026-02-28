@@ -116,6 +116,8 @@ ${START_BLOCK}
 5. 若当前任务为“待分配任务”，一旦拿到明确需求，立即回填：
    node /Users/webkubor/Documents/AI_Common/scripts/actions/fleet-claim.mjs --workspace "${WORKSPACE}" --task "<明确任务>" --agent "Claude" --alias "Claude"
 6. 用户称呼协议：默认称呼用户为“老爹”；若上一条遗漏称呼，下一条先纠正再继续任务。
+7. 若用户说“移交队长给 XXX / 把0号机交给 XXX / 队长切到 XXX”，直接触发：
+   cd /Users/webkubor/Documents/AI_Common && pnpm run fleet:handover -- --to-node "XXX"
 EOF
 )"
 
