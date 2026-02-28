@@ -87,6 +87,8 @@ ${START_BLOCK}
 2. 确认编排板登记：${NODE_ID}（机号：${MACHINE_NUMBER}）
 3. 如与其他节点存在文件冲突风险，先给出冲突提示再执行
 4. 首次回复请报告：已挂载路由 + 当前机号 + 当前工作路径
+5. 若当前任务为“待分配任务”，一旦拿到明确需求，立即回填：
+   node /Users/webkubor/Documents/AI_Common/scripts/actions/fleet-claim.mjs --workspace "${WORKSPACE}" --task "<明确任务>" --agent "Codex" --alias "Codex"
 EOF
 )"
 

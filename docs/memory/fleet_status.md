@@ -14,7 +14,7 @@
 | **Candy-Prime (0号机/Gemini)** | Gemini | `/Users/webkubor/Documents/AI_Common` | 队长编排与冲突仲裁 | 2026-02-28 17:12 | [ 队长锁 ] 活跃 |
 | **Candy-1 (Gemini)** | Gemini | `/Users/webkubor/Desktop/omni-chatbot-sdk` | 深度接入外部大脑：建立项目索引、规则沉淀与记忆链条初始化 | 2026-02-28 18:10 | [ 执行中 ] 活跃 |
 | **Candy-2 (Gemini)** | Gemini | `/Users/webkubor/Desktop/skills` | 技能路由排查与规则对齐 | 2026-02-28 17:52 | [ 执行中 ] 活跃 |
-| **Codex-3 (Codex)** | Codex | `/Users/webkubor/Desktop/create` | 待分配任务 | 2026-02-28 18:11 | [ 执行中 ] 活跃 |
+| **Codex-3 (Codex)** | Codex | `/Users/webkubor/Desktop/create` | TTS 技术推进 | 2026-02-28 18:34 | [ 执行中 ] 活跃 |
 | *(示例节点)* | *(Gemini/Codex/Claude...)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
 
 ---
@@ -42,6 +42,7 @@
 3. 仅在“可开工范围”内领取任务，并在上方表格登记自己的锁与状态。
 4. 命中“禁止触碰范围”时，必须等待或改领其他任务，不得抢写。
 5. 开工后若任务范围变更，必须先回到本区补充风险，再继续执行。
+6. 若初始登记为“待分配任务”，在拿到明确需求后必须立即回填任务字段，不得长期占位。
 
 ### 🧩 战略建议模板 (复制即用)
 
