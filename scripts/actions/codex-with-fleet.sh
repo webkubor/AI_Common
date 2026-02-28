@@ -11,12 +11,20 @@ PASS_ARGS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --task)
-      TASK="${2:-$TASK}"
-      shift 2
+      if [[ $# -ge 2 && "${2:-}" != --* ]]; then
+        TASK="$2"
+        shift 2
+      else
+        shift
+      fi
       ;;
     --workspace)
-      WORKSPACE="${2:-$WORKSPACE}"
-      shift 2
+      if [[ $# -ge 2 && "${2:-}" != --* ]]; then
+        WORKSPACE="$2"
+        shift 2
+      else
+        shift
+      fi
       ;;
     --skip-start)
       USE_START=0
