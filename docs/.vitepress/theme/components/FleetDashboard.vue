@@ -136,7 +136,7 @@ function statusTone(member) {
             <div class="card-glow"></div>
             <div class="working-flow" v-if="isWorking(member)"></div>
             
-            <div class="card-inner">
+            <div class="card-inner" style="display:flex;flex-direction:column;gap:14px;">
               <header class="card-header">
                 <div class="member-info">
                   <h3 class="member-name">{{ member.member }}</h3>
@@ -146,7 +146,7 @@ function statusTone(member) {
                     <span v-if="member.hasTodo" class="badge todo-badge">OBJECTIVE PROG</span>
                   </div>
                 </div>
-                <div class="status-indicator">
+                <div class="status-indicator" style="margin-left:auto;flex-shrink:0;">
                   <span class="status-dot" :class="{ 'pulse': isWorking(member) }"></span>
                 </div>
               </header>
@@ -424,8 +424,14 @@ function statusTone(member) {
 
 .task-box {
   background: rgba(0,0,0,0.02);
-  border-radius: 12px; padding: 16px; margin: 16px 0;
+  border-radius: 12px;
+  padding: 16px;
   border: 1px solid rgba(0,0,0,0.05);
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
 }
 
 .working-label {
@@ -439,9 +445,24 @@ function statusTone(member) {
   font-family: var(--vp-font-family-mono); font-size: 13px; line-height: 1.6;
 }
 
-/* 进度条动画 */
+/* 进度条 */
+.progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.progress-value { font-size: 12px; color: var(--text-main); font-weight: 700; font-family: var(--vp-font-family-mono); }
+
 .progress-track {
-  height: 8px; background: #f1f5f9; border-radius: 10px; overflow: hidden; margin-top: 8px;
+  height: 8px; background: #f1f5f9; border-radius: 10px; overflow: hidden;
 }
 
 .progress-fill {
@@ -464,8 +485,42 @@ function statusTone(member) {
   100% { background-position: 30px 0; }
 }
 
+.meta-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid var(--card-border);
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.meta-label {
+  color: var(--text-muted);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.meta-value {
+  color: var(--text-main);
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
 .meta-value.path {
-  background: #f8fafc; padding: 4px 10px; border-radius: 8px; font-size: 11px;
+  background: #f8fafc; padding: 3px 8px; border-radius: 6px; font-size: 11px;
+  color: var(--vp-c-brand-1);
 }
 
 /* ===== 历史面板 (精简化) ===== */

@@ -11,10 +11,8 @@
 
 | 节点 ID (模型/别名) | 模型标签 (Agent) | 物理坐标 (绝对工作路径) | 当前执行的核心任务 (含目标) | 领命时间 | 状态与锁 (Status & Locks) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Candy-2 (Gemini)** | Gemini | `/Users/webkubor/Desktop/skills` | 已完成：scm-ops-skill 与 xhs-manager-skill 的包装推送 | 2026-03-02 18:02 | [ 执行中 ] 活跃 |
+| **Candy-2 (Gemini)** | Gemini | `/Users/webkubor/Desktop/skills` | 已完成：scm-ops-skill 与 xhs-manager-skill 的包装推送 | 2026-03-02 18:02 | [ 队长锁 ] 活跃 |
 | **Candy-6 (Gemini)** | Gemini | `/Users/webkubor/Documents/CortexOS` | 待分配任务 | 2026-03-02 18:15 | [ 执行中 ] 活跃 |
-| **Claude-7 (Claude)** | Claude | `/Users/webkubor` | 待分配任务 | 2026-03-02 17:00 | [ 执行中 ] 活跃 |
-| **Candy-8 (Gemini)** | Gemini | `/Users/webkubor/Desktop/AI-tools` | 待分配任务 | 2026-03-02 17:04 | [ 执行中 ] 活跃 |
 | *(示例节点)* | *(Gemini/Codex/Claude...)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
 ---
 
