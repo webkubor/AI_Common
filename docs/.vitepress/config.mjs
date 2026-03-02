@@ -23,39 +23,51 @@ export default defineConfig({
   head: [["link", { rel: "icon", href: "/logo.svg" }]],
   themeConfig: {
     logo: "/logo.svg",
+    // 简化右上角导航，只保留两个入口
     nav: [
       { text: "🛰️ 阵列态势", link: "/" },
-      { text: "🚀 使用指南", link: "/guide/" },
-      {
-        text: "🧩 技能矩阵",
-        items: [
-          { text: "开源技能库", link: "/skills/github_repos" },
-          { text: "本地集成能力", link: "/skills/" },
-        ]
-      },
-      { text: "🗺️ 路由索引", link: "/router" },
+      { text: "🚀 使用指引", link: "/guide/" },
     ],
+    // 强化左侧边栏，增加饱满度
     sidebar: [
       {
-        text: "🚀 快速上手",
+        text: "🏁 开始使用",
         items: [
-          { text: "使用指引", link: "/guide/" },
-          { text: "路由总览", link: "/router" },
+          { text: "快速上手指南", link: "/guide/" },
+          { text: "🗺️ 路由总览", link: "/router" },
         ],
       },
       {
-        text: "🧩 技能矩阵",
+        text: "🧩 技能矩阵 (Skills)",
         items: [
-          { text: "开源技能库 (GitHub)", link: "/skills/github_repos" },
-          { text: "本地集成能力", link: "/skills/" },
+          { text: "🌍 开源技能库 (GitHub)", link: "/skills/github_repos" },
+          { text: "🏠 本地集成能力", link: "/skills/" },
+          { text: "🛠️ 技能工厂 (SOP)", link: "/skills/core/skill-creator" },
         ],
       },
       {
-        text: "⚖️ 核心底座",
-        collapsed: true,
+        text: "📏 核心准则 (Rules)",
         items: [
-          { text: "审美准则", link: "/rules/webkubor_vibe_manifesto" },
-          { text: "关于主理人", link: "/about" },
+          { text: "🎨 webkubor 审美准则", link: "/rules/webkubor_vibe_manifesto" },
+          { text: "🧬 项目进化 SOP", link: "/skills/core/project_evolution_skill" },
+          { text: "📝 编码规范", link: "/rules/coding_rules" },
+          { text: "🔒 隐私排除规范", link: "/rules/privacy_excludes" },
+        ],
+      },
+      {
+        text: "🕒 意识沉淀 (Archive)",
+        collapsed: false,
+        items: [
+          { text: "🕒 深度复盘总览", link: "/retrospectives/" },
+          { text: "📚 规则复盘", link: "/retrospectives/rules/" },
+          { text: "💾 历史日志", link: "/memory/logs/2026-03-02" },
+        ]
+      },
+      {
+        text: "👋 关于",
+        items: [
+          { text: "主理人自述", link: "/about" },
+          { text: "大脑进化史", link: "/BRAIN_HISTORY" },
         ]
       }
     ],
