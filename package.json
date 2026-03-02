@@ -13,6 +13,7 @@
     "fleet:claim": "node scripts/actions/fleet-claim.mjs",
     "fleet:status": "node scripts/actions/fleet-status.mjs",
     "fleet:handover": "node scripts/actions/fleet-handover.mjs",
+    "fleet:cleanup": "node scripts/actions/fleet-cleanup.mjs",
     "fleet:sync-dashboard": "node scripts/actions/sync-fleet-dashboard.mjs",
     "feishu:bot": "node scripts/services/feishu-bot-bridge.mjs",
     "gemini:auto": "scripts/actions/gemini-with-fleet.sh",

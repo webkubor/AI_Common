@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 const projectRoot = path.join(__dirname, "../../");
 const fleetFile = path.join(projectRoot, "docs/memory/fleet_status.md");
 
-const CLEANUP_THRESHOLD_HOURS = 2;
+const CLEANUP_THRESHOLD_HOURS = Number(process.env.FLEET_STALE_HOURS || "4");
 
 function parseDate(dateStr) {
   return new Date(dateStr.replace(/-/g, "/"));
@@ -59,12 +59,10 @@ function main() {
       const startTime = parseDate(startTimeStr);
       const diffHours = (now - startTime) / (1000 * 60 * 60);
 
-      const isOffline = status.includes("已离线");
+      const isOffline = status.includes("已离线") || status.includes("僵尸");
       const isExpired = diffHours > CLEANUP_THRESHOLD_HOURS;
-      const isCaptain = status.includes("队长锁") || nodeId.includes("Prime");
-
-      if ((isOffline || isExpired) && !isCaptain) {
-        console.log(`🗑️ 清理: ${nodeId} (${isOffline ? '已离线' : '已逾期'})`);
+      if (isOffline || isExpired) {
+        console.log(`🗑️ 清理: ${nodeId} (${isOffline ? "已离线" : `已逾期>${CLEANUP_THRESHOLD_HOURS}h`})`);
         cleanedCount++;
         continue;
       }
@@ -82,7 +80,7 @@ function main() {
 
   const finalContent = [...newLines, ...footerLines].join("\n");
   fs.writeFileSync(fleetFile, finalContent, "utf8");
-  console.log(`✨ 清理完成，共移除了 ${cleanedCount} 个节点。`);
+  console.log(`✨ 清理完成，共移除了 ${cleanedCount} 个节点（threshold=${CLEANUP_THRESHOLD_HOURS}h）。`);
 }
 
 main();

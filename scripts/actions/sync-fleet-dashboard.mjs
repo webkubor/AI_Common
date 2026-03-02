@@ -9,6 +9,7 @@ const __dirname = path.dirname(__filename);
 const projectRoot = path.join(__dirname, "../../");
 const sourceFile = path.join(projectRoot, "docs/memory/fleet_status.md");
 const outputFile = path.join(projectRoot, "docs/public/data/ai_team_status.json");
+const STALE_HOURS = Number(process.env.FLEET_STALE_HOURS || "4");
 
 function stripMarkdown(value) {
   return String(value ?? "")
@@ -77,6 +78,15 @@ function statusType(status) {
   return "unknown";
 }
 
+function parseSince(since) {
+  const raw = String(since || "").trim();
+  if (!raw) return null;
+  const normalized = raw.replace(" ", "T");
+  const d = new Date(normalized);
+  if (Number.isNaN(d.getTime())) return null;
+  return d;
+}
+
 function parseTableRow(line) {
   const parts = line.split("|").slice(1, -1).map((s) => s.trim());
   if (parts.length < 6) return null;
@@ -118,29 +128,44 @@ function main() {
     const todoProgress = getProgressFromTodo(row.workspace);
     const finalProgress = todoProgress !== null ? todoProgress : statusToProgress(row.status);
 
+    const baseType = statusType(row.status);
+    const sinceDate = parseSince(row.since);
+    const isStale =
+      sinceDate &&
+      (baseType === "active" || baseType === "queued") &&
+      (Date.now() - sinceDate.getTime()) / (1000 * 60 * 60) > STALE_HOURS;
+
+    const finalType = isStale ? "offline" : baseType;
+    const finalStatus = isStale ? "[ 僵尸 ] 离线（超时未更新）" : row.status;
+
     rows.push({
       ...row,
-      type: statusType(row.status),
+      status: finalStatus,
+      type: finalType,
       progress: finalProgress,
       isCaptain: row.member.includes("Prime") || row.status.includes("队长锁"),
-      hasTodo: todoProgress !== null
+      hasTodo: todoProgress !== null,
+      isStale: Boolean(isStale),
     });
   }
 
   const payload = {
     generatedAt: new Date().toISOString(),
-    version: "v5.1.0 (Objective Progress)",
+    version: "v5.2.0 (Objective Progress + Zombie Detection)",
     source: "docs/memory/fleet_status.md",
     total: rows.length,
     active: rows.filter((r) => r.type === "active").length,
     offline: rows.filter((r) => r.type === "offline").length,
     queued: rows.filter((r) => r.type === "queued").length,
+    stale: rows.filter((r) => r.isStale).length,
     members: rows,
   };
 
   fs.mkdirSync(path.dirname(outputFile), { recursive: true });
   fs.writeFileSync(outputFile, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
-  console.log(`synced: ${outputFile} (Objective Progress Enabled)`);
+  console.log(
+    `synced: ${outputFile} (Objective Progress + Zombie Detection, threshold=${STALE_HOURS}h)`
+  );
 }
 
 main();

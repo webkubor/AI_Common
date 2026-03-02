@@ -1,24 +1,13 @@
 {
-  "generatedAt": "2026-03-02T10:47:45.026Z",
-  "version": "v5.1.0 (Objective Progress)",
+  "generatedAt": "2026-03-02T10:52:57.157Z",
+  "version": "v5.2.0 (Objective Progress + Zombie Detection)",
   "source": "docs/memory/fleet_status.md",
-  "total": 5,
-  "active": 5,
+  "total": 4,
+  "active": 4,
   "offline": 0,
   "queued": 0,
+  "stale": 0,
   "members": [
-    {
-      "member": "Candy-Prime (0号机/Gemini)",
-      "agent": "Gemini",
-      "workspace": "/Users/webkubor",
-      "task": "协助老爹安装工具并同步密钥，维护外部大脑核心配置",
-      "since": "2026-03-02 10:33",
-      "status": "[ 队长锁 ] 活跃",
-      "type": "active",
-      "progress": 60,
-      "isCaptain": true,
-      "hasTodo": false
-    },
     {
       "member": "Candy-2 (Gemini)",
       "agent": "Gemini",
@@ -29,7 +18,8 @@
       "type": "active",
       "progress": 55,
       "isCaptain": false,
-      "hasTodo": false
+      "hasTodo": false,
+      "isStale": false
     },
     {
       "member": "Candy-6 (Gemini)",
@@ -41,7 +31,8 @@
       "type": "active",
       "progress": 67,
       "isCaptain": false,
-      "hasTodo": true
+      "hasTodo": true,
+      "isStale": false
     },
     {
       "member": "Claude-7 (Claude)",
@@ -53,7 +44,8 @@
       "type": "active",
       "progress": 55,
       "isCaptain": false,
-      "hasTodo": false
+      "hasTodo": false,
+      "isStale": false
     },
     {
       "member": "Candy-8 (Gemini)",
@@ -65,7 +57,8 @@
       "type": "active",
       "progress": 55,
       "isCaptain": false,
-      "hasTodo": false
+      "hasTodo": false,
+      "isStale": false
     }
   ]
 }

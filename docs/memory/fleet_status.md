@@ -11,7 +11,6 @@
 
 | 节点 ID (模型/别名) | 模型标签 (Agent) | 物理坐标 (绝对工作路径) | 当前执行的核心任务 (含目标) | 领命时间 | 状态与锁 (Status & Locks) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Candy-Prime (0号机/Gemini)** | Gemini | `/Users/webkubor` | 协助老爹安装工具并同步密钥，维护外部大脑核心配置 | 2026-03-02 10:33 | [ 队长锁 ] 活跃 |
 | **Candy-2 (Gemini)** | Gemini | `/Users/webkubor/Desktop/skills` | 已完成：scm-ops-skill 与 xhs-manager-skill 的包装推送 | 2026-03-02 18:02 | [ 执行中 ] 活跃 |
 | **Candy-6 (Gemini)** | Gemini | `/Users/webkubor/Documents/CortexOS` | 待分配任务 | 2026-03-02 18:15 | [ 执行中 ] 活跃 |
 | **Claude-7 (Claude)** | Claude | `/Users/webkubor` | 待分配任务 | 2026-03-02 17:00 | [ 执行中 ] 活跃 |
