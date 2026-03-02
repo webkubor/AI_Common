@@ -15,4 +15,4 @@ repo: https://github.com/webkubor/omni-chatbot-sdk
 
 ## 维护手册
 - **发包**: npm run build && npm publish
-- **规范**: 遵循 AI_Common/docs/rules/webkubor_vibe_manifesto.md
+- **规范**: 遵循 CortexOS/docs/rules/webkubor_vibe_manifesto.md

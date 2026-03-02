@@ -7,7 +7,7 @@ if [ $# -lt 1 ]; then
 fi
 
 query="$1"
-root="${2:-/Users/webkubor/Documents/AI_Common}"
+root="${2:-/Users/webkubor/Documents/CortexOS}"
 log_dir="${RAG_LOG_DIR:-/Users/webkubor/Documents/AI_Plan/rag_logs}"
 
 ts_file_stamp="$(date '+%Y-%m-%d_%H-%M-%S')"

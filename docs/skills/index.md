@@ -14,7 +14,7 @@ description: 职能部门化的 AI 扩展能力。核心逻辑已托管至 GitHu
 
 ## 🧩 本地保留（未拆分）
 
-这些内容仍留在 AI_Common 内，按需后续拆分：
+这些内容仍留在 CortexOS 内，按需后续拆分：
 
 - [Core 协议](./core/common_manifest.md)
 - [深度思考](./core/think-skill.md)

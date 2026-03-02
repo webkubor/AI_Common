@@ -91,7 +91,7 @@
 ## 📁 项目结构
 
 ```
-AI_Common/
+CortexOS/
 ├── docs/                    # 文档根目录
 │   ├── .vitepress/         # VitePress 配置
 │   ├── public/             # 静态资源（logo.svg）

@@ -181,7 +181,7 @@ async function runNativeIngestion() {
   return new Promise((resolve, reject) => {
     const ingestProcess = spawn(UV_PATH, ['run', './scripts/ingest/chroma_ingest.py'], {
       cwd: PROJECT_ROOT,
-      env: { ...process.env, AI_COMMON_ROOT: path.join(PROJECT_ROOT, 'docs') }
+      env: { ...process.env, CORTEXOS_BRAIN_ROOT: path.join(PROJECT_ROOT, 'docs') }
     });
     ingestProcess.on('close', (code) => code === 0 ? resolve() : reject(new Error(`Exit ${code}`)));
   });

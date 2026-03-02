@@ -146,7 +146,7 @@ function createArchiveIndex() {
 }
 
 function runCleanup() {
-  console.log('🚀 AI Common 文档清理与优化\n');
+  console.log('🚀 CortexOS 文档清理与优化\n');
   console.log('='.repeat(50));
 
   createArchiveDirectories();

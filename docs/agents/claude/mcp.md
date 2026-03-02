@@ -13,7 +13,7 @@
 
 ## 🔗 权限管理 (Permissions)
 Claude 拥有以下路径的 **自动授权 (Auto-Approve)** 权限：
-- `/Users/webkubor/Documents/AI_Common`
+- `/Users/webkubor/Documents/CortexOS`
 - `/Users/webkubor/Documents/AI_Plan`
 - `/Users/webkubor/.gemini/tmp`
 

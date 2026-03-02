@@ -1,6 +1,6 @@
 # CHANGELOG
 
-> 外部大脑 AI_Common 的版本演进记录。
+> 外部大脑 CortexOS 的版本演进记录。
 > 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，版本号遵循 [Semantic Versioning](https://semver.org/lang/zh-CN/)。
 
 ---
@@ -17,7 +17,7 @@
   - `load_rule()` / `list_rules()` — 按需懒加载规则（防上下文污染）
   - `log_task()` — 写入今日操作日志
   - `fleet_sync()` — 触发看板数据同步
-- **Codex MCP 接入**：`~/.codex/config.toml` 新增 `[mcp_servers.ai-common-brain]` 条目，Codex 现可原生调用外脑。
+- **Codex MCP 接入**：`~/.codex/config.toml` 新增 `[mcp_servers.cortexos-brain-brain]` 条目，Codex 现可原生调用外脑。
 - **FleetDashboard UI 重设计**：彻底重构 VitePress 看板组件，全面接入 VitePress CSS 变量，支持暗色模式，新增活跃节点呼吸灯、任务摘要、路径代码块等高级视觉元素。
 
 ### 🔧 变更 (Changed)

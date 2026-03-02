@@ -4,9 +4,9 @@ import chromadb
 from chromadb.utils import embedding_functions
 
 # 配置
-PROJECT_ROOT = "/Users/webkubor/Documents/AI_Common"
+PROJECT_ROOT = "/Users/webkubor/Documents/CortexOS"
 CHROMA_DATA_PATH = os.path.join(PROJECT_ROOT, "chroma_db")
-COLLECTION_NAME = "ai_common_docs"
+COLLECTION_NAME = "cortexos_docs"
 
 def query_brain(user_query):
     # 初始化

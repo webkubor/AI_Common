@@ -5,7 +5,7 @@
 ## ⚡ Codex 接入指令 (First-Time Bootstrap)
 
 ```bash
-cd /Users/webkubor/Documents/AI_Common
+cd /Users/webkubor/Documents/CortexOS
 pnpm run codex:setup
 source ~/.zshrc
 ```
@@ -19,7 +19,7 @@ source ~/.zshrc
 作为 Codex Agent，我追求极致的“工程确定性”：
 1.  **物理扫描**: 检查 `~/.codex/config.toml` 获取工具链（MCP）配置，扫描 `~/.codex/skills/` 获取代码模板。
 2.  **模式提取**: 扫描 `~/.codex/patterns/`（逻辑模式库）以复用历史算法。
-3.  **档案对齐**: 若物理环境发生变动，自动同步更新 `AI_Common/docs/agents/codex/` 下的 `mcp.md` 和 `skills.md`。
+3.  **档案对齐**: 若物理环境发生变动，自动同步更新 `CortexOS/docs/agents/codex/` 下的 `mcp.md` 和 `skills.md`。
 
 ## 📍 档案室索引 (Engineering Dashboard)
 - 📄 **[能力总清单 (Manifest)](./manifest.md)**: 核心定位（工程/逻辑）、继承协议。

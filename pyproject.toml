@@ -1,5 +1,5 @@
 [project]
-name = "ai-common"
+name = "cortexos"
 version = "0.1.0"
 description = "External Brain Infrastructure for AI Collaboration"
 readme = "README.md"

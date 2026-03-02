@@ -3,7 +3,7 @@
 ## 基础环境
 - **OS**: macOS
 - **Shell**: zsh
-- **AI 路径**: ~/Documents/AI_Common
+- **AI 路径**: ~/Documents/CortexOS
 
 ## 默认技术偏好 (Preferred Stack - 用于新项目)
 
@@ -23,7 +23,7 @@
 - **截图/DOM 转图片**: html-to-image（优于 html2canvas，对现代 CSS 支持更好）(强制标准)
 
 <!-- TEST_MARKER: Context Isolation Test -->
-> ⚠️ 测试内容已迁移：见 `AI_Common/_test_context.md`
+> ⚠️ 测试内容已迁移：见 `CortexOS/_test_context.md`
 
 - **UI 组件库**: 禁止使用原生系统 `select` 标签，必须封装自定义 Select 组件（移动端支持 Bottom Sheet 抽屉效果）
 

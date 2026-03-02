@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 🧠 AI Common Kernel (大脑内核 V2.0 - Framework Edition)
+ * 🧠 CortexOS Kernel (大脑内核 V2.0 - Framework Edition)
  * 核心约束：Zod (协议校验) + Commander (命令路由)
  */
 
@@ -108,7 +108,7 @@ class BrainKernel {
   setupCLI() {
     this.program
       .name('xiaozhu')
-      .description('AI Common 大脑核心控制台')
+      .description('CortexOS 大脑核心控制台')
       .version('2.0.0');
   }
 

@@ -7,7 +7,7 @@
 - **工具**: `edit_image` (nanobanana)
 - **前置条件**: 必须指定并加载 `docs/ucd/persona_refs/` 下的对应角色参考图。
 - **执行规范**: **强制遵循** [Persona System SOP](../ucd/persona_system.md) (包含 POV、RAW 质感、锁相协议)。
-- **归档**: `~/Documents/AI_Common/docs/ucd/persona_refs/history/`
+- **归档**: `~/Documents/CortexOS/docs/ucd/persona_refs/history/`
 
 ### B. 纯技术/工程化封面 (Technical Covers)
 - **工具**: `generate_image` (nanobanana)

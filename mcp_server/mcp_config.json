@@ -1,10 +1,10 @@
 {
     "mcpServers": {
-        "ai-common-brain": {
+        "cortexos-brain": {
             "command": "uv",
             "args": [
                 "run",
-                "/Users/webkubor/Documents/AI_Common/mcp_server/server.py"
+                "/Users/webkubor/Documents/CortexOS/mcp_server/server.py"
             ],
             "description": "小烛的外部大脑 MCP Server：舰队状态管理、规则加载、任务日志"
         }

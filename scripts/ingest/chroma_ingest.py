@@ -5,9 +5,9 @@ import chromadb
 from chromadb.utils import embedding_functions
 
 # 配置
-PROJECT_ROOT = "/Users/webkubor/Documents/AI_Common"
+PROJECT_ROOT = "/Users/webkubor/Documents/CortexOS"
 CHROMA_DATA_PATH = os.path.join(PROJECT_ROOT, "chroma_db")
-COLLECTION_NAME = "ai_common_docs"
+COLLECTION_NAME = "cortexos_docs"
 
 # 隐私自检正则（匹配 privacy_excludes.md 中的规范）
 SENSITIVE_PATTERN = re.compile(r"API_KEY|SECRET|TOKEN|PASSWORD|BEGIN .* PRIVATE KEY|sk-|ghp_", re.IGNORECASE)
@@ -61,7 +61,7 @@ def start_chroma_ingest():
                 if chunks:
                     collection.add(
                         documents=chunks,
-                        metadatas=[{"path": rel_path, "source": "AI_Common"} for _ in chunks],
+                        metadatas=[{"path": rel_path, "source": "CortexOS"} for _ in chunks],
                         ids=[f"{rel_path}_{i}" for i in range(len(chunks))]
                     )
                     safe_files_count += 1

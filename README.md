@@ -21,13 +21,13 @@ MCP Server（mcp_server/server.py）← 外脑的 USB-C 接口
   │
   │  读写
   ▼
-AI_Common（你的外挂硬盘：规则 + 记忆 + 任务状态）
+CortexOS（你的外挂硬盘：规则 + 记忆 + 任务状态）
 ```
 
 | 角色 | 类比 | 实体 |
 | :--- | :--- | :--- |
 | **老爹** | 决定插哪台设备的人 | 你 |
-| **外部大脑** | USB 外接硬盘（知识 + 规则） | `AI_Common/` 目录 |
+| **外部大脑** | USB 外接硬盘（知识 + 规则） | `CortexOS/` 目录 |
 | **MCP Server** | USB-C 接口（标准通信协议） | `mcp_server/server.py` |
 | **Codex / Gemini / Claude** | 接收插入的电脑 | 各 AI Agent |
 | **Fleet Dashboard** | 硬盘状态指示灯 | VitePress AI Team 看板 |
@@ -53,7 +53,7 @@ Agent Team 系统解决的就是这个问题：**让所有 AI 共享同一块外
 ### 快速入队（三大 AI 通用）
 
 ```bash
-cd /Users/webkubor/Documents/AI_Common
+cd /Users/webkubor/Documents/CortexOS
 pnpm run fleet:claim -- --workspace "$PWD" --task "你的当前任务" --agent Gemini
 ```
 
@@ -73,7 +73,7 @@ pnpm run fleet:claim -- --workspace "$PWD" --task "你的当前任务" --agent G
 | `clb "任务"` | 自动入队 + 启动 Claude Code |
 | `handoverc "节点名"` | 一键移交 0 号机队长身份 |
 | `fleetstat` | 查看 AI Team 全体状态总览 |
-| `brain-gate` | 在 AI_Common 执行健康门禁 |
+| `brain-gate` | 在 CortexOS 执行健康门禁 |
 
 ### 队长移交
 
@@ -119,9 +119,9 @@ pnpm run fleet:handover -- --to-workspace "/绝对路径" --to-agent "Claude"
 ```json
 {
   "mcpServers": {
-    "ai-common-brain": {
+    "cortexos-brain": {
       "command": "uv",
-      "args": ["run", "/Users/webkubor/Documents/AI_Common/mcp_server/server.py"]
+      "args": ["run", "/Users/webkubor/Documents/CortexOS/mcp_server/server.py"]
     }
   }
 }
@@ -130,7 +130,7 @@ pnpm run fleet:handover -- --to-workspace "/绝对路径" --to-agent "Claude"
 ### 本地启动 MCP Server
 
 ```bash
-cd /Users/webkubor/Documents/AI_Common/mcp_server
+cd /Users/webkubor/Documents/CortexOS/mcp_server
 uv run server.py
 ```
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * AI Common 外部大脑健康检查 (Sentinel V4.1 Optimized)
+ * CortexOS 外部大脑健康检查 (Sentinel V4.1 Optimized)
  * 适配 2026-02-27 重构后的目录结构
  */
 
@@ -176,7 +176,7 @@ function runHealthCheck() {
   const strictMode = process.argv.includes('--strict');
   const failOnWarning = process.argv.includes('--fail-on-warning');
 
-  log(colors.cyan, '🧠 AI Common 外部大脑健康检查 (Sentinel V4.1)');
+  log(colors.cyan, '🧠 CortexOS 外部大脑健康检查 (Sentinel V4.1)');
   log(colors.cyan, '='.repeat(50));
 
   const issues = {

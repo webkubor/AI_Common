@@ -27,7 +27,7 @@ function getMarkdownFiles() {
 }
 
 function verify() {
-  console.log('🔍 AI Common 外部大脑结构验证\n');
+  console.log('🔍 CortexOS 外部大脑结构验证\n');
   console.log('='.repeat(60));
 
   const files = getMarkdownFiles();

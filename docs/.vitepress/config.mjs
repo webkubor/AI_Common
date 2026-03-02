@@ -5,7 +5,7 @@ export default defineConfig({
   lang: "zh-CN",
   title: "小烛的外部大脑",
   description: "小烛 (Candle) 的外部大脑：集成标准化操作规范 (SOP)、工程实践深度复盘与知识路由的 统一协同中枢。",
-  base: "/AI_Common/",
+  base: "/CortexOS/",
   srcExclude: [
     "**/secrets/**",
     "**/operation-logs/**",
@@ -15,12 +15,12 @@ export default defineConfig({
   vite: {
     plugins: [
       llmstxt({
-        title: "Candle Cortex",
+        title: "CortexOS",
         description: "Standardized AI Context Engineering & Long-term Memory Infrastructure.",
       })
     ]
   },
-  head: [["link", { rel: "icon", href: "/AI_Common/logo.svg" }]],
+  head: [["link", { rel: "icon", href: "/logo.svg" }]],
   themeConfig: {
     logo: "/logo.svg",
     nav: [

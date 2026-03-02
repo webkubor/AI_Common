@@ -9,7 +9,7 @@
 
 ### 📦 技能生态 (Skill Ecosystem)
 
-- **项目级抽离**: 核心技能（Visual, Storyboard, Sentinel 等）全部重构为独立 GitHub 仓库，不再于 `AI_Common` 本地耦合。
+- **项目级抽离**: 核心技能（Visual, Storyboard, Sentinel 等）全部重构为独立 GitHub 仓库，不再于 `CortexOS` 本地耦合。
 - **自动化武装**: 引入 `skill-health-check.sh`，实现基于 `gemini skills install` 的幂等自检与自动修复安装。
 
 ### 🛡️ 系统韌性 (Resilience)
@@ -55,4 +55,4 @@
 
 ## [v1.0.0] - 初始混沌期
 
-- 建立 `AI_Common` 仓库，确立 `docs/` 结构与 `package.json` 基础。
+- 建立 `CortexOS` 仓库，确立 `docs/` 结构与 `package.json` 基础。

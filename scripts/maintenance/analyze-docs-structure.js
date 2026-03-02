@@ -61,7 +61,7 @@ function scanDirectory(file) {
 }
 
 function analyzeStructure() {
-  console.log('🔍 AI Common 外部大脑结构自检\n');
+  console.log('🔍 CortexOS 外部大脑结构自检\n');
 
   const allMdFiles = getAllMarkdownFiles(DOCS_DIR);
   const directoryStructure = {};

@@ -1,6 +1,6 @@
 #!/bin/bash
-MANAGER="/Users/webkubor/Documents/AI_Common/docs/scripts/gemini_manager.sh"
-LOGGER="/Users/webkubor/Documents/AI_Common/docs/scripts/log.sh"
+MANAGER="/Users/webkubor/Documents/CortexOS/docs/scripts/gemini_manager.sh"
+LOGGER="/Users/webkubor/Documents/CortexOS/docs/scripts/log.sh"
 
 # 直接提取 Profile 名字
 P=$($MANAGER status | grep "Active Profile" | sed 's/.*Active Profile: \([^ ]*\).*/\1/')

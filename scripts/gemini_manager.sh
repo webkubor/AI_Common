@@ -1,10 +1,10 @@
 #!/bin/bash
 # Gemini Profile Manager & Failover Helper
-# Path: /Users/webkubor/Documents/AI_Common/docs/scripts/gemini_manager.sh
+# Path: /Users/webkubor/Documents/CortexOS/docs/scripts/gemini_manager.sh
 
 GEMINI_DIR="$HOME/.gemini"
-PROFILE_STORE="$HOME/Documents/AI_Common/brain/secrets/gemini_profiles"
-LOGGER="$HOME/Documents/AI_Common/docs/scripts/log.sh"
+PROFILE_STORE="$HOME/Documents/CortexOS/brain/secrets/gemini_profiles"
+LOGGER="$HOME/Documents/CortexOS/docs/scripts/log.sh"
 
 # Ensure profile store exists
 mkdir -p "$PROFILE_STORE"

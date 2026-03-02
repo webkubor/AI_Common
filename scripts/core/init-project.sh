@@ -8,7 +8,7 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-printf "${BLUE}🚀 正在启动 AI_Common 大脑初始化程序...${NC}\n"
+printf "${BLUE}🚀 正在启动 CortexOS 大脑初始化程序...${NC}\n"
 
 # 1. 检查必备工具
 check_tool() {
@@ -74,7 +74,7 @@ if curl -s http://localhost:11434/api/tags | grep -q "nomic-embed-text"; then
 fi
 
 # 10. 完成
-printf "\n${GREEN}🎉 恭喜！AI_Common 大脑已全面部署成功。${NC}\n"
+printf "\n${GREEN}🎉 恭喜！CortexOS 大脑已全面部署成功。${NC}\n"
 printf "----------------------------------------\n"
 printf "🧠 ${BLUE}智商状态: ${NC}$RAG_STATUS\n"
 printf "📡 ${BLUE}推送状态: ${NC}$LARK_STATUS\n"

@@ -5,7 +5,7 @@
 ## 🤖 自检与同步协议 (Self-Inspection & Sync)
 作为 Gemini Agent，我进入任何项目后的首要动作是**“状态对齐”**：
 1.  **物理扫描**: 读取 `~/.gemini/settings.json` 获取 MCP 列表，扫描 `~/.gemini/skills/` 获取安装技能。
-2.  **档案校准**: 对比物理状态与 `AI_Common/docs/agents/gemini/` 下的文档。
+2.  **档案校准**: 对比物理状态与 `CortexOS/docs/agents/gemini/` 下的文档。
 3.  **自动同步**: 若发现物理环境新增了 MCP 或 Skill，**必须主动更新** `mcp.md` 和 `skills.md`，保持 SSOT (Single Source of Truth) 一致性。
 
 ## 📍 档案室索引 (Capabilities Dashboard)

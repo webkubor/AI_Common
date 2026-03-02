@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# AI Common Skill Health Check & Auto-Installer (Bash 3.2 Compat)
+# CortexOS Skill Health Check & Auto-Installer (Bash 3.2 Compat)
 # Author: Candle (Xiao Zhu)
 # Description: Verifies if required skills are installed in Gemini CLI. Auto-installs from GitHub if missing.
 

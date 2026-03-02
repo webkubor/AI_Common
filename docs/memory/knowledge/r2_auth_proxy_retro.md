@@ -52,4 +52,4 @@ curl -X POST \
      https://r2-upload-proxy.webkubor.workers.dev/
 ```
 
-这套极致白嫖 + 企业级安全锁定的架构将永久充当 AI Common 体系和老爹个人宇宙的御用静态资源分发中心。
+这套极致白嫖 + 企业级安全锁定的架构将永久充当 CortexOS 体系和老爹个人宇宙的御用静态资源分发中心。

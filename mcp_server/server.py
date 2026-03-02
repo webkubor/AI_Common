@@ -2,7 +2,7 @@
 CortexOS 外部大脑 MCP Server（统一版 v2）
 基于 FastMCP，暴露大脑的 11 个核心操作 Tool。
 启动方式：uv run server.py
-接入配置：{ "command": "uv", "args": ["run", "/Users/webkubor/Documents/AI_Common/mcp_server/server.py"] }
+接入配置：{ "command": "uv", "args": ["run", "/Users/webkubor/Documents/CortexOS/mcp_server/server.py"] }
 """
 
 import json
@@ -14,7 +14,7 @@ import requests
 from fastmcp import FastMCP
 
 # ===== 全局路径常量 =====
-BRAIN_ROOT = Path("/Users/webkubor/Documents/AI_Common")
+BRAIN_ROOT = Path("/Users/webkubor/Documents/CortexOS")
 DOCS = BRAIN_ROOT / "docs"
 FLEET_STATUS = DOCS / "memory" / "fleet_status.md"
 FLEET_JSON = BRAIN_ROOT / "docs" / "public" / "data" / "ai_team_status.json"
@@ -36,7 +36,7 @@ def read_router() -> str:
     任何 Agent 在开始工作前都应先调用此工具，以获得完整的上下文和行为规范。
     """
     if not ROUTER.exists():
-        return "错误：router.md 不存在，请检查 AI_Common 目录。"
+        return "错误：router.md 不存在，请检查 CortexOS 目录。"
     return ROUTER.read_text(encoding="utf-8")
 
 

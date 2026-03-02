@@ -1,8 +1,8 @@
 #!/bin/bash
-# AI Common Daemon Keep-Alive
+# CortexOS Daemon Keep-Alive
 # Author: Candle (Xiao Zhu)
 
-LOG_FILE="/Users/webkubor/Documents/AI_Common/docs/memory/logs/daemon-status.log"
+LOG_FILE="/Users/webkubor/Documents/CortexOS/docs/memory/logs/daemon-status.log"
 mkdir -p "$(dirname "$LOG_FILE")"
 
 # 进程检查与自动拉起函数
@@ -23,5 +23,5 @@ check_process() {
 # 1. Auto-Pilot (Brain Sync)
 # Note: auto-pilot.js is usually long-running or interval-based. 
 # Current check focuses on its presence in ps.
-check_process "Auto-Pilot" "scripts/core/auto-pilot.js" "node /Users/webkubor/Documents/AI_Common/scripts/core/auto-pilot.js"
+check_process "Auto-Pilot" "scripts/core/auto-pilot.js" "node /Users/webkubor/Documents/CortexOS/scripts/core/auto-pilot.js"
 

@@ -1,8 +1,8 @@
 #!/bin/bash
 # Universal Logger for AI Agent Operations
-# Path: /Users/webkubor/Documents/AI_Common/docs/scripts/log.sh
+# Path: /Users/webkubor/Documents/CortexOS/docs/scripts/log.sh
 
-LOG_DIR="$HOME/Documents/AI_Common/docs/operation-logs"
+LOG_DIR="$HOME/Documents/CortexOS/docs/operation-logs"
 DATE=$(date +%Y-%m-%d)
 TIME=$(date "+%H:%M:%S")
 LOG_FILE="$LOG_DIR/$DATE.md"
@@ -24,7 +24,7 @@ IDENTITY=$3 # Optional: current account
 # If identity is not provided, try to detect it
 if [ -z "$IDENTITY" ]; then
     # Try to reuse the logic from gemini_manager.sh if available, otherwise just say "System"
-    MANAGER="$HOME/Documents/AI_Common/docs/scripts/gemini_manager.sh"
+    MANAGER="$HOME/Documents/CortexOS/docs/scripts/gemini_manager.sh"
     if [ -x "$MANAGER" ]; then
         IDENTITY=$($MANAGER status | grep "Active Profile" | sed 's/.*Active Profile: \([^ ]*\).*/\1/')
     fi

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-02T09:52:50.294Z",
+  "generatedAt": "2026-03-02T10:20:27.078Z",
   "source": "docs/memory/fleet_status.md",
   "total": 10,
   "active": 5,
@@ -20,7 +20,7 @@
     {
       "member": "Claude-0 (Claude)",
       "agent": "Claude",
-      "workspace": "/Users/webkubor/Documents/AI_Common",
+      "workspace": "/Users/webkubor/Documents/CortexOS",
       "task": "你的任务",
       "since": "2026-02-28 19:39",
       "status": "[ 已离线 ] 存档",
@@ -43,8 +43,8 @@
       "member": "Candy-2 (Gemini)",
       "agent": "Gemini",
       "workspace": "/Users/webkubor/Desktop/skills",
-      "task": "包装并推送 scm-ops-skill",
-      "since": "2026-03-02 17:11",
+      "task": "已完成：scm-ops-skill 与 xhs-manager-skill 的包装推送",
+      "since": "2026-03-02 18:02",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 55,
@@ -86,9 +86,9 @@
     {
       "member": "Candy-6 (Gemini)",
       "agent": "Gemini",
-      "workspace": "/Users/webkubor/Documents/AI_Common",
+      "workspace": "/Users/webkubor/Documents/CortexOS",
       "task": "待分配任务",
-      "since": "2026-03-02 12:16",
+      "since": "2026-03-02 18:15",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 55,

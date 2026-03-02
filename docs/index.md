@@ -21,7 +21,7 @@ hero:
 features:
   - icon: 💾
     title: 外部硬盘 (Exocortex)
-    details: AI_Common 是老爹的外接大脑硬盘——所有规则、记忆、角色设定、项目上下文，统一存储在这里，任何 AI 插上就能读取。
+    details: CortexOS 是老爹的外接大脑硬盘——所有规则、记忆、角色设定、项目上下文，统一存储在这里，任何 AI 插上就能读取。
   - icon: 🔌
     title: USB-C 标准接口 (MCP)
     details: MCP Server 是硬盘的接口层。它把"读规则、打卡挂牌、写日志"等操作封装成强类型 Tool，AI 不靠猜——遵守合约。
@@ -43,7 +43,7 @@ features:
 | 角色 | 类比 | 实体 |
 | :--- | :--- | :--- |
 | **老爹** | 决定插哪台设备的人 | 你 |
-| **外部大脑** | USB 外接硬盘（知识 + 规则） | `AI_Common/` 目录 |
+| **外部大脑** | USB 外接硬盘（知识 + 规则） | `CortexOS/` 目录 |
 | **MCP Server** | USB-C 接口（标准通信协议） | `mcp_server/server.py` |
 | **Codex / Gemini** | 接收插入的电脑 | 各 AI Agent |
 | **Fleet Dashboard** | 硬盘状态指示灯 | [AI Team 看板](/ai-team) |
@@ -131,7 +131,7 @@ features:
 | **运营小红书** | [小红书矩阵运营](/skills/ops/xhs) |
 | **复盘技术难题** | [深度复盘](/retrospectives/) |
 | **查看 AI 舰队状态** | [AI Team 看板](/ai-team) |
-| **版本更新历史** | [CHANGELOG](https://github.com/webkubor/AI_Common/blob/main/CHANGELOG.md) |
+| **版本更新历史** | [CHANGELOG](https://github.com/webkubor/CortexOS/blob/main/CHANGELOG.md) |
 
 ---
 

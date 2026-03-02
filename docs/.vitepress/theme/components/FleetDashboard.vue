@@ -35,7 +35,7 @@ onMounted(async () => {
   loading.value = true;
   error.value = "";
   try {
-    const res = await fetch("/AI_Common/data/ai_team_status.json", { cache: "no-store", headers: { pragma: 'no-cache' } });
+    const res = await fetch("/CortexOS/data/ai_team_status.json", { cache: "no-store", headers: { pragma: 'no-cache' } });
     if (!res.ok) throw new Error("HTTP " + res.status);
     data.value = await res.json();
   } catch (e) {

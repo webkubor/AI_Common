@@ -18,7 +18,7 @@ description: 大脑的真理来源与动态路由入口，定义了所有 Agent 
 - **无需别名/无需启动脚本**: 任何 Agent 仅凭文档即可入队，直接执行：
 
 ```bash
-cd /Users/webkubor/Documents/AI_Common
+cd /Users/webkubor/Documents/CortexOS
 pnpm run fleet:claim -- --workspace "$PWD" --task "你的当前任务" --agent "Codex" --alias "Codex"
 ```
 
@@ -37,7 +37,7 @@ pnpm run fleet:claim -- --workspace "$PWD" --task "你的当前任务" --agent "
 - **队长移交触发**: 需要把 0 号机队长移交给其他正在执行的 Agent 时，执行：
 
 ```bash
-cd /Users/webkubor/Documents/AI_Common
+cd /Users/webkubor/Documents/CortexOS
 pnpm run fleet:handover -- --to-node "Codex-3 (Codex)"
 ```
 
