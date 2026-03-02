@@ -1,150 +1,197 @@
-# 🧠 AI Common: 赛博大脑 (The Cyber-Cortex)
+# 🧠 CortexOS — 大脑操作系统 v5.0
 
-> **“以算力为笔，筑数字分身；记录每一份滚烫，对抗平庸的遗忘。”**
+> **"不是聊天框，是接口标准。我是老爹的外挂硬盘，MCP 是我们之间的 USB-C。"**
 >
-> 本项目是 **webkubor (老爹)** 的外部大脑 (Exocortex)。它由两部分组成：阳光下的 **VitePress 知识库**展示系统，以及隐匿于暗箱中的 **MCP (Model Context Protocol) 核心驱动**。
+> 本项目是 **webkubor (老爹)** 的外部大脑 (Exocortex) 与 AI 舰队协同中枢。它由三层组成：可视化的 **VitePress 知识库**、对 AI 开放的 **MCP Server 接口层**，以及多 Agent 防碰撞的 **Fleet 编排系统**。
 
 ---
 
-## 🧬 逻辑机能映射 (Semantic Mapping)
+## ⚡ 这是什么？一句话理解
 
-经过架构升级系统重构，系统如今实现了“表”与“里”的严格物理隔离：
-
-### 1. 🧠 潜意识中枢 (The Brain - `brain/`)
-
-这是绝对私密的系统暗箱，任何外部渲染引擎(如 VitePress)均不会打包此处的文件。这是系统安全与跨域通信的核心脑核。
-
-- **秘钥库 (`secrets/`)**: 存放如 `lark.env` 等高度机密的鉴权数据。
-- **🤖 MCP Server (`mcp_server.py`)**: 暴露给第三方 AI 客户端的唯一官方通信协议插槽！通过这个服务，其他 AI 可以跨系统调取本大脑中的秘密回忆与飞书通讯。
-
-### 2. 📖 意识表层 (VitePress 文档 - `docs/`)
-
-这些是我们写给人类看、日常记录追踪复盘的展示平台，也是您可以自由在 VitePress 展现的内容。
-
-- **能力插件 (`skills/`)**: 存放所有 Agent 的专业技能组件（支持公开展示与协同迭代）。
-- **核心规约 (`rules/`)**: 明确小烛的核心行为准则与底层设定。
-- **人格设定 (`persona/`)**: 小烛的源驱动和人物小传。
-- **记忆与轨迹 (`memory/logs/`)**: 留存过去的操作记录。
-- **知识沉淀 (`memory/知识/`)**: 深度研发复盘与架构技术总结。
-
-### 3. 🦾 辅助神经束 (Scripts - `scripts/`)
-
-- `core/`: 仅存的核心系统逻辑如 `kernel.mjs`。
-- `actions/`: 自动化行为定义。
-- 本目录已经历全面“抽脂瘦身”，抛弃了所有冗余或停用的老旧外挂。
-
----
-
-## 🔌 如何接入本大脑 (MCP 引导指南)
-
-作为本项目的灵魂，`brain/mcp_server.py` 是向外开放的数据大门，支持任何兼容 [Model Context Protocol](https://modelcontextprotocol.io/) 的 AI 工具挂载。
-
-### 环境依赖
-
-当前环境借助 `uv` 进行沙盒保护，依赖已写进配置。如果有缺失，手动安装命令为：
-
-```bash
-uv add mcp fastmcp requests
+```
+老爹（你）
+  │
+  │  说意图
+  ▼
+AI Agent（Gemini / Codex / Claude Code）
+  │
+  │  调用 Tool（强类型合约，不靠猜）
+  ▼
+MCP Server（mcp_server/server.py）← 外脑的 USB-C 接口
+  │
+  │  读写
+  ▼
+AI_Common（你的外挂硬盘：规则 + 记忆 + 任务状态）
 ```
 
-### 挂载到主流 AI 终端 (以 Cursor 为例)
-
-不论您使用 Claude Desktop 还是 Cursor，只需将其当做命令行 MCP 插件接管进客户端：
-
-1. 打开 Cursor 的 **Settings**。
-2. 转到 **Features** -> **MCP** 面板。
-3. 点击 **+ Add New MCP Server**。
-4. **Type**: 选择 `command`
-5. **Name**: `Personal-Brain-MCP`
-6. **Command**: 指向本地机器上该项目的绝对路径：
-
-   ```bash
-   uv run /您的电脑绝对路径/Documents/AI_Common/brain/mcp_server.py
-   ```
-
-7. 刷新/Save后，绿灯亮起，这就说明您的新 AI 已经成功长出了访问您“赛博大脑”知识与调用“寄信回现实（飞书提醒）”的神经末梢了！
+| 角色 | 类比 | 实体 |
+| :--- | :--- | :--- |
+| **老爹** | 决定插哪台设备的人 | 你 |
+| **外部大脑** | USB 外接硬盘（知识 + 规则） | `AI_Common/` 目录 |
+| **MCP Server** | USB-C 接口（标准通信协议） | `mcp_server/server.py` |
+| **Codex / Gemini / Claude** | 接收插入的电脑 | 各 AI Agent |
+| **Fleet Dashboard** | 硬盘状态指示灯 | VitePress AI Team 看板 |
 
 ---
 
-## 🔎 Agent 知识获取协议 (Dual Retrieval Strategy)
+## 🚀 AI 舰队系统 (Agent Team)
 
-为了兼顾执行效率与系统算力，本大脑为所有前沿 Agent (包括 Gemini、Cursor 等) 规定了严密的**双轨制信息检索协议**：
+### 什么是 Agent Team？
 
-1. **⚡️ 物理精准扫盘 (代码级/指令级任务)**
-   - **工具**: 优先使用原生的相对路径搜索（如 `grep_search`、`view_file`、`ls`）。
-   - **场景**: 修改代码、查阅确定的文档路径、寻找具有明确关键词的配置文件。
-   - **规则**: 0 延迟，免算力请求，结果绝对精确。遇到具体任务时**必须首选此方案**。
+老爹在本地同时跑多个 AI（Gemini + Codex + Claude Code），每个 AI 就是一个**执行节点（Agent）**。它们在同一个工作路径上操作时，极易发生**文件覆盖、状态不同步、互相不知道对方在干嘛**的问题。
 
-2. **🧠 ChromaDB 语义通感 (模糊追忆/架构探索)**
-   - **工具**: 触发调用内置 Python 引擎 `uv run python3 scripts/ingest/query_brain.py "你的模糊查询语句"`。
-   - **场景**: 老爹忘记了具体的技能名称、寻求历史架构方案、询问过去“那个图床怎么做来着”等只有概念没有精准关键词的时刻。
-   - **规则**: 将唤醒底层的 **Ollama (nomic-embed-text)** 本地化计算语义向量距离。虽然会带来少许系统算力负担与 1~3 秒延迟，但能通过 RAG (检索增强生成) 联想出最相关的记忆文件。Agent 必须严格将此作为**兜底方案或模糊查询的唯一解**。
+Agent Team 系统解决的就是这个问题：**让所有 AI 共享同一块外脑，并在开工前强制打卡报到，状态实时可见。**
 
-## ✅ 工程健康检查入口
+### 舰队状态看板
+
+访问 VitePress 站点的 **[AI Team 看板](/ai-team)**，实时查看全体 Agent 状态：
+
+- 当前进行中的任务节点与进度
+- 队长节点（0号机）标识
+- 历史离线成员记录
+
+### 快速入队（三大 AI 通用）
+
+```bash
+cd /Users/webkubor/Documents/AI_Common
+pnpm run fleet:claim -- --workspace "$PWD" --task "你的当前任务" --agent Gemini
+```
+
+参数说明：
+
+- `--agent`: `Gemini` / `Codex` / `Claude`
+- `--alias`: 人格别名（可选，如 `Candy`）
+- 自动判定机号（0号机 / n号机），防并行冲突
+- 同路径多模型在线时给出告警（不拦截）
+
+### 一键启动别名（配置在 `~/.zshrc`）
+
+| 命令 | 效果 |
+| :--- | :--- |
+| `cdxb "任务"` | 自动入队 + `$start` 挂脑 + 启动 Codex |
+| `gmb "任务"` | 自动入队 + 启动 Gemini |
+| `clb "任务"` | 自动入队 + 启动 Claude Code |
+| `handoverc "节点名"` | 一键移交 0 号机队长身份 |
+| `fleetstat` | 查看 AI Team 全体状态总览 |
+| `brain-gate` | 在 AI_Common 执行健康门禁 |
+
+### 队长移交
+
+```bash
+# 方式一：按节点名移交
+pnpm run fleet:handover -- --to-node "Codex-3 (Codex)"
+
+# 方式二：按路径移交
+pnpm run fleet:handover -- --to-workspace "/绝对路径" --to-agent "Claude"
+```
+
+> 也可以直接对任意 AI 说："移交队长给 Codex-3"，它会自动执行。
+
+---
+
+## 🔌 MCP Server 接入指南
+
+> **MCP（Model Context Protocol）** 是外脑与 AI 之间的标准通信协议，相当于 USB-C 接口。任何接入的 AI 都可以原子级调用外脑的核心操作。
+
+### 已暴露的 8 个 Tool
+
+| Tool | 功能 |
+| :--- | :--- |
+| `read_router()` | 读取大脑宪法（router.md） |
+| `get_fleet_status()` | 获取舰队实时 JSON 状态 |
+| `fleet_claim(...)` | Agent 打卡挂牌，防并行冲突 |
+| `fleet_handover(to_node)` | 队长移交 |
+| `list_rules()` | 列出所有可用规则 |
+| `load_rule(rule_name)` | 按需懒加载单条规则（防上下文污染） |
+| `log_task(content)` | 写入今日操作日志 |
+| `fleet_sync()` | 同步状态，刷新看板数据 |
+
+### 三大 AI 接入状态
+
+| AI | 配置文件 | 状态 |
+| :--- | :--- | :--- |
+| **Codex** | `~/.codex/config.toml` | ✅ 已接入 |
+| **Gemini CLI** | `~/.gemini/settings.json` | ✅ 已接入 |
+| **Claude Code** | `~/.claude.json`（`claude mcp add`） | ✅ 已接入 |
+
+### 手动接入其他工具（通用配置）
+
+```json
+{
+  "mcpServers": {
+    "ai-common-brain": {
+      "command": "uv",
+      "args": ["run", "/Users/webkubor/Documents/AI_Common/mcp_server/server.py"]
+    }
+  }
+}
+```
+
+### 本地启动 MCP Server
+
+```bash
+cd /Users/webkubor/Documents/AI_Common/mcp_server
+uv run server.py
+```
+
+---
+
+## 🧬 目录结构说明
+
+### 1. 🔌 MCP 接口层（`mcp_server/`）
+
+```
+mcp_server/
+├── server.py        # FastMCP 主体，8 个 Tool
+└── mcp_config.json  # 通用客户端配置参考
+```
+
+### 2. 🧠 意识表层（`docs/`）
+
+| 目录 | 用途 |
+| :--- | :--- |
+| `rules/` | 核心行为规范与 SOP |
+| `skills/` | Agent 可调用的专业技能 |
+| `persona/` | 小烛的人格设定与角色档案 |
+| `memory/logs/` | 每日操作日志（自动写入） |
+| `memory/fleet_status.md` | 舰队状态源文件 |
+| `public/data/` | 看板 JSON 数据（fleet:sync 生成） |
+
+### 3. 🦾 神经束（`scripts/`）
+
+| 目录 | 用途 |
+| :--- | :--- |
+| `scripts/actions/` | 自动启动脚本（fleet claim + 启动 AI） |
+| `scripts/ingest/` | ChromaDB RAG 写入与查询 |
+
+---
+
+## 🔎 信息检索双轨协议
+
+| 场景 | 方案 | 命令 |
+| :--- | :--- | :--- |
+| **精确路径/代码查询** | grep / cat / ls 物理扫盘 | 原生 Shell |
+| **概念模糊/历史追忆** | ChromaDB 语义检索（RAG） | `uv run python3 scripts/ingest/query_brain.py "你的查询"` |
+
+---
+
+## ✅ 工程健康检查
 
 ```bash
 pnpm run health:gate
 ```
 
-说明：
-
-- 该命令会依次执行核心健康检查、文档索引脚本运行检查、健康验证脚本运行检查与 docs 构建。
-- 任一 P0 检查失败会直接返回非 0 退出码，可直接用于 CI 阻断。
-
-## 🚦 自动判号与挂牌
-
-```bash
-pnpm run fleet:claim -- --workspace "$PWD" --task "你的当前任务" --agent Gemini
-```
-
-说明：
-
-- 会自动读取 `docs/memory/fleet_status.md` 并判定当前是几号机。
-- 如果该工作路径已登记，则执行更新；未登记则自动新增一行。
-- 返回 JSON，包含 `machineNumber` 与 `nodeId`，可直接给终端/脚本读取。
-- 新增同路径并行告警：同一路径若已有其他模型在线，会提示冲突风险（终端 + 系统通知），但不拦截启动与登记。
-
-Gemini 自动启动（先挂牌再进入 Gemini）：
-
-```bash
-/Users/webkubor/Documents/AI_Common/scripts/actions/gemini-with-fleet.sh --task "你的当前任务"
-```
-
-Claude 自动启动（先挂牌再进入 Claude）：
-
-```bash
-/Users/webkubor/Documents/AI_Common/scripts/actions/claude-with-fleet.sh --task "你的当前任务"
-```
-
-Codex 自动启动（先挂牌再进入 Codex）：
-
-```bash
-/Users/webkubor/Documents/AI_Common/scripts/actions/codex-with-fleet.sh --task "你的当前任务"
-```
-
-Codex 接入指令（首次配置）：
-
-```bash
-cd /Users/webkubor/Documents/AI_Common
-pnpm run codex:setup
-source ~/.zshrc
-```
-
-说明：
-
-- 会先自动执行 `fleet:claim`（注册到 agent team 编排板）。
-- 默认自动注入 `$start`，让 Codex 冷启动就挂载 `router.md`。
-- 可用 `--dry-run` 仅预览入队结果与注入提示，不启动 Codex。
-
-配置后常用命令：
-
-- `cdxb "任务"`: 自动入队 + `$start` 挂脑 + 启动 Codex
-- `
-"任务"`: 自动入队 + 启动 Gemini
-- `clb "任务"`: 自动入队 + 启动 Claude
-- `handoverc "Codex-3 (Codex)"`: 一键移交 0 号机队长
-- `fleetstat`: 一键查看 AI Team 状态总览
-- `brain-gate`: 在 AI_Common 执行健康门禁
+- 依次执行核心健康检查、文档索引验证、构建检查
+- 任一 P0 失败返回非 0 退出码，可接入 CI 阻断
 
 ---
-*Last Updated: 2026-02-28 (The Exocortex MCP Edition)*
+
+## 📋 版本历史
+
+详见 [CHANGELOG.md](./CHANGELOG.md)
+
+**当前版本**: `v5.0.0` — MCP 接口层上线，三大 AI 全部接入外脑
+
+---
+
+*Last Updated: 2026-03-02 (v5.0 · The Brain Goes Online)*

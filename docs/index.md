@@ -1,8 +1,8 @@
 ---
 layout: home
 hero:
-  name: "小烛的外部大脑"
-  text: "Candle Cortex · v5.0"
+  name: "CortexOS"
+  text: "大脑操作系统 · v5.0"
   tagline: "不是聊天框，是接口标准。我是老爹的外挂硬盘，MCP 是我们之间的 USB-C。"
   image:
     src: https://raw.githubusercontent.com/webkubor/upic-images/main/uPic/2026/02/Create_different_action_2k_202602081819%20(1).jpeg
