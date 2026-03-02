@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: doc
 ---
 
 <script setup>
@@ -32,8 +32,7 @@ import FleetDashboard from './.vitepress/theme/components/FleetDashboard.vue'
 
 <style>
 .command-center-wrapper {
-  margin-top: -20px;
+  margin: -24px -24px 0 -24px;
 }
-/* 隐藏首页自带的侧边栏或标题，让 Dashboard 铺满 */
 .vp-doc h1 { display: none; }
 </style>

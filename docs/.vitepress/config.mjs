@@ -23,6 +23,23 @@ export default defineConfig({
   head: [["link", { rel: "icon", href: "/logo.svg" }]],
   themeConfig: {
     logo: "/logo.svg",
+    search: {
+      provider: "local",
+      options: {
+        locales: {
+          root: {
+            translations: {
+              button: { buttonText: "搜索文档", buttonAriaLabel: "搜索文档" },
+              modal: {
+                noResultsText: "无法找到相关结果",
+                resetButtonTitle: "清除查询条件",
+                footer: { selectText: "选择", navigateText: "切换" },
+              },
+            },
+          },
+        },
+      },
+    },
     // 简化右上角导航，只保留两个入口
     nav: [
       { text: "🛰️ 阵列态势", link: "/" },
