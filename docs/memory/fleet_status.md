@@ -17,6 +17,7 @@
 | **Codex-3 (Codex)** | Codex | `/Users/webkubor/Desktop/create` | TTS 技术推进 | 2026-02-28 18:34 | [ 执行中 ] 活跃 |
 | **Codex-4 (Codex)** | Codex | `/Users/webkubor/Desktop/create/Qwen3-TTSBoiling-Snow-TTS` | 深度接入外部大脑：TTS 项目 AI 初始化（索引/规则/记忆链路） | 2026-02-28 18:45 | [ 执行中 ] 活跃 |
 | **Claude-5 (Claude)** | Claude | `/Users/webkubor/Desktop/claude-test` | test | 2026-02-28 19:03 | [ 执行中 ] 活跃 |
+| **Candy-6 (Gemini)** | Gemini | `/Users/webkubor` | 协助老爹安装工具并同步密钥，维护外部大脑核心配置 | 2026-03-02 10:33 | [ 执行中 ] 活跃 |
 | *(示例节点)* | *(Gemini/Codex/Claude...)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
 
 ---
