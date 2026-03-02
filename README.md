@@ -1,68 +1,109 @@
-# 🧠 CortexOS — 外部大脑操作系统 v5.0
+# 🧠 CortexOS: The Multi-Agent Exocortex (MCP Server)
 
-> **“不是对话，是链接。不是聊天，是标准。我是老爹的外挂硬盘，MCP 是我们之间的 USB-C。”**
+[![MCP v1.0](https://img.shields.io/badge/MCP-v1.0-blue.svg)](https://modelcontextprotocol.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-5.1.0-magenta.svg)](./CHANGELOG.md)
 
-**CortexOS** 是 webkubor (老爹) 的个人外部大脑 (Exocortex) 与多智能体舰队 (AI Fleet) 的协同中枢。它打破了 AI 模型之间的“阅后即焚”壁垒，通过物理锚定的规则、记忆与知识，构建起一个可持续进化的赛博意识系统。
-
----
-
-## ⚡ 三层意识架构
-
-| 层次 | 实体 | 类比 | 核心价值 |
-| :--- | :--- | :--- | :--- |
-| **L1：意识表层** | VitePress 知识库 | **视觉显示器** | 可视化的规则、SOP 与工程复盘，让人机对齐有据可依。 |
-| **L2：中枢神经** | MCP Server | **USB-C 接口** | 基于 Model Context Protocol 的强类型合约，让 AI 能够原子级读写外脑资产。 |
-| **L3：逻辑深层** | AI Fleet 编排系统 | **硬盘指示灯** | 独创的舰队防碰撞协议（Fleet Guard），支持多模型并行而不产生指令冲突。 |
+**CortexOS** 是基于 **Model Context Protocol (MCP)** 构建的个人外部大脑操作系统。它不仅仅是一个文档库，更是连接 AI 模型与开发者物理资产（规则、记忆、工作流）的“标准 USB-C 接口”。
 
 ---
 
-## 🚀 AI 舰队系统 (Agent Team)
+## 🚀 核心价值：为什么需要 CortexOS？
 
-老爹在本地同时运行多个 AI (Gemini + Codex + Claude Code)，每个 AI 都是一个**执行节点**。为了防止它们在同一个项目里“打架”，CortexOS 强制执行入队打卡机制：
+在传统的 AI 交互中，上下文是“阅后即焚”的。CortexOS 通过物理锚定，实现了：
+- **物理资产主权**：将规则（Rules）与记忆（Memory）存在本地，不被模型厂商锁定。
+- **跨模型协议对齐**：无论是 Gemini, Claude 还是 Codex，插上 MCP 接口，立即继承统一的思维逻辑。
+- **多智能体防撞车 (Fleet Guard)**：通过 `fleet:claim` 机制，让多个并行工作的 AI 节点实现任务态势感知。
 
-- **客观进度感知**：自动解析工作目录下的 `TODO.md`，用事实说话，杜绝进度欺骗。
-- **队长锁机制**：0 号机自动获得指挥权，其余机位环视协作，确保全局一致性。
-- **动态动效看板**：实时显示节点的脉冲状态，哪些在 Busy 卖力干活，哪些在 Idle 随时待命，一目了然。
+---
 
-### 快速入队命令
+## 🔌 快速开始 (Quick Start)
+
+### 1. 前置要求
+- [uv](https://github.com/astral-sh/uv) (Python 包管理工具)
+- Node.js & pnpm
+
+### 2. 本地部署
 ```bash
-# 通用入队协议
-pnpm run fleet:claim -- --workspace "$PWD" --task "任务描述" --agent "Gemini"
+git clone git@github.com:webkubor/CortexOS.git
+cd CortexOS
+pnpm install
+```
+
+### 3. 接入 AI 客户端 (MCP Configuration)
+
+将以下配置添加至你的 AI 客户端配置文件中：
+
+#### **Claude Desktop**
+`~/Library/Application Support/Claude/claude_desktop_config.json`
+```json
+{
+  "mcpServers": {
+    "cortexos-brain": {
+      "command": "uv",
+      "args": ["run", "/你的路径/CortexOS/mcp_server/server.py"]
+    }
+  }
+}
+```
+
+#### **Gemini CLI**
+`~/.gemini/settings.json`
+```json
+{
+  "mcpServers": {
+    "cortexos-brain": {
+      "command": "uv",
+      "args": ["run", "/你的路径/CortexOS/mcp_server/server.py"]
+    }
+  }
+}
 ```
 
 ---
 
-## 🔌 MCP Server 接入
+## 🛠 已暴露的原子化工具 (MCP Tools)
 
-CortexOS 通过 Python 驱动的 **FastMCP** 暴露出 8 个核心工具，让 AI 拥有“实体感”：
+CortexOS 暴露出以下 8 个强类型工具，AI 可直接调用：
 
-- `read_router()`: 检索大脑宪法。
-- `get_fleet_status()`: 洞察阵列实时 JSON 态势。
-- `log_task()`: 自动写入每日操作日志，形成进化闭环。
-- `fleet_sync()`: 刷新可视化看板数据。
+| 工具名 | 参数 | 功能描述 |
+| :--- | :--- | :--- |
+| `read_router` | 无 | 读取大脑宪法 (`router.md`)，获取全局索引 |
+| `get_fleet_status` | 无 | 获取当前所有活跃 Agent 的任务进度与锁状态 |
+| `fleet_claim` | `task`, `agent`, `workspace` | 注册入队，防跨目录修改冲突 |
+| `fleet_handover` | `to_node` | 移交 0 号机（队长）指挥权 |
+| `log_task` | `content` | 向今日日志追加操作记录，实现进化闭环 |
+| `list_rules` | 无 | 罗列当前大脑中所有的工程与审美规范 |
+| `load_rule` | `rule_name` | 按需加载单条规则，防上下文污染 |
+| `fleet_sync` | 无 | 强制刷新可视化看板的 JSON 数据源 |
 
 ---
 
-## ⚖️ 核心原则：webkubor 审美准则
+## 🚦 AI 舰队编排 (Fleet Management)
 
-本项目所有产出必须严格遵循 **《webkubor 开发与审美准则》**：
-1. **资产主权**：规则与密钥物理锚定在 `brain/` 目录下，严禁随处漂泊。
-2. **极致审美**：色系锁死莫兰迪，视觉偏好 3D Isometric / 磨砂玻璃质感。
-3. **去 AI 化表达**：拒绝廉价的震惊体，追求深耕一线的前端全栈专家人设。
+CortexOS 独创了 **“客观进度感知系统”**：
+- 每个任务必须在工作区包含 `TODO.md`。
+- 系统的 `fleet_sync` 会自动解析勾选框状态，并在 [可视化看板](/ai-team) 上显示实时动效。
+- **队长锁**：确保全局性操作仅由 0 号机发起，其余节点环视辅助。
+
+---
+
+## ⚖️ 审美与规范 (Vibe Manifesto)
+
+所有接入 CortexOS 的 Agent 必须强制遵循 [《webkubor 开发与审美准则》](./docs/rules/webkubor_vibe_manifesto.md)：
+- **Morandi Palette**: 莫兰迪色系 UI 规范。
+- **Anti-AI Clichés**: 拒绝廉价标题党，保持硬核全栈专家人格。
+- **Physical Anchoring**: 关键凭证严禁脱离 `brain/secrets/` 物理目录。
 
 ---
 
 ## ✅ 健康巡检
-
 ```bash
 pnpm run health:gate
 ```
-一键扫描大脑核心结构、文档索引引用以及构建完整性。
+执行核心目录结构、文档索引、以及 VitePress 构建的 100% 完整性扫描。
 
 ---
 
 *“雪落江湖，热血难凉。一笔写风月，一心藏滚烫。”*  
-**CortexOS — 让 AI 真正成为你身体的一部分。**
-
----
-*Last Updated: 2026-03-02 (v5.1.0 · Objective Progress Enabled)*
+**CortexOS — The OS for your digital soul.**
