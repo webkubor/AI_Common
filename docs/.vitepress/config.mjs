@@ -24,11 +24,17 @@ export default defineConfig({
   themeConfig: {
     logo: "/logo.svg",
     nav: [
-      { text: "AI Team 看板", link: "/ai-team" },
-      { text: "路由总览", link: "/router" },
-      { text: "规则中心", link: "/rules/" },
-      { text: "技能库", link: "/skills/" },
-      { text: "关于我", link: "/about" },
+      { text: "🛰️ 阵列态势", link: "/" },
+      { text: "🗺️ 路由索引", link: "/router" },
+      {
+        text: "📚 大脑基座",
+        items: [
+          { text: "📏 规则中心", link: "/rules/" },
+          { text: "🧩 技能资产", link: "/skills/" },
+          { text: "🕒 深度复盘", link: "/retrospectives/" },
+          { text: "👋 关于主理人", link: "/about" },
+        ]
+      },
     ],
     sidebar: [
       {
