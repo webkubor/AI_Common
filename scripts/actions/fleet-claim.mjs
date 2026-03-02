@@ -3,6 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { touchFleetMeta } from './fleet-meta.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -211,12 +212,13 @@ function main() {
   }
 
   const nodeId = buildNodeId(number, args.alias, args.agent);
+  const heartbeatAt = nowLocal();
   const rowLine = buildRow({
     nodeId,
     agent: args.agent,
     workspace: args.workspace,
     task: args.task,
-    time: nowLocal(),
+    time: heartbeatAt,
     status: number === 0 ? '[ 队长锁 ] 活跃' : args.status
   });
 
@@ -232,6 +234,14 @@ function main() {
 
   if (!args.dryRun) {
     fs.writeFileSync(fleetFile, nextContent, 'utf8');
+    touchFleetMeta({
+      agent: args.agent,
+      workspace: args.workspace,
+      task: args.task,
+      status: number === 0 ? '[ 队长锁 ] 活跃' : args.status,
+      heartbeatAt,
+      nodeId: stripMarkdown(nodeId)
+    });
   }
 
   console.log(JSON.stringify({

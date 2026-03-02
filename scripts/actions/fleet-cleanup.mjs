@@ -3,6 +3,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { loadFleetMeta, fleetMetaKey } from "./fleet-meta.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,8 +12,12 @@ const fleetFile = path.join(projectRoot, "docs/memory/fleet_status.md");
 
 const CLEANUP_THRESHOLD_HOURS = Number(process.env.FLEET_STALE_HOURS || "4");
 
-function parseDate(dateStr) {
-  return new Date(dateStr.replace(/-/g, "/"));
+function parseLocalTime(rawValue) {
+  const raw = String(rawValue || "").trim();
+  if (!raw) return null;
+  const normalized = raw.replace(" ", "T");
+  const d = new Date(normalized);
+  return Number.isNaN(d.getTime()) ? null : d;
 }
 
 function main() {
@@ -31,6 +36,7 @@ function main() {
   }
 
   const now = new Date();
+  const fleetMeta = loadFleetMeta();
   const newLines = allLines.slice(0, headerIndex + 2);
   const footerLines = [];
   let inTable = true;
@@ -47,17 +53,17 @@ function main() {
       }
 
       const nodeId = parts[0].replace(/\*\*/g, "");
+      const agent = parts[1].trim();
+      const workspace = parts[2].trim().replace(/`/g, "");
       const startTimeStr = parts[4];
       const status = parts[5];
-      
-      // 兼容非日期格式
-      if (!startTimeStr.includes("-")) {
+      const meta = fleetMeta.entries[fleetMetaKey(agent, workspace)] || null;
+      const heartbeat = parseLocalTime(meta?.lastHeartbeatAt || startTimeStr);
+      if (!heartbeat) {
         newLines.push(line);
         continue;
       }
-
-      const startTime = parseDate(startTimeStr);
-      const diffHours = (now - startTime) / (1000 * 60 * 60);
+      const diffHours = (now - heartbeat) / (1000 * 60 * 60);
 
       const isOffline = status.includes("已离线") || status.includes("僵尸");
       const isExpired = diffHours > CLEANUP_THRESHOLD_HOURS;

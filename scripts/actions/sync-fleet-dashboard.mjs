@@ -3,6 +3,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { loadFleetMeta, fleetMetaKey } from "./fleet-meta.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -78,8 +79,8 @@ function statusType(status) {
   return "unknown";
 }
 
-function parseSince(since) {
-  const raw = String(since || "").trim();
+function parseLocalTime(rawValue) {
+  const raw = String(rawValue || "").trim();
   if (!raw) return null;
   const normalized = raw.replace(" ", "T");
   const d = new Date(normalized);
@@ -118,6 +119,7 @@ function main() {
   }
 
   const rows = [];
+  const fleetMeta = loadFleetMeta();
   for (let i = headerIndex + 2; i < lines.length; i++) {
     const line = lines[i];
     if (!line.trim().startsWith("|")) break;
@@ -129,11 +131,13 @@ function main() {
     const finalProgress = todoProgress !== null ? todoProgress : statusToProgress(row.status);
 
     const baseType = statusType(row.status);
-    const sinceDate = parseSince(row.since);
+    const meta = fleetMeta.entries[fleetMetaKey(row.agent, row.workspace)] || null;
+    const heartbeatRaw = meta?.lastHeartbeatAt || row.since;
+    const heartbeatDate = parseLocalTime(heartbeatRaw);
     const isStale =
-      sinceDate &&
+      heartbeatDate &&
       (baseType === "active" || baseType === "queued") &&
-      (Date.now() - sinceDate.getTime()) / (1000 * 60 * 60) > STALE_HOURS;
+      (Date.now() - heartbeatDate.getTime()) / (1000 * 60 * 60) > STALE_HOURS;
 
     const finalType = isStale ? "offline" : baseType;
     const finalStatus = isStale ? "[ 僵尸 ] 离线（超时未更新）" : row.status;
@@ -146,12 +150,17 @@ function main() {
       isCaptain: row.member.includes("Prime") || row.status.includes("队长锁"),
       hasTodo: todoProgress !== null,
       isStale: Boolean(isStale),
+      firstLoginAt: meta?.firstLoginAt || row.since,
+      lastHeartbeatAt: heartbeatRaw,
+      lastTask: meta?.lastTask || row.task,
+      lastStatus: meta?.lastStatus || row.status,
+      lastCompletedTask: meta?.lastCompletedTask || null,
     });
   }
 
   const payload = {
     generatedAt: new Date().toISOString(),
-    version: "v5.2.0 (Objective Progress + Zombie Detection)",
+    version: "v5.3.0 (Objective Progress + Zombie Detection + Heartbeat Meta)",
     source: "docs/memory/fleet_status.md",
     total: rows.length,
     active: rows.filter((r) => r.type === "active").length,
