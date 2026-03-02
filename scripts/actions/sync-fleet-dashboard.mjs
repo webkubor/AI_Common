@@ -28,6 +28,38 @@ function normalizeAgent(value) {
   return raw || "Unknown";
 }
 
+/**
+ * 核心逻辑：从任务工作区的 TODO.md 提取客观进度
+ */
+function getProgressFromTodo(workspacePath) {
+  try {
+    const todoPath = path.join(workspacePath, "TODO.md");
+    if (!fs.existsSync(todoPath)) return null;
+
+    const content = fs.readFileSync(todoPath, "utf8");
+    const lines = content.split("\n");
+    
+    let total = 0;
+    let completed = 0;
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      // 匹配 - [ ] 或 - [x]
+      if (trimmed.startsWith("- [ ]")) {
+        total++;
+      } else if (trimmed.match(/^- \[[xX]\]/)) {
+        total++;
+        completed++;
+      }
+    }
+
+    if (total === 0) return null;
+    return Math.round((completed / total) * 100);
+  } catch (err) {
+    return null;
+  }
+}
+
 function statusToProgress(status) {
   const s = String(status ?? "");
   if (s.includes("等待分配")) return 5;
@@ -49,7 +81,7 @@ function parseTableRow(line) {
   const parts = line.split("|").slice(1, -1).map((s) => s.trim());
   if (parts.length < 6) return null;
   const node = stripMarkdown(parts[0]);
-  if (!node || node.includes("示例节点")) return null;
+  if (!node || node.includes("节点 ID") || node.includes("---") || node.includes("示例节点")) return null;
 
   return {
     member: node,
@@ -81,16 +113,23 @@ function main() {
     if (!line.trim().startsWith("|")) break;
     const row = parseTableRow(line);
     if (!row) continue;
+
+    // 尝试从 TODO.md 获取客观进度，获取不到则走兜底
+    const todoProgress = getProgressFromTodo(row.workspace);
+    const finalProgress = todoProgress !== null ? todoProgress : statusToProgress(row.status);
+
     rows.push({
       ...row,
       type: statusType(row.status),
-      progress: statusToProgress(row.status),
+      progress: finalProgress,
       isCaptain: row.member.includes("Prime") || row.status.includes("队长锁"),
+      hasTodo: todoProgress !== null
     });
   }
 
   const payload = {
     generatedAt: new Date().toISOString(),
+    version: "v5.1.0 (Objective Progress)",
     source: "docs/memory/fleet_status.md",
     total: rows.length,
     active: rows.filter((r) => r.type === "active").length,
@@ -101,7 +140,7 @@ function main() {
 
   fs.mkdirSync(path.dirname(outputFile), { recursive: true });
   fs.writeFileSync(outputFile, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
-  console.log(`synced: ${outputFile}`);
+  console.log(`synced: ${outputFile} (Objective Progress Enabled)`);
 }
 
 main();

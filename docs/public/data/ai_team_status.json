@@ -1,9 +1,10 @@
 {
-  "generatedAt": "2026-03-02T10:20:27.078Z",
+  "generatedAt": "2026-03-02T10:29:30.899Z",
+  "version": "v5.1.0 (Objective Progress)",
   "source": "docs/memory/fleet_status.md",
-  "total": 10,
+  "total": 5,
   "active": 5,
-  "offline": 5,
+  "offline": 0,
   "queued": 0,
   "members": [
     {
@@ -15,29 +16,8 @@
       "status": "[ 队长锁 ] 活跃",
       "type": "active",
       "progress": 60,
-      "isCaptain": true
-    },
-    {
-      "member": "Claude-0 (Claude)",
-      "agent": "Claude",
-      "workspace": "/Users/webkubor/Documents/CortexOS",
-      "task": "你的任务",
-      "since": "2026-02-28 19:39",
-      "status": "[ 已离线 ] 存档",
-      "type": "offline",
-      "progress": 100,
-      "isCaptain": false
-    },
-    {
-      "member": "Candy-1 (Gemini)",
-      "agent": "Gemini",
-      "workspace": "/Users/webkubor/Desktop/omni-chatbot-sdk",
-      "task": "深度接入外部大脑：建立项目索引、规则沉淀与记忆链条初始化",
-      "since": "2026-02-28 18:10",
-      "status": "[ 已离线 ] 存档",
-      "type": "offline",
-      "progress": 100,
-      "isCaptain": false
+      "isCaptain": true,
+      "hasTodo": false
     },
     {
       "member": "Candy-2 (Gemini)",
@@ -48,40 +28,8 @@
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 55,
-      "isCaptain": false
-    },
-    {
-      "member": "Codex-3 (Codex)",
-      "agent": "Codex",
-      "workspace": "/Users/webkubor/Desktop/create",
-      "task": "TTS 技术推进",
-      "since": "2026-02-28 18:34",
-      "status": "[ 已离线 ] 存档",
-      "type": "offline",
-      "progress": 100,
-      "isCaptain": false
-    },
-    {
-      "member": "Codex-4 (Codex)",
-      "agent": "Codex",
-      "workspace": "/Users/webkubor/Desktop/create/Qwen3-TTSBoiling-Snow-TTS",
-      "task": "深度接入外部大脑：TTS 项目 AI 初始化（索引/规则/记忆链路）",
-      "since": "2026-02-28 18:45",
-      "status": "[ 已离线 ] 存档",
-      "type": "offline",
-      "progress": 100,
-      "isCaptain": false
-    },
-    {
-      "member": "Claude-5 (Claude)",
-      "agent": "Claude",
-      "workspace": "/Users/webkubor/Desktop/claude-test",
-      "task": "test",
-      "since": "2026-02-28 19:03",
-      "status": "[ 已离线 ] 存档",
-      "type": "offline",
-      "progress": 100,
-      "isCaptain": false
+      "isCaptain": false,
+      "hasTodo": false
     },
     {
       "member": "Candy-6 (Gemini)",
@@ -91,8 +39,9 @@
       "since": "2026-03-02 18:15",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
-      "progress": 55,
-      "isCaptain": false
+      "progress": 100,
+      "isCaptain": false,
+      "hasTodo": true
     },
     {
       "member": "Claude-7 (Claude)",
@@ -103,7 +52,8 @@
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 55,
-      "isCaptain": false
+      "isCaptain": false,
+      "hasTodo": false
     },
     {
       "member": "Candy-8 (Gemini)",
@@ -114,7 +64,8 @@
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 55,
-      "isCaptain": false
+      "isCaptain": false,
+      "hasTodo": false
     }
   ]
 }
