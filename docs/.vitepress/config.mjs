@@ -80,17 +80,14 @@ export default defineConfig({
             text: "✍️ 内容创作部 (Writers)",
             collapsed: true,
             items: [
-              { text: "掘金写作助手", link: "/skills/writers/juejin" },
-              { text: "微信公众号助手", link: "/skills/writers/wechat" },
-              { text: "飞书文档助手", link: "/skills/writers/feishu" },
-              { text: "内部沟通专家", link: "/skills/writers/internal-comms" },
+              { text: "该分组已迁移（待补充映射）", link: "/skills/" },
             ]
           },
           {
             text: "📢 账号运营部 (Ops)",
             collapsed: true,
             items: [
-              { text: "掘金发布助手", link: "/skills/ops/juejin" },
+              { text: "运营总览", link: "/skills/ops/" },
               { text: "小红书矩阵运营", link: "/skills/ops/xhs" },
               { text: "GitHub 运营助手", link: "/skills/ops/github" },
               { text: "GitLab 管理员", link: "/skills/ops/gitlab" },
@@ -100,11 +97,7 @@ export default defineConfig({
             text: "🛠️ 工程与自动化 (Eng)",
             collapsed: true,
             items: [
-              { text: "Web 应用测试", link: "/skills/engineering/webapp-testing" },
-              { text: "Supabase Master", link: "/skills/engineering/supabase-master" },
-              { text: "PWA 离线方案", link: "/skills/engineering/pwa-master" },
-              { text: "图床大师", link: "/skills/engineering/image-hosting-master" },
-              { text: "VitePress 初始化", link: "/skills/engineering/vitepress-init" },
+              { text: "Vercel 一键部署", link: "/skills/vercel_oneclick_deploy" },
             ]
           },
           {
@@ -116,16 +109,12 @@ export default defineConfig({
               { text: "📏 品牌一致性 DoD", link: "/checklists/brand_consistency_dod" },
               { text: "📏 掘金封面规范", link: "/ucd/juejin_tech_covers" },
               { text: "📏 Slack 动图标准", link: "/ucd/slack_gif_standard" },
-              { text: "🛠️ 智能绘图引擎", link: "/skills/visual/smart-image-generator" },
-              { text: "🛠️ 电影级分镜", link: "/skills/visual/cinematic-storyboard" },
-              { text: "🛠️ 前端 UI/UX 设计", link: "/skills/visual/frontend-design" },
             ]
           },
           {
             text: "📚 知识管理 (Knowledge)",
             collapsed: true,
             items: [
-              { text: "自动复盘与 GC", link: "/skills/knowledge/auto-retro" },
               { text: "碎片知识管家", link: "/skills/knowledge/snippet_master" },
             ]
           }
