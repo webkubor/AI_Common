@@ -13,7 +13,7 @@
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Candy-2 (Gemini)** | Gemini | `/Users/webkubor/Desktop/skills` | 已完成：scm-ops-skill 与 xhs-manager-skill 的包装推送 | 2026-03-02 18:02 | [ 队长锁 ] 活跃 |
 | **Candy-6 (Gemini)** | Gemini | `/Users/webkubor/Documents/CortexOS` | 待分配任务 | 2026-03-02 18:15 | [ 执行中 ] 活跃 |
-| **Candy-Prime (0号机/Gemini)** | Gemini | `/Users/webkubor/Desktop/create/cinematic-storyboard-pro` | 初始化外部大脑并加载小烛人格协议 | 2026-03-02 21:17 | [ 队长锁 ] 活跃 |
+| **Candy-Prime (0号机/Gemini)** | Gemini | `/Users/webkubor/Desktop/create/cinematic-storyboard-pro` | 实现第11集酒肆对话分镜并优化苏梦城Solo视频脚本 | 2026-03-02 21:43 | [ 队长锁 ] 活跃 |
 | *(示例节点)* | *(Gemini/Codex/Claude...)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
 ---
 
