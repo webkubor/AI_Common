@@ -24,7 +24,6 @@ export default defineConfig({
   themeConfig: {
     logo: "/logo.svg",
     nav: [
-      { text: "首页", link: "/" },
       { text: "AI Team 看板", link: "/ai-team" },
       { text: "路由总览", link: "/router" },
       { text: "规则中心", link: "/rules/" },
@@ -35,7 +34,6 @@ export default defineConfig({
       {
         text: "🧠 核心配置 (Core)",
         items: [
-          { text: "首页", link: "/" },
           { text: "AI Team 看板", link: "/ai-team" },
           { text: "路由总览", link: "/router" },
           { text: "技术栈偏好", link: "/tech_stack" },
@@ -57,6 +55,7 @@ export default defineConfig({
         text: "💎 职能部门 (Departments)",
         items: [
           { text: "总览 (Skills Index)", link: "/skills/" },
+          { text: "Skills GitHub 仓库总表", link: "/skills/github_repos" },
           {
             text: "🤖 Agent 参谋矩阵",
             collapsed: true,
@@ -125,44 +124,11 @@ export default defineConfig({
         items: [
           { text: "复盘总览", link: "/retrospectives/" },
           {
-            text: "🏛️ 架构演进 (Arch)",
+            text: "📚 规则复盘 (Rules)",
             collapsed: true,
             items: [
-              { text: "总览", link: "/retrospectives/arch/" },
-              { text: "SDK 架构转型", link: "/retrospectives/2026-02-06-chatbot-sdk-transformation" },
-              { text: "Blob 性能优化", link: "/retrospectives/arch/blob-performance" },
-              { text: "Schema 归一化", link: "/retrospectives/arch/schema-unification" },
-              { text: "SSOT 资产管理", link: "/retrospectives/arch/ssot-assets" },
-            ]
-          },
-          {
-            text: "🏗️ 构建与部署 (Build)",
-            collapsed: true,
-            items: [
-              { text: "总览", link: "/retrospectives/build/" },
-              { text: "Vite PWA 实践", link: "/retrospectives/build/vite-pwa" },
-            ]
-          },
-          {
-            text: "🎨 前端实践 (Frontend)",
-            collapsed: true,
-            items: [
-              { text: "总览", link: "/retrospectives/frontend/" },
-              { text: "支付组件重构", link: "/retrospectives/2026-02-02-th-payment-web-refactor" },
-              { text: "Mermaid 语法支持", link: "/retrospectives/frontend/mermaid-syntax" },
-              { text: "Tailwind v4 升级", link: "/retrospectives/frontend/tailwind-v4" },
-              { text: "Vue 结构重构", link: "/retrospectives/frontend/vue-refactor" },
-            ]
-          },
-          {
-            text: "⚙️ 运维与规则 (Ops)",
-            collapsed: true,
-            items: [
-              { text: "总览", link: "/retrospectives/ops/" },
-              { text: "视觉标准重构", link: "/retrospectives/2026-02-05-persona-and-visual-standard-refactor" },
-              { text: "GitHub 认证修复", link: "/retrospectives/ops/github_auth_push_fail" },
-              { text: "Playwright 脚手架", link: "/retrospectives/ops/playwright-scaffold" },
-              { text: "外部大脑 2.0", link: "/retrospectives/ops/refactor_external_brain_2026_02_05" },
+              { text: "规则复盘总览", link: "/retrospectives/rules/" },
+              { text: "交互协议复盘", link: "/retrospectives/rules/interaction" },
             ]
           },
         ],

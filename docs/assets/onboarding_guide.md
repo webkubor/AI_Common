@@ -13,7 +13,7 @@
 | **AI 原生改造** | `gemini skills install https://github.com/webkubor/gemini-skill-ai-native` |
 | **大脑哨兵** | `gemini skills install https://github.com/webkubor/brain-sentinel-expert` |
 | **图床分发** | `gemini skills install https://github.com/webkubor/file-hosting-expert` |
-| ... | *(其余链接见 [skills_index.md](./skills_index.md))* |
+| ... | *(其余链接见 [Skills GitHub 仓库总表](/skills/github_repos))* |
 
 ---
 
