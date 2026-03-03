@@ -13,7 +13,7 @@
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Candy-2 (Gemini)** | Gemini | `/Users/webkubor/Desktop/skills` | 已完成：scm-ops-skill 与 xhs-manager-skill 的包装推送 | 2026-03-02 18:02 | [ 队长锁 ] 活跃 |
 | **Candy-6 (Gemini)** | Gemini | `/Users/webkubor/Documents/CortexOS` | 待分配任务 | 2026-03-02 18:15 | [ 执行中 ] 活跃 |
-| **Candy-Prime (0号机/Gemini)** | Gemini | `/Users/webkubor/Desktop/create/cinematic-storyboard-pro` | 安装 Obsidian MCP 并开启《沸腾之雪》分镜精修 | 2026-03-03 10:40 | [ 队长锁 ] 活跃 |
+| **Candy-Prime (0号机/Gemini)** | Gemini | `/Users/webkubor/Desktop/create/cinematic-storyboard-pro` | 待分配任务 | 2026-03-03 11:09 | [ 队长锁 ] 活跃 |
 | **Codex-1 (Codex)** | Codex | `/Users/webkubor/Documents/CortexOS` | 安装 mcp-obsidian（按官网 install 指引完成可用配置） | 2026-03-03 10:41 | [ 执行中 ] 活跃 |
 | *(示例节点)* | *(Gemini/Codex/Claude...)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
 ---
