@@ -21,10 +21,12 @@
 技能包运行依赖于**外置秘钥库**，默认路径：`~/Documents/memory/secrets`。  
 也可通过环境变量 `CORTEXOS_SECRET_HOME` 指定自定义目录。
 
-推荐先执行模板生成：
+强烈建议直接复制项目内模板：
 
 ```bash
-pnpm run secrets:init -- --target ~/Documents/memory/secrets/_templates
+mkdir -p ~/Documents/memory/secrets
+cp docs/secrets/_templates/github.md ~/Documents/memory/secrets/github.md
+cp docs/secrets/_templates/gitlab.md ~/Documents/memory/secrets/gitlab.md
 ```
 
 ### A. 图床分发专用 (`hosting_credentials.md`)

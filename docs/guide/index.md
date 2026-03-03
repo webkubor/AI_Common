@@ -20,9 +20,9 @@
 
 请先确认本机具备以下环境：
 
-- Node.js 20+（推荐 22）
+- Node.js 20+（强烈建议 22）
 - pnpm 9+
-- Python 3.11+（推荐 3.12）
+- Python 3.11+（强烈建议 3.12）
 - uv（Python 包管理）
 - Git
 
@@ -71,7 +71,7 @@ uv sync
 }
 ```
 
-### 3.2 Obsidian MCP（推荐，连接 memory 仓库）
+### 3.2 Obsidian MCP（强烈建议，连接 memory 仓库）
 
 如果你把外部记忆放在 `~/Documents/memory`，配置示例：
 
@@ -99,7 +99,7 @@ args = ["-y", "@mauricio.wolff/mcp-obsidian@latest", "~/Documents/memory"]
 | `pnpm run fleet:status` | 看 AI 队列和冲突风险 |
 | `pnpm run fleet:claim -- --workspace "$PWD" --task "任务名" --agent "Codex" --alias "Codex"` | 开工前打卡 |
 | `pnpm run fleet:sync-dashboard` | 同步舰队看板 |
-| `pnpm run secrets:init -- --target ~/Documents/memory/secrets/_templates` | 生成秘钥模板 |
+| `cp docs/secrets/_templates/github.md ~/Documents/memory/secrets/github.md` | 从项目模板复制一份到外置秘钥目录 |
 
 ---
 
@@ -158,10 +158,12 @@ args = ["-y", "@mauricio.wolff/mcp-obsidian@latest", "~/Documents/memory"]
 
 - 凭证默认路径：`~/Documents/memory/secrets`。
 - 不要把密钥写进仓库或 `docs/`。
-- 先生成模板再填值：
+- 强烈建议直接从项目模板复制后再填值：
 
 ```bash
-pnpm run secrets:init -- --target ~/Documents/memory/secrets/_templates
+mkdir -p ~/Documents/memory/secrets
+cp docs/secrets/_templates/github.md ~/Documents/memory/secrets/github.md
+cp docs/secrets/_templates/gitlab.md ~/Documents/memory/secrets/gitlab.md
 ```
 
 规范文档：`docs/rules/privacy_secret_protection_protocol.md`

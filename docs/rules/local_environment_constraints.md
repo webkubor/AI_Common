@@ -19,7 +19,7 @@
 
 - 秘钥外置目录：`~/Documents/memory/secrets`
 - 禁止将真实秘钥写入仓库文档、脚本或配置示例
-- 需要模板时从 `~/Documents/memory/secrets/_templates` 派生
+- 强烈建议从项目内 `docs/secrets/_templates/` 复制模板到 `~/Documents/memory/secrets`
 
 ## 4. 维护建议
 

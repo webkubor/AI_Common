@@ -36,19 +36,22 @@ command = "npx"
 args = [ "-y", "@mauricio.wolff/mcp-obsidian@latest", "/Users/webkubor/Documents/memory/secrets" ]
 ```
 
-## 4. 模板生成
+## 4. 模板使用（强烈建议）
 
-执行命令自动生成 GitHub / GitLab / WeChat / DeepSeek / Lark 等模板：
-
-```bash
-pnpm run secrets:init -- --target ~/Documents/memory/secrets/_templates
-```
-
-可选覆盖：
+强烈建议直接使用项目内模板文件，不再增加额外生成脚本学习成本。
 
 ```bash
-pnpm run secrets:init -- --target ~/Documents/memory/secrets/_templates --force
+mkdir -p ~/Documents/memory/secrets
+cp docs/secrets/_templates/github.md ~/Documents/memory/secrets/github.md
+cp docs/secrets/_templates/gitlab.md ~/Documents/memory/secrets/gitlab.md
+cp docs/secrets/_templates/wechat.md ~/Documents/memory/secrets/wechat.md
 ```
+
+说明：
+
+- 项目模板目录：`docs/secrets/_templates/`
+- 外置真实凭证目录：`~/Documents/memory/secrets`
+- 模板可提交，真实秘钥不可提交
 
 ## 5. 最低模板要求
 
