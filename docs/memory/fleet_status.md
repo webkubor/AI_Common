@@ -17,7 +17,7 @@
 | **Candy-4 (Gemini)** | Gemini | `/Users/webkubor/Documents/memory` | 待分配任务 | 2026-03-03 14:33 | [ 执行中 ] 活跃 |
 | **Candy-3 (Codex)** | Codex | `/Users/webkubor/Desktop/skills` | 生成技能候选归档清单，降低维护成本 | 2026-03-03 15:59 | [ 执行中 ] 活跃 |
 | **Codex-5 (Codex)** | Codex | `/Users/webkubor/Desktop/tarspay/spider-web` | 对当前仓库进行代码审查，输出按严重级别排序的问题与风险 | 2026-03-03 16:02 | [ 执行中 ] 活跃 |
-| **Candy-6 (Gemini)** | Gemini | `/Users/webkubor/Desktop/tarspay/spider-api-server` | 初始化并对接 CortexOS 外部大脑 (Start Skill Protocol) | 2026-03-03 16:07 | [ 执行中 ] 活跃 |
+| **Candy-6 (Gemini)** | Gemini | `/Users/webkubor/Desktop/tarspay/spider-api-server` | 已交付：AI 客服实时数据工具集 (Function Calling) | 2026-03-03 16:20 | [ 执行中 ] 活跃 |
 | *(示例节点)* | *(Gemini/Codex/Claude...)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
 ---
 
