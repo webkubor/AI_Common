@@ -12,7 +12,6 @@
 | 节点 ID (模型/别名) | 模型标签 (Agent) | 角色 (Role) | 物理坐标 (绝对工作路径) | 当前执行的核心任务 (含目标) | 领命时间 | 状态与锁 (Status & Locks) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Candy-2 (Gemini)** | Gemini | 后端 | `/Users/webkubor/Desktop/skills` | 已完成：scm-ops-skill 与 xhs-manager-skill 的包装推送 | 2026-03-02 18:02 | [ 队长锁 ] 活跃 |
-| **Candy-3 (Gemini)** | Gemini | 未分配 | `/Users/webkubor/Desktop/create/cinematic-storyboard-pro` | 待分配任务 | 2026-03-03 16:22 | [ 执行中 ] 活跃 |
 | **Codex-1 (Codex)** | Codex | 未分配 | `/Users/webkubor/Documents/CortexOS` | 固化公共看板流程：所有 Agent 领任务时必须同步角色与任务 | 2026-03-03 16:37 | [ 执行中 ] 活跃 |
 | **Candy-Prime (0号机/Codex)** | Codex | 未分配 | `/Users/webkubor/Desktop/skills` | 删除 skills：slack-gif-creator 与 sora（先备份后删除） | 2026-03-03 17:09 | [ 队长锁 ] 活跃 |
 | **Codex-5 (Codex)** | Codex | 前端 | `/Users/webkubor/Desktop/tarspay/spider-web` | 先查看 /Users/webkubor/Documents/memory/plans/projects/2026-03-03-spider-cs-bot-command-center.md；在该入口回报前端进展并完成客服面板与三接口接入。 | 2026-03-03 16:51 | [ 执行中 ] 活跃 |
