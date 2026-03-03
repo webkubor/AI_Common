@@ -10,7 +10,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const PROJECT_ROOT = path.join(__dirname, '../../')
 const GEMINI_SETTINGS = path.join(os.homedir(), '.gemini', 'settings.json')
-const MCP_NAME = 'ai-common-brain'
+const PREFERRED_MCP_NAME = 'cortexos-brain'
+const LEGACY_MCP_NAMES = ['ai-common-brain']
 const SERVER_PATH = path.join(PROJECT_ROOT, 'mcp_server', 'server.py')
 const EXPECTED_ARGS = ['run', '--project', PROJECT_ROOT, SERVER_PATH]
 
@@ -52,19 +53,40 @@ function saveGeminiSettings(json) {
 
 function normalizeMcpConfig(json) {
   if (!json.mcpServers) json.mcpServers = {}
-  const current = json.mcpServers[MCP_NAME] || {}
+
+  let current = json.mcpServers[PREFERRED_MCP_NAME]
+  let migratedFrom = ''
+  if (!current) {
+    for (const legacy of LEGACY_MCP_NAMES) {
+      if (json.mcpServers[legacy]) {
+        current = json.mcpServers[legacy]
+        migratedFrom = legacy
+        break
+      }
+    }
+  }
+  current = current || {}
+
+  // 统一键名到 cortexos-brain
+  if (migratedFrom) {
+    delete json.mcpServers[migratedFrom]
+  }
+
   const args = Array.isArray(current.args) ? current.args : []
   const sameArgs = JSON.stringify(args) === JSON.stringify(EXPECTED_ARGS)
   const sameCommand = current.command === 'uv'
-  if (sameArgs && sameCommand) return { changed: false }
+  const hasPreferred = Boolean(json.mcpServers[PREFERRED_MCP_NAME])
+  if (sameArgs && sameCommand && hasPreferred && !migratedFrom) {
+    return { changed: false, migratedFrom }
+  }
 
-  json.mcpServers[MCP_NAME] = {
+  json.mcpServers[PREFERRED_MCP_NAME] = {
     ...current,
     command: 'uv',
     args: EXPECTED_ARGS,
     trust: true
   }
-  return { changed: true }
+  return { changed: true, migratedFrom }
 }
 
 function smokeTestServer() {
@@ -76,7 +98,7 @@ function smokeTestServer() {
     let resolved = false
     const proc = spawn('uv', EXPECTED_ARGS, {
       cwd: PROJECT_ROOT,
-      stdio: 'ignore'
+      stdio: ['pipe', 'ignore', 'ignore']
     })
 
     const timeout = setTimeout(() => {
@@ -97,6 +119,10 @@ function smokeTestServer() {
       if (resolved) return
       resolved = true
       clearTimeout(timeout)
+      if (code === 0) {
+        resolve({ ok: true, reason: 'boot_exit_0' })
+        return
+      }
       resolve({ ok: false, reason: `early_exit:${code}` })
     })
   })
@@ -122,16 +148,22 @@ async function main() {
   if (normalized.changed) {
     saveGeminiSettings(loaded.json)
     result.fixedConfig = true
-    notifyNative('MCP 配置已自动修复', `${MCP_NAME} 已回写 CortexOS 路径`)
-    notifyLark('MCP 配置修复', `${MCP_NAME} 路径漂移已自动修复为 CortexOS`)
+    const title = normalized.migratedFrom
+      ? 'MCP 配置已自动迁移'
+      : 'MCP 配置已自动修复'
+    const body = normalized.migratedFrom
+      ? `${normalized.migratedFrom} 已迁移为 ${PREFERRED_MCP_NAME}`
+      : `${PREFERRED_MCP_NAME} 已回写 CortexOS 路径`
+    notifyNative(title, body)
+    notifyLark(title, body)
   }
 
   result.smoke = await smokeTestServer()
   if (!result.smoke.ok) {
     result.ok = false
     result.reason = result.smoke.reason
-    notifyNative('MCP 健康检查异常', `${MCP_NAME} 启动失败: ${result.reason}`)
-    notifyLark('MCP 健康检查异常', `${MCP_NAME} 启动失败: ${result.reason}`)
+    notifyNative('MCP 健康检查异常', `${PREFERRED_MCP_NAME} 启动失败: ${result.reason}`)
+    notifyLark('MCP 健康检查异常', `${PREFERRED_MCP_NAME} 启动失败: ${result.reason}`)
   }
 
   console.log(JSON.stringify(result))
