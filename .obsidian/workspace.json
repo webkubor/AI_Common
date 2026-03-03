@@ -11,14 +11,13 @@
             "id": "09103922a3e24976",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "bases",
               "state": {
-                "file": "TODO.md",
-                "mode": "source",
-                "source": false
+                "file": "未命名.base",
+                "viewName": "表格"
               },
-              "icon": "lucide-file",
-              "title": "TODO"
+              "icon": "lucide-table",
+              "title": "未命名"
             }
           }
         ]
@@ -94,7 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "TODO.md",
+                "file": "未命名.base",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +103,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "TODO 的反向链接列表"
+              "title": "未命名 的反向链接列表"
             }
           },
           {
@@ -113,12 +112,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "TODO.md",
+                "file": "未命名.base",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "TODO 的出链列表"
+              "title": "未命名 的出链列表"
             }
           },
           {
@@ -156,13 +155,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "TODO.md",
+                "file": "未命名.base",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "TODO 的大纲"
+              "title": "未命名 的大纲"
             }
           }
         ]
@@ -185,8 +184,8 @@
   },
   "active": "09103922a3e24976",
   "lastOpenFiles": [
-    "未命名.base",
     "TODO.md",
+    "未命名.base",
     "CortexOS-Secrets/Brain/r2_hosting.env",
     "CortexOS-Secrets/Brain/sina_mail.md",
     "CortexOS-Secrets/Brain/qq.md",
