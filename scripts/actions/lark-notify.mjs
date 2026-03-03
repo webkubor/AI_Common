@@ -1,5 +1,5 @@
 import { kernel } from '../core/kernel.mjs';
-import { sendToLark as nativeLarkSend } from '../core/sentinel.js';
+import { sendToLark as nativeLarkSend } from '../services/lark-service.mjs';
 
 /**
  * Lark (飞书) 战报推送动作定义

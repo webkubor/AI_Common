@@ -8,7 +8,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync, spawn } from 'child_process';
-import { consumeBuffer, addToLog, getCurrentTimestamp, sendToLark, sendNativeNotification } from './sentinel.js';
+import { consumeBuffer, addToLog, getCurrentTimestamp, sendNativeNotification } from './sentinel.js';
+import { sendToLark } from '../services/lark-service.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

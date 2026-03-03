@@ -53,6 +53,7 @@
 - 脚本：`scripts/core/auto-pilot.js`
 - 托管：PM2（5 分钟节奏）
 - 统一配置：`config/brain-runtime.json`
+- Lark 统一服务：`scripts/services/lark-service.mjs`
 
 ### 2.1 后台任务清单（来自配置）
 
