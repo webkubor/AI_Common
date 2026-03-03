@@ -80,6 +80,12 @@ function parseTableRow(line) {
   };
 }
 
+function getComparablePayload(payload) {
+  const clone = JSON.parse(JSON.stringify(payload));
+  delete clone.generatedAt;
+  return clone;
+}
+
 function main() {
   if (!fs.existsSync(sourceFile)) {
     console.error(`❌ 未找到源文件: ${sourceFile}`);
@@ -133,6 +139,23 @@ function main() {
     queued: rows.filter((r) => r.type === "queued").length,
     members: rows,
   };
+
+  let shouldWrite = true;
+  if (fs.existsSync(outputFile)) {
+    try {
+      const previous = JSON.parse(fs.readFileSync(outputFile, "utf8"));
+      const prevComparable = getComparablePayload(previous);
+      const nextComparable = getComparablePayload(payload);
+      shouldWrite = JSON.stringify(prevComparable) !== JSON.stringify(nextComparable);
+    } catch (err) {
+      shouldWrite = true;
+    }
+  }
+
+  if (!shouldWrite) {
+    console.log(`ℹ️ 看板数据无实质变化，跳过写入: ${outputFile}`);
+    return;
+  }
 
   fs.mkdirSync(path.dirname(outputFile), { recursive: true });
   fs.writeFileSync(outputFile, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
