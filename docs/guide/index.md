@@ -73,12 +73,12 @@ uv sync
 
 ### 3.2 Obsidian MCP（强烈建议，连接 memory 仓库）
 
-如果你把外部记忆放在 `~/Documents/memory`，配置示例：
+配置示例（将路径替换成你的 memory 仓库路径）：
 
 ```toml
 [mcp_servers.obsidian]
 command = "npx"
-args = ["-y", "@mauricio.wolff/mcp-obsidian@latest", "~/Documents/memory"]
+args = ["-y", "@mauricio.wolff/mcp-obsidian@latest", "/你的/memory-vault-path"]
 ```
 
 成功判定：
@@ -99,17 +99,22 @@ args = ["-y", "@mauricio.wolff/mcp-obsidian@latest", "~/Documents/memory"]
 | `pnpm run fleet:status` | 看 AI 队列和冲突风险 |
 | `pnpm run fleet:claim -- --workspace "$PWD" --task "任务名" --agent "Codex" --alias "Codex"` | 开工前打卡 |
 | `pnpm run fleet:sync-dashboard` | 同步舰队看板 |
-| `cp docs/secrets/_templates/github.md ~/Documents/memory/secrets/github.md` | 从项目模板复制一份到外置秘钥目录 |
+| `cp docs/secrets/_templates/github.md <memory-secrets-path>/github.md` | 从项目模板复制一份到外置秘钥目录 |
 
 ---
 
 ## 5. 目录怎么理解（用户视角）
 
+路径说明（统一约定）：
+
+- 本指南只写逻辑路径，不绑定你本机的绝对路径。
+- `memory/*` 表示你的外部记忆仓库（由你自己的环境决定物理位置）。
+
 - `docs/router.md`：总入口，AI 每次启动先看这里。
 - `docs/rules/`：规则库（工程规范、协作协议、隐私协议）。
 - `docs/memory/logs/`：操作日志（过程记录）。
-- `../memory/knowledge/`：长期知识库（复盘、方案、经验）。
-- `~/Documents/memory/secrets/`：高敏凭证区（不进 Git）。
+- `memory/knowledge/`：长期知识库（复盘、方案、经验）。
+- `memory/secrets/`：高敏凭证区（不进 Git）。
 
 ---
 
@@ -119,7 +124,7 @@ args = ["-y", "@mauricio.wolff/mcp-obsidian@latest", "~/Documents/memory"]
 
 适合：新增经验、技术结论、复盘。
 
-1. 把 Markdown 放到 `~/Documents/memory/knowledge/...`。  
+1. 把 Markdown 放到 `memory/knowledge/...`。  
 2. 执行入库：`uv run ./scripts/ingest/chroma_ingest.py`。  
 3. 用 `uv run ./scripts/ingest/query_brain.py "你的问题"` 验证是否可召回。  
 
@@ -156,14 +161,15 @@ args = ["-y", "@mauricio.wolff/mcp-obsidian@latest", "~/Documents/memory"]
 
 ## 7. 秘钥与隐私（必须看）
 
-- 凭证默认路径：`~/Documents/memory/secrets`。
+- 凭证目录：`memory/secrets/`（物理位置由你的环境配置决定）。
 - 不要把密钥写进仓库或 `docs/`。
 - 强烈建议直接从项目模板复制后再填值：
 
 ```bash
-mkdir -p ~/Documents/memory/secrets
-cp docs/secrets/_templates/github.md ~/Documents/memory/secrets/github.md
-cp docs/secrets/_templates/gitlab.md ~/Documents/memory/secrets/gitlab.md
+export MEMORY_SECRETS_DIR="/你的/memory-secrets-path"
+mkdir -p "$MEMORY_SECRETS_DIR"
+cp docs/secrets/_templates/github.md "$MEMORY_SECRETS_DIR/github.md"
+cp docs/secrets/_templates/gitlab.md "$MEMORY_SECRETS_DIR/gitlab.md"
 ```
 
 规范文档：`docs/rules/privacy_secret_protection_protocol.md`
@@ -194,7 +200,7 @@ uv pip install ollama
 
 完成上面后，建议你做一次最小闭环：
 
-1. 新建一篇知识文档到 `~/Documents/memory/knowledge`。  
+1. 新建一篇知识文档到 `memory/knowledge/`。  
 2. 重新入库并查询验证。  
 3. 新增一条你自己的规则到 `docs/rules/`。  
 4. 让 AI 按新规则执行一次真实任务。  

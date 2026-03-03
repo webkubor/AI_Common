@@ -18,19 +18,20 @@
 ---
 
 ## 🔑 2. 核心凭证配置 (Critical Secrets)
-技能包运行依赖于**外置秘钥库**，默认路径：`~/Documents/memory/secrets`。  
-也可通过环境变量 `CORTEXOS_SECRET_HOME` 指定自定义目录。
+技能包运行依赖于**外置秘钥库**，逻辑目录统一记为：`memory/secrets/`。  
+物理路径由你的本机环境决定，可通过环境变量 `CORTEXOS_SECRET_HOME` 指定。
 
 强烈建议直接复制项目内模板：
 
 ```bash
-mkdir -p ~/Documents/memory/secrets
-cp docs/secrets/_templates/github.md ~/Documents/memory/secrets/github.md
-cp docs/secrets/_templates/gitlab.md ~/Documents/memory/secrets/gitlab.md
+export MEMORY_SECRETS_DIR="/你的/memory-secrets-path"
+mkdir -p "$MEMORY_SECRETS_DIR"
+cp docs/secrets/_templates/github.md "$MEMORY_SECRETS_DIR/github.md"
+cp docs/secrets/_templates/gitlab.md "$MEMORY_SECRETS_DIR/gitlab.md"
 ```
 
 ### A. 图床分发专用 (`hosting_credentials.md`)
-**路径**: `~/Documents/memory/secrets/hosting_credentials.md`
+**路径**: `memory/secrets/hosting_credentials.md`
 **模板**:
 ```markdown
 ### ☁️ Cloudflare R2 Config
@@ -43,7 +44,7 @@ cp docs/secrets/_templates/gitlab.md ~/Documents/memory/secrets/gitlab.md
 ```
 
 ### B. 哨兵报警专用 (`lark.env`)
-**路径**: `~/Documents/memory/secrets/lark.env`
+**路径**: `memory/secrets/lark.env`
 **模板**:
 ```bash
 LARK_WEBHOOK_URL="https://open.feishu.cn/open-apis/bot/v2/hook/xxx"
