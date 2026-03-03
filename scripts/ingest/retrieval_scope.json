@@ -1,0 +1,25 @@
+{
+  "include": [
+    "docs/router.md",
+    "docs/rules",
+    "../memory/knowledge"
+  ],
+  "exclude_path_contains": [
+    "/.vitepress/",
+    "/dist/",
+    "/build/",
+    "/node_modules/",
+    "/chroma_db/",
+    "/.git/",
+    "/.venv/",
+    "/memory/logs/",
+    "/memory/journal/",
+    "/archive/logs/"
+  ],
+  "exclude_file_patterns": [
+    "*.log",
+    "*.tmp"
+  ],
+  "chunk_size": 1000,
+  "top_k": 3
+}

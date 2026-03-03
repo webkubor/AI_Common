@@ -7,14 +7,14 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DOCS_DIR = path.join(__dirname, '../docs');
+const DOCS_DIR = path.join(__dirname, '../../docs');
 
-function getMarkdownFiles() {
+function getMarkdownFiles(dir = DOCS_DIR) {
   const files = [];
-  const items = fs.readdirSync(DOCS_DIR, { withFileTypes: true });
+  const items = fs.readdirSync(dir, { withFileTypes: true });
 
   for (const item of items) {
-    const fullPath = path.join(DOCS_DIR, item.name);
+    const fullPath = path.join(dir, item.name);
     if (item.isDirectory()) {
       files.push(...getMarkdownFiles(fullPath));
     } else if (item.name.endsWith('.md')) {

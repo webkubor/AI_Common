@@ -83,6 +83,7 @@ pnpm run fleet:handover -- --to-workspace "/绝对路径" --to-agent "Claude"
 
 - **物理访问**: `run_shell_command (cat / ls / grep)`。
 - **语义搜索 (RAG)**: 面对模糊查询时，**Agent 应优先调用** `python3 scripts/ingest/query_brain.py "查询"` 获取上下文。
+- **检索范围控制**: 默认仅索引 `docs/router.md`、`docs/rules/`、`../memory/knowledge/`，并排除 `docs/.vitepress/dist` 与 `memory/logs` 等高噪音目录；统一由 `scripts/ingest/retrieval_scope.json` 配置。
 - **写入**: 遵循“本地生成 + `mv` 迁移”法则。
 
 ## 5. 🧠 记忆哨兵机制 (Memory Sentinel)
