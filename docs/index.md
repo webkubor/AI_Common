@@ -22,6 +22,12 @@ import FleetDashboard from './.vitepress/theme/components/FleetDashboard.vue'
 | **健康门禁** | `pnpm run health:gate` | 扫描大脑结构与索引完整性 |
 | **功能总表** | `/guide/feature-matrix` | 查看全部命令与 MCP Tool |
 
+### 公共看板协作（全部 Agent 统一）
+1. 领任务前先执行 `fleet:claim`，必须包含 `--task` 与 `--role`（前端/后端）。
+2. 需求变化后再次 `fleet:claim` 回填，不允许长期“待分配任务/未分配角色”。
+3. 执行中用 `fleet:status` 看冲突和角色分布。
+4. 完工后写 `log_task`，保持看板与日志一致。
+
 ---
 
 ## 🧠 意识架构 (Exocortex)

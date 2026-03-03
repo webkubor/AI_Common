@@ -35,6 +35,8 @@
 | `pnpm run fleet:checkin` | 节点心跳/状态回写 | 需要补报进度时 |
 | `pnpm run fleet:sync-dashboard` | 同步舰队看板 JSON | 看板数据刷新 |
 
+> 约束：拿到明确任务后，禁止长期保留 `待分配任务` 或 `未分配` 角色；必须用 `fleet:claim` 回填。
+
 ### 1.4 服务与 Agent 启动辅助
 
 | 命令 | 用途 | 什么时候用 |

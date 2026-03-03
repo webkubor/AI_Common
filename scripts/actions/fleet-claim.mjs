@@ -229,6 +229,9 @@ function main() {
     const nodes = parallelRows.map(row => stripMarkdown(row.node)).join(' | ');
     warnings.push(`同一路径已有其他模型在线: ${agents}（${nodes}）。已允许并行登记，请注意文件冲突。`);
   }
+  if (!args.task.includes('待分配') && args.role === '未分配') {
+    warnings.push('当前任务已明确但角色仍为“未分配”，建议立即用 --role 前端/后端 回填。');
+  }
 
   let number;
   if (sameWorkspaceSameAgentRow) {

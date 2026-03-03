@@ -120,8 +120,8 @@ ${START_BLOCK}
 3. 如与其他节点存在文件冲突风险，先给出冲突提示再执行
 4. 首次回复必须以此前缀开头：${QUEUE_PREFIX}
 5. 首次回复请报告：已挂载路由 + 当前机号 + 当前工作路径
-6. 若当前任务为“待分配任务”，一旦拿到明确需求，立即回填：
-   node /Users/webkubor/Documents/CortexOS/scripts/actions/fleet-claim.mjs --workspace "${WORKSPACE}" --task "<明确任务>" --agent "Codex" --alias "Codex"
+6. 若当前任务为“待分配任务”或角色为“未分配”，一旦拿到明确需求，立即回填：
+   node /Users/webkubor/Documents/CortexOS/scripts/actions/fleet-claim.mjs --workspace "${WORKSPACE}" --task "<明确任务>" --agent "Codex" --alias "Codex" --role "<前端|后端>"
 7. 用户称呼协议：默认称呼用户为“老爹”；若上一条遗漏称呼，下一条先纠正再继续任务。
 8. 若用户说“移交队长给 XXX / 把0号机交给 XXX / 队长切到 XXX”，直接触发：
    cd /Users/webkubor/Documents/CortexOS && pnpm run fleet:handover -- --to-node "XXX"
