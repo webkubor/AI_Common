@@ -46,15 +46,21 @@ export async function sendToLark(title, body) {
   try {
     const normalizedBody = String(body ?? '');
     const envPath = path.join(SECRETS_DIR, 'lark.env');
-    if (!fs.existsSync(envPath)) return;
+    if (!fs.existsSync(envPath)) {
+      return { ok: false, status: 'skipped', reason: 'missing_lark_env' };
+    }
 
     const envContent = fs.readFileSync(envPath, 'utf-8');
     const webhookUrl = envContent.match(/LARK_WEBHOOK_URL=(.+)/)?.[1];
-    if (!webhookUrl) return;
+    if (!webhookUrl) {
+      return { ok: false, status: 'skipped', reason: 'missing_webhook' };
+    }
 
     const now = new Date();
     const currentHour = now.getHours();
-    if (currentHour < 10 || currentHour >= 20) return;
+    if (currentHour < 10 || currentHour >= 20) {
+      return { ok: false, status: 'skipped', reason: 'out_of_working_hours' };
+    }
 
     let lastNotif = { timestamp: 0, body: '' };
     if (fs.existsSync(NOTIF_LOCK_PATH)) {
@@ -63,8 +69,12 @@ export async function sendToLark(title, body) {
       } catch (e) {}
     }
 
-    if (normalizedBody.trim() === String(lastNotif.body ?? '').trim()) return;
-    if (Date.now() - lastNotif.timestamp < 5 * 60 * 1000) return;
+    if (normalizedBody.trim() === String(lastNotif.body ?? '').trim()) {
+      return { ok: false, status: 'skipped', reason: 'same_body_dedup' };
+    }
+    if (Date.now() - lastNotif.timestamp < 5 * 60 * 1000) {
+      return { ok: false, status: 'skipped', reason: 'cooldown' };
+    }
 
     const paragraphs = buildLarkParagraphs(normalizedBody, { maxChars: 1800, maxLines: 22 });
     const payload = {
@@ -86,8 +96,11 @@ export async function sendToLark(title, body) {
     });
     if (response.ok) {
       fs.writeFileSync(NOTIF_LOCK_PATH, JSON.stringify({ timestamp: Date.now(), body: normalizedBody.trim() }));
+      return { ok: true, status: 'sent', reason: 'ok' };
     }
+    return { ok: false, status: 'error', reason: `http_${response.status}` };
   } catch (e) {
     console.error('Lark 推送失败:', e.message);
+    return { ok: false, status: 'error', reason: e.message };
   }
 }

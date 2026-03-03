@@ -95,7 +95,7 @@ pm2 logs brain-cortex-pilot --lines 100
 | `fleet_sync` | 同步舰队状态到前端看板 | 需要看板刷新时 |
 | `list_secrets` | 列出外置秘钥文件 | 检查秘钥清单 |
 | `read_secret` | 读取指定秘钥文件 | 读取 token/env |
-| `send_lark_notification` | 发送飞书通知 | 战报推送 |
+| `send_lark_notification` | 发送飞书通知（转调 Node 统一 Lark 服务） | 战报推送 |
 | `search_knowledge` | 检索知识库文档 | 经验召回/复盘查询 |
 
 ---

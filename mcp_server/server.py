@@ -11,7 +11,6 @@ import subprocess
 from datetime import datetime
 from pathlib import Path
 
-import requests
 from fastmcp import FastMCP
 
 # ===== 全局路径常量 =====
@@ -233,30 +232,41 @@ def send_lark_notification(title: str, body: str) -> str:
         title: 通知标题
         body: 通知正文（最多 1000 字）
     """
-    env_path = SECRETS_DIR / "lark.env"
-    if not env_path.exists():
-        return f"错误：lark.env 不存在于外置秘钥库目录：{SECRETS_DIR}"
-    webhook_url = None
     try:
-        for line in env_path.read_text(encoding="utf-8").splitlines():
-            if line.startswith("LARK_WEBHOOK_URL="):
-                webhook_url = line.split("=", 1)[1].strip()
-                break
+        script_path = BRAIN_ROOT / "scripts" / "services" / "lark-cli.mjs"
+        cmd = [
+            "node",
+            str(script_path),
+            "--title",
+            f"🧠 CortexOS: {title}",
+            "--body",
+            body[:1000],
+        ]
+        result = subprocess.run(
+            cmd,
+            cwd=str(BRAIN_ROOT),
+            capture_output=True,
+            text=True,
+            timeout=20,
+        )
+
+        parsed = {}
+        stdout = (result.stdout or "").strip()
+        if stdout:
+            try:
+                parsed = json.loads(stdout.splitlines()[-1])
+            except json.JSONDecodeError:
+                parsed = {"ok": False, "status": "error", "reason": stdout}
+
+        if result.returncode == 0 and parsed.get("ok"):
+            return "✅ 飞书通知发送成功。"
+
+        reason = parsed.get("reason") or (result.stderr or "未知错误").strip()
+        if parsed.get("status") == "skipped":
+            return f"通知已跳过：{reason}"
+        return f"发送失败：{reason}"
     except Exception as e:
-        return f"读取配置失败：{e}"
-    if not webhook_url:
-        return "错误：lark.env 中未配置 LARK_WEBHOOK_URL。"
-    if not (10 <= datetime.now().hour < 20):
-        return "通知已跳过：当前不在工作时间（10:00-20:00）。"
-    payload = {
-        "msg_type": "post",
-        "content": {"post": {"zh_cn": {"title": f"🧠 CortexOS: {title}", "content": [[{"tag": "text", "text": body[:1000]}]]}}},
-    }
-    try:
-        resp = requests.post(webhook_url, json=payload, timeout=10)
-        return "✅ 飞书通知发送成功。" if resp.status_code == 200 else f"发送失败：HTTP {resp.status_code}"
-    except Exception as e:
-        return f"请求异常：{e}"
+        return f"执行异常：{e}"
 
 
 # ─────────────────────────────────────────────
