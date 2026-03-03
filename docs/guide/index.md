@@ -138,6 +138,9 @@ args = ["-y", "@mauricio.wolff/mcp-obsidian@latest", "/你的/memory-vault-path"
 你看到的“5 分钟自动同步、日志、舰队维护”都由后台进程 `brain-cortex-pilot` 负责。  
 如果它没跑，系统就不会自动记录和同步。
 
+后台任务的统一配置文件：`config/brain-runtime.json`  
+其中包含 `brain-cortex-pilot` 与 `daily-retro` 的默认状态、调度表达式和用途说明。
+
 ### 什么时候启动
 
 - **首次安装完成后**：启动一次并保存为开机自启。  

@@ -58,7 +58,7 @@ def get_fleet_status() -> str:
         return FLEET_JSON.read_text(encoding="utf-8")
     if FLEET_STATUS.exists():
         return FLEET_STATUS.read_text(encoding="utf-8")
-    return json.dumps({"error": "fleet status 文件不存在，请先执行 pnpm run fleet:sync"}, ensure_ascii=False)
+    return json.dumps({"error": "fleet status 文件不存在，请先执行 pnpm run fleet:sync-dashboard"}, ensure_ascii=False)
 
 
 # ─────────────────────────────────────────────
@@ -175,10 +175,10 @@ def log_task(content: str, agent: str = "Gemini") -> str:
 # ─────────────────────────────────────────────
 @mcp.tool()
 def fleet_sync() -> str:
-    """触发 pnpm run fleet:sync 同步舰队状态，刷新 VitePress 看板数据。"""
+    """触发 pnpm run fleet:sync-dashboard 同步舰队状态，刷新 VitePress 看板数据。"""
     try:
         result = subprocess.run(
-            ["pnpm", "run", "fleet:sync"],
+            ["pnpm", "run", "fleet:sync-dashboard"],
             cwd=str(BRAIN_ROOT),
             capture_output=True,
             text=True,

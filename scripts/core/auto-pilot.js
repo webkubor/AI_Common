@@ -357,7 +357,12 @@ async function autoPilot() {
     const maintenanceResults = runAutoMaintenance();
     const teamSnapshot = getTeamSnapshot();
     const statusOutput = execSync('git status --short', { encoding: 'utf-8', cwd: PROJECT_ROOT });
-    const rawLines = statusOutput.split('\n').filter(l => l.trim() && !l.includes('chroma_db/') && !l.includes('.last_notif.json'));
+    const rawLines = statusOutput
+      .split('\n')
+      .filter(l => l.trim())
+      .filter(l => !l.includes('chroma_db/'))
+      .filter(l => !l.includes('.last_notif.json'))
+      .filter(l => !l.includes('.obsidian/'));
     const hasFileChanges = rawLines.length > 0;
     const hasBufferedTasks = buffer && buffer.length > 0;
 

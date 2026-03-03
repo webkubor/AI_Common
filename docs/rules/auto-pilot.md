@@ -8,6 +8,7 @@
 - **脚本**: `scripts/core/auto-pilot.js`
 - **托管器**: PM2
 - **调度节奏**: `--cron-restart "*/5 * * * *"`（每 5 分钟触发一次）
+- **统一配置文件**: `config/brain-runtime.json`（记录后台任务开关、调度与用途）
 
 ## 2. 自动运转内容（当前实现）
 
