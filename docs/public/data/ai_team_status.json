@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-03T10:25:00.399Z",
+  "generatedAt": "2026-03-03T10:40:15.008Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": "docs/memory/fleet_status.md",
-  "total": 8,
-  "active": 8,
+  "total": 6,
+  "active": 6,
   "offline": 0,
   "queued": 0,
   "members": [
@@ -19,20 +19,6 @@
       "progress": 60,
       "isCaptain": true,
       "hasTodo": false,
-      "isStale": false
-    },
-    {
-      "member": "Codex-1 (Codex)",
-      "agent": "Codex",
-      "role": "未分配",
-      "workspace": "/Users/webkubor/Documents/CortexOS",
-      "task": "固化公共看板流程：所有 Agent 领任务时必须同步角色与任务",
-      "since": "2026-03-03 16:37",
-      "status": "[ 执行中 ] 活跃",
-      "type": "active",
-      "progress": 100,
-      "isCaptain": false,
-      "hasTodo": true,
       "isStale": false
     },
     {
@@ -84,20 +70,6 @@
       "workspace": "/Users/webkubor/Desktop/tarspay/spider-web",
       "task": "同步项目指挥中心计划，协助 Codex-5 完成前端任务。",
       "since": "2026-03-03 17:10",
-      "status": "[ 执行中 ] 活跃",
-      "type": "active",
-      "progress": 55,
-      "isCaptain": false,
-      "hasTodo": false,
-      "isStale": false
-    },
-    {
-      "member": "Candy-4 (Codex)",
-      "agent": "Codex",
-      "role": "后端",
-      "workspace": "/Users/webkubor/Desktop/omni-chatbot-sdk",
-      "task": "执行 start 技能，初始化 AI_Common 路由索引并建立懒加载机制。",
-      "since": "2026-03-03 16:35",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 55,
