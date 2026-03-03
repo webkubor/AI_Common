@@ -13,7 +13,8 @@
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Candy-2 (Gemini)** | Gemini | `/Users/webkubor/Desktop/skills` | 已完成：scm-ops-skill 与 xhs-manager-skill 的包装推送 | 2026-03-02 18:02 | [ 队长锁 ] 活跃 |
 | **Candy-6 (Gemini)** | Gemini | `/Users/webkubor/Documents/CortexOS` | 待分配任务 | 2026-03-02 18:15 | [ 执行中 ] 活跃 |
-| **Candy-Prime (0号机/Gemini)** | Gemini | `/Users/webkubor/Desktop/create/cinematic-storyboard-pro` | 初始化系统并等待指令 | 2026-03-03 10:37 | [ 队长锁 ] 活跃 |
+| **Candy-Prime (0号机/Gemini)** | Gemini | `/Users/webkubor/Desktop/create/cinematic-storyboard-pro` | 安装 Obsidian MCP 并开启《沸腾之雪》分镜精修 | 2026-03-03 10:40 | [ 队长锁 ] 活跃 |
+| **Codex-1 (Codex)** | Codex | `/Users/webkubor/Documents/CortexOS` | 安装 mcp-obsidian（按官网 install 指引完成可用配置） | 2026-03-03 10:41 | [ 执行中 ] 活跃 |
 | *(示例节点)* | *(Gemini/Codex/Claude...)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
 ---
 
@@ -49,6 +50,11 @@ pnpm run fleet:handover -- --to-node "Codex-3 (Codex)"
 
 ### 📌 当班建议（当前生效）
 
+- **2026-03-03 10:45 (UTC+8)** | **队长**: Candy-Prime (0号机/Gemini) 
+  - **风险等级**: 低 
+  - **可开工范围**: Obsidian MCP 注入、工具链整合、《沸腾之雪》全剧本/分镜创作。 
+  - **禁止触碰范围**: 暂无跨 Agent 冲突风险。 
+  - **下一次复核时间**: 12:45
 - **2026-03-02 10:45 (UTC+8)** | **队长**: Candy-Prime (0号机/Gemini)
   - **风险等级**: 低
   - **可开工范围**: 全大脑库检索、密钥同步、工具安装、环境变量修复。
