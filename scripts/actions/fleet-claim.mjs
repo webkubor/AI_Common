@@ -16,6 +16,7 @@ function parseArgs(argv) {
     task: '待分配任务',
     agent: 'Gemini',
     alias: 'Candy',
+    role: '',
     status: '[ 执行中 ] 活跃',
     dryRun: false,
     forceSwitch: false
@@ -27,6 +28,7 @@ function parseArgs(argv) {
     else if (token === '--task' && argv[i + 1]) args.task = argv[++i];
     else if (token === '--agent' && argv[i + 1]) args.agent = argv[++i];
     else if (token === '--alias' && argv[i + 1]) args.alias = argv[++i];
+    else if (token === '--role' && argv[i + 1]) args.role = argv[++i];
     else if (token === '--status' && argv[i + 1]) args.status = argv[++i];
     else if (token === '--dry-run') args.dryRun = true;
     else if (token === '--force-switch') args.forceSwitch = true;
@@ -38,6 +40,7 @@ function parseArgs(argv) {
   args.status = sanitizeCell(args.status);
   args.agent = normalizeAgent(sanitizeCell(args.agent));
   args.alias = sanitizeCell(args.alias);
+  args.role = normalizeRole(sanitizeCell(args.role || inferRoleFromTask(args.task)));
   return args;
 }
 
@@ -53,6 +56,23 @@ function normalizeAgent(value) {
   if (lower.includes('codex')) return 'Codex';
   if (lower.includes('claude')) return 'Claude';
   if (lower.includes('opencode')) return 'OpenCode';
+  return raw;
+}
+
+function inferRoleFromTask(task) {
+  const text = String(task || '').toLowerCase();
+  if (!text) return '未分配';
+  if (/(前端|frontend|react|vue|页面|样式|css|ui|ux|h5|web)/i.test(text)) return '前端';
+  if (/(后端|backend|api|服务|接口|数据库|db|sql|redis|中间件|server)/i.test(text)) return '后端';
+  return '未分配';
+}
+
+function normalizeRole(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return '未分配';
+  const lower = raw.toLowerCase();
+  if (/(前端|frontend|front-end|fe)\b?/i.test(lower)) return '前端';
+  if (/(后端|backend|back-end|be)\b?/i.test(lower)) return '后端';
   return raw;
 }
 
@@ -77,11 +97,24 @@ function stripMarkdown(value) {
 function parseTableRow(line) {
   const parts = line.split('|').slice(1, -1).map(s => s.trim());
   if (parts.length < 5) return null;
+  if (parts.length >= 7) {
+    return {
+      raw: line,
+      node: parts[0],
+      agent: normalizeAgent(parts[1]),
+      role: normalizeRole(parts[2]),
+      workspace: stripMarkdown(parts[3]),
+      task: parts[4],
+      time: parts[5],
+      status: parts[6]
+    };
+  }
   if (parts.length >= 6) {
     return {
       raw: line,
       node: parts[0],
       agent: normalizeAgent(parts[1]),
+      role: normalizeRole(inferRoleFromTask(parts[3])),
       workspace: stripMarkdown(parts[2]),
       task: parts[3],
       time: parts[4],
@@ -92,6 +125,7 @@ function parseTableRow(line) {
     raw: line,
     node: parts[0],
     agent: extractAgentFromNode(parts[0]),
+    role: normalizeRole(inferRoleFromTask(parts[2])),
     workspace: stripMarkdown(parts[1]),
     task: parts[2],
     time: parts[3],
@@ -126,8 +160,8 @@ function buildNodeId(number, alias, agent) {
   return `**${alias}-${number} (${agent})**`;
 }
 
-function buildRow({ nodeId, agent, workspace, task, time, status }) {
-  return `| ${nodeId} | ${agent} | \`${workspace}\` | ${task} | ${time} | ${status} |`;
+function buildRow({ nodeId, agent, role, workspace, task, time, status }) {
+  return `| ${nodeId} | ${agent} | ${role} | \`${workspace}\` | ${task} | ${time} | ${status} |`;
 }
 
 function extractAgentFromNode(node) {
@@ -141,9 +175,9 @@ function extractAgentFromNode(node) {
 
 function printHelp() {
   console.log('用法:');
-  console.log('  node scripts/actions/fleet-claim.mjs --workspace <path> --task <任务描述> [--agent Gemini] [--alias Candy] [--status "[ 执行中 ] 活跃"]');
+  console.log('  node scripts/actions/fleet-claim.mjs --workspace <path> --task <任务描述> [--agent Gemini] [--alias Candy] [--role 前端|后端] [--status "[ 执行中 ] 活跃"]');
   console.log('示例:');
-  console.log('  node scripts/actions/fleet-claim.mjs --workspace "$PWD" --task "修复登录流程" --agent Gemini');
+  console.log('  node scripts/actions/fleet-claim.mjs --workspace "$PWD" --task "修复登录流程" --agent Gemini --role 后端');
 }
 
 function main() {
@@ -216,6 +250,7 @@ function main() {
   const rowLine = buildRow({
     nodeId,
     agent: args.agent,
+    role: args.role,
     workspace: args.workspace,
     task: args.task,
     time: heartbeatAt,
@@ -250,6 +285,7 @@ function main() {
     machineNumber: number,
     nodeId: stripMarkdown(nodeId),
     agent: args.agent,
+    role: args.role,
     workspace: args.workspace,
     task: args.task,
     warnings,

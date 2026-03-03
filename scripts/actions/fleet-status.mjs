@@ -28,6 +28,23 @@ function normalizeAgent(value) {
   return raw;
 }
 
+function inferRoleFromTask(task) {
+  const text = String(task || '').toLowerCase();
+  if (!text) return '未分配';
+  if (/(前端|frontend|react|vue|页面|样式|css|ui|ux|h5|web)/i.test(text)) return '前端';
+  if (/(后端|backend|api|服务|接口|数据库|db|sql|redis|中间件|server)/i.test(text)) return '后端';
+  return '未分配';
+}
+
+function normalizeRole(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return '未分配';
+  const lower = raw.toLowerCase();
+  if (/(前端|frontend|front-end|fe)\b?/i.test(lower)) return '前端';
+  if (/(后端|backend|back-end|be)\b?/i.test(lower)) return '后端';
+  return raw;
+}
+
 function extractAgentFromNode(node) {
   const text = stripMarkdown(node).toLowerCase();
   if (text.includes('gemini')) return 'Gemini';
@@ -40,10 +57,22 @@ function extractAgentFromNode(node) {
 function parseTableRow(line) {
   const parts = line.split('|').slice(1, -1).map(s => s.trim());
   if (parts.length < 5) return null;
+  if (parts.length >= 7) {
+    return {
+      node: stripMarkdown(parts[0]),
+      agent: normalizeAgent(parts[1]),
+      role: normalizeRole(parts[2]),
+      workspace: stripMarkdown(parts[3]),
+      task: parts[4],
+      time: parts[5],
+      status: parts[6]
+    };
+  }
   if (parts.length >= 6) {
     return {
       node: stripMarkdown(parts[0]),
       agent: normalizeAgent(parts[1]),
+      role: normalizeRole(inferRoleFromTask(parts[3])),
       workspace: stripMarkdown(parts[2]),
       task: parts[3],
       time: parts[4],
@@ -53,6 +82,7 @@ function parseTableRow(line) {
   return {
     node: stripMarkdown(parts[0]),
     agent: extractAgentFromNode(parts[0]),
+    role: normalizeRole(inferRoleFromTask(parts[2])),
     workspace: stripMarkdown(parts[1]),
     task: parts[2],
     time: parts[3],
@@ -111,6 +141,11 @@ function main() {
     acc[row.agent] = (acc[row.agent] || 0) + 1;
     return acc;
   }, {});
+  const byRole = nodes.reduce((acc, row) => {
+    const role = row.role || '未分配';
+    acc[role] = (acc[role] || 0) + 1;
+    return acc;
+  }, {});
 
   const workspaceMap = new Map();
   for (const row of nodes) {
@@ -128,6 +163,7 @@ function main() {
     total: nodes.length,
     captain,
     byAgent,
+    byRole,
     sharedWorkspaces,
     nodes
   };
@@ -145,6 +181,11 @@ function main() {
   console.log('🧭 AI Team 状态总览');
   console.log(`总活跃节点: ${nodes.length}`);
   console.log(`模型分布: ${summary || '无'}`);
+  const roleSummary = Object.entries(byRole)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `${k} ${v}`)
+    .join(' | ');
+  console.log(`角色分布: ${roleSummary || '无'}`);
   if (captain) {
     console.log(`当前队长: ${captain.node} @ ${captain.workspace}`);
   } else {
@@ -160,7 +201,7 @@ function main() {
   nodes.forEach((n, idx) => {
     const captainMark = n.isCaptain ? ' [队长]' : '';
     console.log(`${idx + 1}. ${n.node}${captainMark}`);
-    console.log(`   ${n.agent} | ${n.workspace}`);
+    console.log(`   ${n.agent} | ${n.role} | ${n.workspace}`);
     console.log(`   任务: ${n.task} | 状态: ${n.status} | 时间: ${n.time}`);
   });
 }

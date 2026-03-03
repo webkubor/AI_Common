@@ -13,12 +13,12 @@
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Candy-2 (Gemini)** | Gemini | `/Users/webkubor/Desktop/skills` | 已完成：scm-ops-skill 与 xhs-manager-skill 的包装推送 | 2026-03-02 18:02 | [ 队长锁 ] 活跃 |
 | **Candy-3 (Gemini)** | Gemini | `/Users/webkubor/Desktop/create/cinematic-storyboard-pro` | 待分配任务 | 2026-03-03 16:22 | [ 执行中 ] 活跃 |
-| **Codex-1 (Codex)** | Codex | `/Users/webkubor/Documents/CortexOS` | 排查并统一脑服务命名为 cortexos-brain，清理旧命名残留 | 2026-03-03 16:21 | [ 执行中 ] 活跃 |
+| **Codex-1 (Codex)** | Codex | `/Users/webkubor/Documents/CortexOS` | 为 AI-team 增加前端/后端角色自报与展示能力 | 2026-03-03 16:26 | [ 执行中 ] 活跃 |
 | **Candy-4 (Gemini)** | Gemini | `/Users/webkubor/Documents/memory` | 待分配任务 | 2026-03-03 14:33 | [ 执行中 ] 活跃 |
 | **Candy-Prime (0号机/Codex)** | Codex | `/Users/webkubor/Desktop/skills` | 生成技能候选归档清单，降低维护成本 | 2026-03-03 16:22 | [ 队长锁 ] 活跃 |
 | **Codex-5 (Codex)** | Codex | `/Users/webkubor/Desktop/tarspay/spider-web` | 对当前仓库进行代码审查，输出按严重级别排序的问题与风险 | 2026-03-03 16:02 | [ 执行中 ] 活跃 |
 | **Candy-6 (Gemini)** | Gemini | `/Users/webkubor/Desktop/tarspay/spider-api-server` | 已交付：AI 客服实时数据工具集 (Function Calling) | 2026-03-03 16:20 | [ 执行中 ] 活跃 |
-| **Candy-7 (Gemini)** | Gemini | `/Users/webkubor/Desktop/tarspay/spider-web` | 待分配任务 | 2026-03-03 16:23 | [ 执行中 ] 活跃 |
+| **Candy-7 (Gemini)** | Gemini | `/Users/webkubor/Desktop/tarspay/spider-web` | 响应老爹关于机号的询问，并准备协助前端开发或排查工作 | 2026-03-03 16:25 | [ 执行中 ] 活跃 |
 | *(示例节点)* | *(Gemini/Codex/Claude...)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
 ---
 

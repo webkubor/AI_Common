@@ -32,6 +32,23 @@ function normalizeAgent(value) {
   return raw;
 }
 
+function inferRoleFromTask(task) {
+  const text = String(task || '').toLowerCase();
+  if (!text) return '未分配';
+  if (/(前端|frontend|react|vue|页面|样式|css|ui|ux|h5|web)/i.test(text)) return '前端';
+  if (/(后端|backend|api|服务|接口|数据库|db|sql|redis|中间件|server)/i.test(text)) return '后端';
+  return '未分配';
+}
+
+function normalizeRole(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return '未分配';
+  const lower = raw.toLowerCase();
+  if (/(前端|frontend|front-end|fe)\b?/i.test(lower)) return '前端';
+  if (/(后端|backend|back-end|be)\b?/i.test(lower)) return '后端';
+  return raw;
+}
+
 function extractAgentFromNode(node) {
   const text = stripMarkdown(node).toLowerCase();
   if (text.includes('gemini')) return 'Gemini';
@@ -44,11 +61,24 @@ function extractAgentFromNode(node) {
 function parseTableRow(line) {
   const parts = line.split('|').slice(1, -1).map(s => s.trim());
   if (parts.length < 5) return null;
+  if (parts.length >= 7) {
+    return {
+      raw: line,
+      node: parts[0],
+      agent: normalizeAgent(parts[1]),
+      role: normalizeRole(parts[2]),
+      workspace: stripMarkdown(parts[3]),
+      task: parts[4],
+      time: parts[5],
+      status: parts[6]
+    };
+  }
   if (parts.length >= 6) {
     return {
       raw: line,
       node: parts[0],
       agent: normalizeAgent(parts[1]),
+      role: normalizeRole(inferRoleFromTask(parts[3])),
       workspace: stripMarkdown(parts[2]),
       task: parts[3],
       time: parts[4],
@@ -59,6 +89,7 @@ function parseTableRow(line) {
     raw: line,
     node: parts[0],
     agent: extractAgentFromNode(parts[0]),
+    role: normalizeRole(inferRoleFromTask(parts[2])),
     workspace: stripMarkdown(parts[1]),
     task: parts[2],
     time: parts[3],
@@ -66,8 +97,8 @@ function parseTableRow(line) {
   };
 }
 
-function buildRow({ nodeId, agent, workspace, task, time, status }) {
-  return `| ${nodeId} | ${agent} | \`${workspace}\` | ${task} | ${time} | ${status} |`;
+function buildRow({ nodeId, agent, role, workspace, task, time, status }) {
+  return `| ${nodeId} | ${agent} | ${role} | \`${workspace}\` | ${task} | ${time} | ${status} |`;
 }
 
 function nowLocal() {
@@ -227,6 +258,7 @@ function main() {
     lines[currentPrimeRow.index] = buildRow({
       nodeId: demotedNode,
       agent: oldAgent,
+      role: currentPrimeRow.role || '未分配',
       workspace: currentPrimeRow.workspace,
       task: currentPrimeRow.task,
       time: handoverTime,
@@ -239,6 +271,7 @@ function main() {
   lines[targetRow.index] = buildRow({
     nodeId: promotedNode,
     agent: targetAgent,
+    role: targetRow.role || '未分配',
     workspace: targetRow.workspace,
     task: targetRow.task,
     time: handoverTime,

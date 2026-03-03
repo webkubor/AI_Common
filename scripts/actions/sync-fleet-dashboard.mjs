@@ -30,6 +30,32 @@ function normalizeAgent(value) {
   return raw || "Unknown";
 }
 
+function extractAgentFromNode(node) {
+  const text = stripMarkdown(node).toLowerCase();
+  if (text.includes("gemini")) return "Gemini";
+  if (text.includes("codex")) return "Codex";
+  if (text.includes("claude")) return "Claude";
+  if (text.includes("opencode")) return "OpenCode";
+  return "Unknown";
+}
+
+function inferRoleFromTask(task) {
+  const text = String(task || "").toLowerCase();
+  if (!text) return "未分配";
+  if (/(前端|frontend|react|vue|页面|样式|css|ui|ux|h5|web)/i.test(text)) return "前端";
+  if (/(后端|backend|api|服务|接口|数据库|db|sql|redis|中间件|server)/i.test(text)) return "后端";
+  return "未分配";
+}
+
+function normalizeRole(value) {
+  const raw = String(value ?? "").trim();
+  if (!raw) return "未分配";
+  const lower = raw.toLowerCase();
+  if (/(前端|frontend|front-end|fe)\b?/i.test(lower)) return "前端";
+  if (/(后端|backend|back-end|be)\b?/i.test(lower)) return "后端";
+  return raw;
+}
+
 function getProgressFromTodo(workspacePath) {
   try {
     const todoPath = path.join(workspacePath, "TODO.md");
@@ -67,16 +93,39 @@ function statusType(status) {
 
 function parseTableRow(line) {
   const parts = line.split("|").slice(1, -1).map((s) => s.trim());
-  if (parts.length < 6) return null;
+  if (parts.length < 5) return null;
   const node = stripMarkdown(parts[0]);
   if (!node || node.includes("节点 ID") || node.includes("---") || node.includes("示例节点")) return null;
+  if (parts.length >= 7) {
+    return {
+      member: node,
+      agent: normalizeAgent(parts[1]),
+      role: normalizeRole(parts[2]),
+      workspace: stripMarkdown(parts[3]),
+      task: stripMarkdown(parts[4]),
+      since: stripMarkdown(parts[5]),
+      status: stripMarkdown(parts[6]),
+    };
+  }
+  if (parts.length >= 6) {
+    return {
+      member: node,
+      agent: normalizeAgent(parts[1]),
+      role: normalizeRole(inferRoleFromTask(parts[3])),
+      workspace: stripMarkdown(parts[2]),
+      task: stripMarkdown(parts[3]),
+      since: stripMarkdown(parts[4]),
+      status: stripMarkdown(parts[5]),
+    };
+  }
   return {
     member: node,
-    agent: normalizeAgent(parts[1]),
-    workspace: stripMarkdown(parts[2]),
-    task: stripMarkdown(parts[3]),
-    since: stripMarkdown(parts[4]),
-    status: stripMarkdown(parts[5]),
+    agent: extractAgentFromNode(parts[0]),
+    role: normalizeRole(inferRoleFromTask(parts[2])),
+    workspace: stripMarkdown(parts[1]),
+    task: stripMarkdown(parts[2]),
+    since: stripMarkdown(parts[3]),
+    status: stripMarkdown(parts[4]),
   };
 }
 

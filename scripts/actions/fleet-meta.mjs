@@ -42,7 +42,7 @@ function isCompletedTask(task, status) {
   return /(已完成|完成：|完成了|done|finished|已收工|已结项)/i.test(text);
 }
 
-export function touchFleetMeta({ agent, workspace, task, status, heartbeatAt, nodeId }) {
+export function touchFleetMeta({ agent, workspace, role, task, status, heartbeatAt, nodeId }) {
   const meta = loadFleetMeta();
   const key = fleetMetaKey(agent, workspace);
   const now = heartbeatAt;
@@ -52,6 +52,7 @@ export function touchFleetMeta({ agent, workspace, task, status, heartbeatAt, no
     firstLoginAt: existing.firstLoginAt || now,
     lastHeartbeatAt: now,
     lastTask: task || existing.lastTask || "待分配任务",
+    lastRole: role || existing.lastRole || "未分配",
     lastStatus: status || existing.lastStatus || "[ 执行中 ] 活跃",
     nodeId: nodeId || existing.nodeId || "",
     updatedAt: now,
@@ -69,4 +70,3 @@ export function touchFleetMeta({ agent, workspace, task, status, heartbeatAt, no
   saveFleetMeta(meta);
   return next;
 }
-

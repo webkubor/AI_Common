@@ -15,6 +15,23 @@ function parseDate(dateStr) {
   return new Date(dateStr.replace(/-/g, "/"));
 }
 
+function parseRow(line) {
+  const cells = line.split("|").slice(1, -1).map(p => p.trim());
+  if (cells.length < 6) return null;
+  const hasRole = cells.length >= 7;
+  return {
+    cells,
+    hasRole,
+    nodeId: (cells[0] || "").replace(/\*\*/g, ""),
+    startTimeStr: hasRole ? cells[5] : cells[4],
+    status: hasRole ? cells[6] : cells[5]
+  };
+}
+
+function buildRow(cells) {
+  return `| ${cells.join(" | ")} |`;
+}
+
 function main() {
   if (!fs.existsSync(fleetFile)) {
     console.error(`File not found: ${fleetFile}`);
@@ -42,15 +59,14 @@ function main() {
     const line = allLines[i];
     
     if (inTable && line.trim().startsWith("|")) {
-      const parts = line.split("|").slice(1, -1).map(p => p.trim());
-      if (parts.length < 6 || parts[0].includes("示例节点")) {
+      const parsed = parseRow(line);
+      if (!parsed || parsed.cells[0].includes("示例节点")) {
         tableRows.push(line);
         continue;
       }
-
-      const nodeId = parts[0].replace(/\*\*/g, "");
-      const startTimeStr = parts[4];
-      const status = parts[5];
+      const nodeId = parsed.nodeId;
+      const startTimeStr = parsed.startTimeStr;
+      const status = parsed.status;
       
       if (!startTimeStr.includes("-")) {
         tableRows.push(line);
@@ -102,8 +118,9 @@ function main() {
       let earliestTime = new Date(8640000000000000); // 默认最大时间
 
       candidateIndices.forEach(idx => {
-        const parts = tableRows[idx].split("|").slice(1, -1).map(p => p.trim());
-        const time = parseDate(parts[4]);
+        const parsed = parseRow(tableRows[idx]);
+        if (!parsed) return;
+        const time = parseDate(parsed.startTimeStr);
         if (time < earliestTime) {
           earliestTime = time;
           bestIndex = idx;
@@ -111,10 +128,13 @@ function main() {
       });
 
       // 执行继任：修改该行的状态列
-      const parts = tableRows[bestIndex].split("|");
-      const nodeId = parts[1].trim().replace(/\*\*/g, "");
-      parts[6] = ` [ 队长锁 ] 活跃 `;
-      tableRows[bestIndex] = parts.join("|");
+      const parsed = parseRow(tableRows[bestIndex]);
+      const nodeId = parsed ? parsed.nodeId : "未知节点";
+      if (parsed) {
+        if (parsed.hasRole) parsed.cells[6] = "[ 队长锁 ] 活跃";
+        else parsed.cells[5] = "[ 队长锁 ] 活跃";
+        tableRows[bestIndex] = buildRow(parsed.cells);
+      }
       
       console.log(`👑 顺位继承成功: ${nodeId} 已自动接任指挥官。`);
     } else {
