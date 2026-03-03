@@ -6,6 +6,7 @@ CortexOS 外部大脑 MCP Server（统一版 v2）
 """
 
 import json
+import os
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -21,7 +22,12 @@ FLEET_JSON = BRAIN_ROOT / "docs" / "public" / "data" / "ai_team_status.json"
 RULES_DIR = DOCS / "rules"
 MEMORY_LOGS = DOCS / "memory" / "logs"
 ROUTER = DOCS / "router.md"
-SECRETS_DIR = BRAIN_ROOT / "brain" / "secrets"
+SECRETS_DIR = Path(
+    os.environ.get(
+        "CORTEXOS_SECRET_HOME",
+        str(Path.home() / "Documents" / "CortexOS-Secrets"),
+    )
+)
 KNOWLEDGE_DIR = DOCS / "memory" / "knowledge"
 
 mcp = FastMCP(name="CortexOS Brain")
@@ -190,7 +196,7 @@ def fleet_sync() -> str:
 # ─────────────────────────────────────────────
 @mcp.tool()
 def list_secrets() -> list[str]:
-    """列出 brain/secrets/ 目录下所有可用的密钥文件名称。"""
+    """列出外置秘钥库目录下所有可用的密钥文件名称。"""
     if not SECRETS_DIR.exists():
         return []
     return [f.name for f in SECRETS_DIR.iterdir() if f.is_file() and not f.name.startswith(".")]
@@ -201,7 +207,7 @@ def list_secrets() -> list[str]:
 # ─────────────────────────────────────────────
 @mcp.tool()
 def read_secret(name: str) -> str:
-    """读取 brain/secrets/ 目录中的指定密钥文件内容。
+    """读取外置秘钥库目录中的指定密钥文件内容。
 
     参数:
         name: 密钥文件名（例如 'github.md'、'lark.env'）
@@ -229,7 +235,7 @@ def send_lark_notification(title: str, body: str) -> str:
     """
     env_path = SECRETS_DIR / "lark.env"
     if not env_path.exists():
-        return "错误：lark.env 不存在于 brain/secrets/ 目录。"
+        return f"错误：lark.env 不存在于外置秘钥库目录：{SECRETS_DIR}"
     webhook_url = None
     try:
         for line in env_path.read_text(encoding="utf-8").splitlines():

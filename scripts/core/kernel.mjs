@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync, spawn } from 'child_process';
@@ -15,6 +16,7 @@ import { Command } from 'commander';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.join(__dirname, '../../');
+const SECRET_HOME = process.env.CORTEXOS_SECRET_HOME || path.join(os.homedir(), 'Documents', 'CortexOS-Secrets');
 
 // --- 1. 定义数据协议 (Brain Schemas) ---
 const ActionSchema = z.object({
@@ -34,7 +36,7 @@ class BrainKernel {
     
     this.config = {
       docsDir: path.join(PROJECT_ROOT, 'docs'),
-      secretsDir: path.join(PROJECT_ROOT, 'brain/secrets'),
+      secretsDir: SECRET_HOME,
       logsDir: path.join(PROJECT_ROOT, 'docs/memory/logs'),
     };
 
@@ -45,7 +47,7 @@ class BrainKernel {
   getSecret(fileName, keyName) {
     const fullPath = path.join(this.config.secretsDir, fileName);
     if (!fs.existsSync(fullPath)) {
-      return { __status: 'MISSING', message: `需手动重建: brain/secrets/${fileName}` };
+      return { __status: 'MISSING', message: `需手动补全: ${this.config.secretsDir}/${fileName}` };
     }
 
     try {

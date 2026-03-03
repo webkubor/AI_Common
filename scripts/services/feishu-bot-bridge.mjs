@@ -3,12 +3,8 @@
 import fs from "fs";
 import http from "http";
 import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const projectRoot = path.join(__dirname, "../../");
-const configPath = path.join(projectRoot, "brain/secrets/feishu_bot.env");
+const secretHome = process.env.CORTEXOS_SECRET_HOME || path.join(process.env.HOME || "", "Documents", "CortexOS-Secrets");
+const configPath = path.join(secretHome, "feishu_bot.env");
 
 function loadConfig() {
   const env = {};

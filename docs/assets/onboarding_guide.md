@@ -18,10 +18,17 @@
 ---
 
 ## 🔑 2. 核心凭证配置 (Critical Secrets)
-技能包运行依赖于 `brain/secrets/` 目录下的物理文件。请确保以下文件已就绪：
+技能包运行依赖于**外置秘钥库**，默认路径：`~/Documents/CortexOS-Secrets`。  
+也可通过环境变量 `CORTEXOS_SECRET_HOME` 指定自定义目录。
+
+推荐先执行模板生成：
+
+```bash
+pnpm run secrets:init -- --target ~/Documents/CortexOS-Secrets/_templates
+```
 
 ### A. 图床分发专用 (`hosting_credentials.md`)
-**路径**: `brain/secrets/hosting_credentials.md`
+**路径**: `~/Documents/CortexOS-Secrets/hosting_credentials.md`
 **模板**:
 ```markdown
 ### ☁️ Cloudflare R2 Config
@@ -34,7 +41,7 @@
 ```
 
 ### B. 哨兵报警专用 (`lark.env`)
-**路径**: `brain/secrets/lark.env`
+**路径**: `~/Documents/CortexOS-Secrets/lark.env`
 **模板**:
 ```bash
 LARK_WEBHOOK_URL="https://open.feishu.cn/open-apis/bot/v2/hook/xxx"

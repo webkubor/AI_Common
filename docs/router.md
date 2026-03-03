@@ -64,7 +64,8 @@ pnpm run fleet:handover -- --to-workspace "/绝对路径" --to-agent "Claude"
 
 ## 2. 🔑 凭证索引 (Secrets Index)
 
-- **GitHub/GitLab/WeChat/DeepSeek**: `brain/secrets/` 目录下对应文件。
+- **GitHub/GitLab/WeChat/DeepSeek**: 外置秘钥库目录（默认 `~/Documents/CortexOS-Secrets`，可由 `CORTEXOS_SECRET_HOME` 覆盖）。
+- **规范入口**: [隐私秘钥保护协议](./rules/privacy_secret_protection_protocol.md)
 - **触发**: 提到 "Token", "Key", "登录", "认证"。
 
 ## 3. 🔍 动态路由 (Dynamic Routing)
@@ -76,7 +77,7 @@ pnpm run fleet:handover -- --to-workspace "/绝对路径" --to-agent "Claude"
 | **🎭 业务方案/计划** | `memory/plans/` | 存放运营方案、执行策略、策略文档 |
 | **⚖️ 核心规则中心** | `rules/` | 加载编码规范、SOP、协作协议 |
 | **🛠️ 初始化与工具** | `tech_stack.md`, `scripts/` | 加载技术栈、执行环境初始化 |
-| **📡 通信与推送** | `brain/secrets/lark.env` | 配置飞书战报推送 |
+| **📡 通信与推送** | 外置秘钥库 `lark.env` | 配置飞书战报推送 |
 
 ## 4. 🛠 工具协议 (Tooling Protocol)
 

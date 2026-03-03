@@ -3,7 +3,8 @@
 # Path: /Users/webkubor/Documents/CortexOS/docs/scripts/gemini_manager.sh
 
 GEMINI_DIR="$HOME/.gemini"
-PROFILE_STORE="$HOME/Documents/CortexOS/brain/secrets/gemini_profiles"
+SECRET_HOME="${CORTEXOS_SECRET_HOME:-$HOME/Documents/CortexOS-Secrets}"
+PROFILE_STORE="$SECRET_HOME/gemini_profiles"
 LOGGER="$HOME/Documents/CortexOS/docs/scripts/log.sh"
 
 # Ensure profile store exists
