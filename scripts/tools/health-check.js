@@ -6,7 +6,6 @@
  */
 
 import fs from 'fs';
-import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -17,7 +16,7 @@ const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.join(__dirname, '../../');
 const DOCS_DIR = path.join(PROJECT_ROOT, 'docs');
 const SCRIPTS_DIR = path.join(PROJECT_ROOT, 'scripts');
-const EXTERNAL_SECRETS_DIR = process.env.CORTEXOS_SECRET_HOME || path.join(os.homedir(), 'Documents', 'CortexOS-Secrets');
+const EXTERNAL_SECRETS_DIR = process.env.CORTEXOS_SECRET_HOME || path.resolve(PROJECT_ROOT, '../memory/secrets');
 
 // 颜色输出
 const colors = {

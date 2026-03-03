@@ -16,7 +16,8 @@ import { Command } from 'commander';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.join(__dirname, '../../');
-const SECRET_HOME = process.env.CORTEXOS_SECRET_HOME || path.join(os.homedir(), 'Documents', 'CortexOS-Secrets');
+const DEFAULT_SECRET_HOME = path.resolve(PROJECT_ROOT, '../memory/secrets');
+const SECRET_HOME = process.env.CORTEXOS_SECRET_HOME || DEFAULT_SECRET_HOME;
 
 // --- 1. 定义数据协议 (Brain Schemas) ---
 const ActionSchema = z.object({

@@ -7,6 +7,8 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 printf "${BLUE}🚀 正在启动 CortexOS 大脑初始化程序...${NC}\n"
 
@@ -43,7 +45,7 @@ printf "${GREEN}🧠 正在检查 Ollama 语义模型 (nomic-embed-text)...${NC}
 ollama pull nomic-embed-text
 
 # 6. 密钥模板引导
-SECRETS_DIR="${CORTEXOS_SECRET_HOME:-$HOME/Documents/CortexOS-Secrets}"
+SECRETS_DIR="${CORTEXOS_SECRET_HOME:-${ROOT_DIR}/../memory/secrets}"
 LARK_ENV="$SECRETS_DIR/lark.env"
 LARK_STATUS="${RED}OFFLINE (未配置 Webhook)${NC}"
 if [ ! -f "$LARK_ENV" ]; then

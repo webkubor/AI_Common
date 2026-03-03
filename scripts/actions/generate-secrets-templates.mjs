@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
 import fs from 'fs/promises'
-import os from 'os'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
-const DEFAULT_TARGET = path.join(os.homedir(), 'Documents', 'CortexOS-Secrets', '_templates')
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const PROJECT_ROOT = path.resolve(__dirname, '../..')
+const DEFAULT_TARGET = path.resolve(PROJECT_ROOT, '../memory/secrets/_templates')
 
 function usage () {
   console.log(`用法:

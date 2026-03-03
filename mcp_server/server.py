@@ -15,7 +15,7 @@ import requests
 from fastmcp import FastMCP
 
 # ===== 全局路径常量 =====
-BRAIN_ROOT = Path("/Users/webkubor/Documents/CortexOS")
+BRAIN_ROOT = Path(__file__).resolve().parents[1]
 DOCS = BRAIN_ROOT / "docs"
 FLEET_STATUS = DOCS / "memory" / "fleet_status.md"
 FLEET_JSON = BRAIN_ROOT / "docs" / "public" / "data" / "ai_team_status.json"
@@ -25,7 +25,7 @@ ROUTER = DOCS / "router.md"
 SECRETS_DIR = Path(
     os.environ.get(
         "CORTEXOS_SECRET_HOME",
-        str(Path.home() / "Documents" / "CortexOS-Secrets"),
+        str((BRAIN_ROOT / ".." / "memory" / "secrets").resolve()),
     )
 )
 KNOWLEDGE_DIR = DOCS / "memory" / "knowledge"
