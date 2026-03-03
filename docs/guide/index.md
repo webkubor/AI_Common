@@ -111,6 +111,7 @@ args = ["-y", "@mauricio.wolff/mcp-obsidian@latest", "/你的/memory-vault-path"
 
 - 在 AI 客户端能看到 `cortexos-brain` 可用。
 - 调用 `read_router` 能返回路由内容。
+- 不确定自己用的 Agent 配置文件在哪时，直接看：`docs/agents/index.md`。
 
 ---
 

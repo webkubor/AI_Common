@@ -1,17 +1,33 @@
-# Local Agents Index (本地 Agent 总览)
+# 主流 Agent 配置总览
 
-这是本地开发环境安装和配置的 AI Agent 清单及其核心职责。
+这页专门回答一个问题：**你的 Agent 配置文件到底在哪。**
 
-## 🤖 活跃 Agent 列表
-- [gemini](./gemini/README.md): 基于 Google Gemini 的 CLI 专家，擅长前端与自动化。
-- [claude](./claude/README.md): 基于 Anthropic Claude，擅长代码重构与视觉分析。
-- [codex](./codex/README.md): 专注底层逻辑与高效代码补全。
-- [opencode](./opencode/README.md): 本地开源模型集成，用于离线任务。
+## 快速定位
 
-## 🛠 维护说明
-- 新增 Agent 请在本目录下建立子文件夹。
-- 核心配置与能力清单应记录在各自的 README.md 中。
+| Agent | 配置文件 | Skills 目录 | 说明 |
+| :--- | :--- | :--- | :--- |
+| Gemini CLI | `~/.gemini/settings.json` | `~/.gemini/skills/` | MCP 用 JSON 配置 |
+| Codex | `~/.codex/config.toml` | `~/.codex/skills/` | MCP 用 TOML 配置 |
+| Claude | `~/.claude/settings.json` | `~/.claude/skills/` | 以 Claude 本地配置为准 |
+| OpenCode | 项目内 `.opencode/` | `.opencode/skills/` | 通常是项目级配置 |
 
-## 📅 操作日志 (Operation Logs)
-- 操作日志仅保留在内部环境，不在对外仓库公开。
-- 每次调试提交代码
+## CortexOS MCP 要加到哪里
+
+- Gemini CLI：加到 `~/.gemini/settings.json` 的 `mcpServers`
+- Codex：加到 `~/.codex/config.toml` 的 `[mcp_servers]`
+- Claude：加到 `~/.claude/settings.json` 的 `mcpServers`
+
+## 详细档案
+
+- [Gemini 配置档案](./gemini/README.md)
+- [Gemini MCP 清单](./gemini/mcp.md)
+- [Codex 配置档案](./codex/README.md)
+- [Codex MCP 清单](./codex/mcp.md)
+- [Claude 配置档案](./claude/README.md)
+- [Claude MCP 清单](./claude/mcp.md)
+- [OpenCode 配置档案](./opencode/README.md)
+
+## 维护约定
+
+- 新增一个 Agent，就在 `docs/agents/<agent>/` 建目录并补 `README.md` 与 `mcp.md`。
+- 配置有变更时，必须同步更新这页的“快速定位”表，保证用户入口不失效。

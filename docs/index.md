@@ -28,6 +28,7 @@ import FleetDashboard from './.vitepress/theme/components/FleetDashboard.vue'
 - **[路由总览](/router)**：大脑宪法与真理入口。
 - **[规则中心](/rules/)**：工程规范与审美红线。
 - **[技能资产](/skills/)**：多智能体协作能力库。
+- **[Agent 配置](/agents/)**：主流 Agent 的配置文件位置与接入方式。
 - **[关于主理人](/about)**：CortexOS 设计哲学。
 
 <style>

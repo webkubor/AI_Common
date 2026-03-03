@@ -44,6 +44,7 @@ export default defineConfig({
     nav: [
       { text: "🛰️ 阵列态势", link: "/" },
       { text: "🚀 使用指引", link: "/guide/" },
+      { text: "🤖 Agent 配置", link: "/agents/" },
     ],
     // 强化左侧边栏，增加饱满度
     sidebar: [
@@ -67,6 +68,16 @@ export default defineConfig({
           { text: "🎨 webkubor 审美准则", link: "/rules/webkubor_vibe_manifesto" },
           { text: "📝 编码规范", link: "/rules/coding_rules" },
           { text: "🔒 隐私排除规范", link: "/rules/privacy_excludes" },
+        ],
+      },
+      {
+        text: "🤖 Agent 支持",
+        items: [
+          { text: "主流 Agent 配置总览", link: "/agents/" },
+          { text: "Gemini 配置", link: "/agents/gemini/README" },
+          { text: "Codex 配置", link: "/agents/codex/README" },
+          { text: "Claude 配置", link: "/agents/claude/README" },
+          { text: "OpenCode 配置", link: "/agents/opencode/README" },
         ],
       },
       {
