@@ -26,5 +26,9 @@
   "devDependencies": {
     "vitepress": "^1.6.4",
     "vitepress-plugin-llms": "^1.11.0"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.1.0",
+    "chalk": "^5.6.2"
   }
 }
