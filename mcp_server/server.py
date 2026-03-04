@@ -122,6 +122,8 @@ def fleet_handover(to_node: str) -> str:
         if result.returncode != 0:
             return f"移交失败：\n{result.stderr.strip()}"
         return f"✅ 队长移交完成！\n{result.stdout.strip()}"
+    except subprocess.TimeoutExpired:
+        return "超时：fleet:handover 命令执行超过 30 秒。"
     except Exception as e:
         return f"执行异常：{e}"
 
@@ -160,7 +162,7 @@ def list_rules() -> str:
 # ─────────────────────────────────────────────
 @mcp.tool()
 def log_task(content: str, agent: str = "Gemini") -> str:
-    """将操作记录写入今日的助手私有日志目录 $CODEX_HOME/.memory/logs/YYYY-MM-DD.md。
+    """将操作记录写入今日的助手私有日志目录 $CORTEXOS_ASSISTANT_MEMORY_HOME/logs/YYYY-MM-DD.md。
 
     参数:
         content: 要记录的内容（Markdown 格式，1-5 句话）
