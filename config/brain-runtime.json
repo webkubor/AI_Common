@@ -7,9 +7,9 @@
   "memory": {
     "knowledgeRoot": "../memory/knowledge",
     "secretsRoot": "../memory/secrets",
-    "logsRoot": "docs/memory/logs",
+    "logsRoot": "$CODEX_HOME/.memory/logs",
     "assistantPrivateRoot": "$CODEX_HOME/.memory",
-    "userMemoryWritePolicy": "user_explicit_or_operational_audit_only"
+    "userMemoryWritePolicy": "user_explicit_only"
   },
   "daemons": {
     "brain-cortex-pilot": {

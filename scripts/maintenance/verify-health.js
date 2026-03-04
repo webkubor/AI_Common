@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -8,6 +9,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const DOCS_DIR = path.join(__dirname, '../../docs');
+const CODEX_HOME = process.env.CODEX_HOME || path.join(os.homedir(), '.codex');
+const ASSISTANT_MEMORY_HOME = process.env.CORTEXOS_ASSISTANT_MEMORY_HOME || path.join(CODEX_HOME, '.memory');
+const ASSISTANT_LOGS_DIR = path.join(ASSISTANT_MEMORY_HOME, 'logs');
 const SKIP_DIRS = new Set(['.vitepress', 'node_modules', 'dist', 'build']);
 
 // 颜色输出
@@ -151,27 +155,22 @@ function checkRouterUpdates() {
 }
 
 function checkMemoryJournal() {
-  log(colors.cyan, '\n🔍 检查 memory 记录目录...');
+  log(colors.cyan, '\n🔍 检查助手私有日志目录...');
 
-  const journalDir = path.join(DOCS_DIR, 'memory', 'journal');
-  const logsDir = path.join(DOCS_DIR, 'memory', 'logs');
-  const targetDir = fs.existsSync(journalDir) ? journalDir : logsDir;
-  const targetLabel = fs.existsSync(journalDir) ? 'memory/journal' : 'memory/logs';
-
-  if (!fs.existsSync(targetDir)) {
-    log(colors.red, '❌ memory 记录目录不存在 (journal/logs 均缺失)');
+  if (!fs.existsSync(ASSISTANT_LOGS_DIR)) {
+    log(colors.red, `❌ 助手日志目录不存在 (${ASSISTANT_LOGS_DIR})`);
     return 0;
   }
 
-  const files = fs.readdirSync(targetDir);
+  const files = fs.readdirSync(ASSISTANT_LOGS_DIR);
   const markdownFiles = files.filter(f => f.endsWith('.md'));
 
   if (markdownFiles.length === 0) {
-    log(colors.yellow, `⚠️  ${targetLabel}/ 为空`);
+    log(colors.yellow, '⚠️  .memory/logs 为空');
     return 0;
   }
 
-  log(colors.green, `✅ ${targetLabel}/ 包含 ${markdownFiles.length} 个文件`);
+  log(colors.green, `✅ .memory/logs 包含 ${markdownFiles.length} 个文件`);
   markdownFiles.forEach(f => log(colors.green, `  • ${f}`));
 
   return markdownFiles.length;

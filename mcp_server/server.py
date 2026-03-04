@@ -19,7 +19,14 @@ DOCS = BRAIN_ROOT / "docs"
 FLEET_STATUS = DOCS / "memory" / "fleet_status.md"
 FLEET_JSON = BRAIN_ROOT / "docs" / "public" / "data" / "ai_team_status.json"
 RULES_DIR = DOCS / "rules"
-MEMORY_LOGS = DOCS / "memory" / "logs"
+DEFAULT_CODEX_HOME = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))).expanduser()
+ASSISTANT_MEMORY_HOME = Path(
+    os.environ.get(
+        "CORTEXOS_ASSISTANT_MEMORY_HOME",
+        str((DEFAULT_CODEX_HOME / ".memory").expanduser()),
+    )
+).expanduser()
+MEMORY_LOGS = ASSISTANT_MEMORY_HOME / "logs"
 ROUTER = DOCS / "router.md"
 SECRETS_DIR = Path(
     os.environ.get(
@@ -154,7 +161,7 @@ def list_rules() -> str:
 # ─────────────────────────────────────────────
 @mcp.tool()
 def log_task(content: str, agent: str = "Gemini") -> str:
-    """将操作记录写入今日的 memory/logs/YYYY-MM-DD.md 日志文件。
+    """将操作记录写入今日的助手私有日志目录 $CODEX_HOME/.memory/logs/YYYY-MM-DD.md。
 
     参数:
         content: 要记录的内容（Markdown 格式，1-5 句话）

@@ -202,9 +202,9 @@ pm2 save
 
 - `docs/router.md`：总入口，AI 每次启动先看这里。
 - `docs/rules/`：规则库（工程规范、协作协议、隐私协议）。重点看 `coding_rules.md` 与 `review_rules.md`。
-- `docs/memory/logs/`：操作日志（过程记录）。
 - `memory/knowledge/`：长期知识库（复盘、方案、经验）。
 - `memory/secrets/`：高敏凭证区（不进 Git）。
+- `$CODEX_HOME/.memory/logs/`：助手私有操作日志（不属于用户记忆）。
 
 ---
 

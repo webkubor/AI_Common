@@ -5,6 +5,7 @@
  */
 
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync, spawn } from 'child_process';
@@ -14,6 +15,9 @@ import { sendToLark } from '../services/lark-service.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.join(__dirname, '../../');
+const CODEX_HOME = process.env.CODEX_HOME || path.join(os.homedir(), '.codex');
+const ASSISTANT_MEMORY_HOME = process.env.CORTEXOS_ASSISTANT_MEMORY_HOME || path.join(CODEX_HOME, '.memory');
+const ASSISTANT_LOGS_DIR = path.join(ASSISTANT_MEMORY_HOME, 'logs');
 const UV_PATH = '/Users/webkubor/.local/bin/uv';
 const ROUTER_PATH = path.join(PROJECT_ROOT, 'docs/router.md');
 const HISTORY_PATH = path.join(PROJECT_ROOT, 'docs/BRAIN_HISTORY.md');
@@ -327,7 +331,7 @@ function buildLarkSummary(buffer, fileRecords, groupedFiles, totalStat, teamSnap
   }
 
   lines.push('');
-  lines.push('🗂 详细记录已写入 docs/memory/logs');
+  lines.push(`🗂 详细记录已写入 ${ASSISTANT_LOGS_DIR}`);
   return lines.join('\n');
 }
 

@@ -18,6 +18,8 @@ const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.join(__dirname, '../../');
 const DEFAULT_SECRET_HOME = path.join(os.homedir(), 'Documents', 'memory', 'secrets');
 const SECRET_HOME = process.env.CORTEXOS_SECRET_HOME || DEFAULT_SECRET_HOME;
+const DEFAULT_CODEX_HOME = process.env.CODEX_HOME || path.join(os.homedir(), '.codex');
+const ASSISTANT_MEMORY_HOME = process.env.CORTEXOS_ASSISTANT_MEMORY_HOME || path.join(DEFAULT_CODEX_HOME, '.memory');
 
 // --- 1. 定义数据协议 (Brain Schemas) ---
 const ActionSchema = z.object({
@@ -38,7 +40,7 @@ class BrainKernel {
     this.config = {
       docsDir: path.join(PROJECT_ROOT, 'docs'),
       secretsDir: SECRET_HOME,
-      logsDir: path.join(PROJECT_ROOT, 'docs/memory/logs'),
+      logsDir: path.join(ASSISTANT_MEMORY_HOME, 'logs'),
     };
 
     this.setupCLI();

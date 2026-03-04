@@ -18,6 +18,9 @@ const PROJECT_ROOT = path.join(__dirname, '../../');
 const DOCS_DIR = path.join(PROJECT_ROOT, 'docs');
 const SCRIPTS_DIR = path.join(PROJECT_ROOT, 'scripts');
 const EXTERNAL_SECRETS_DIR = process.env.CORTEXOS_SECRET_HOME || path.join(os.homedir(), 'Documents', 'memory', 'secrets');
+const CODEX_HOME = process.env.CODEX_HOME || path.join(os.homedir(), '.codex');
+const ASSISTANT_MEMORY_HOME = process.env.CORTEXOS_ASSISTANT_MEMORY_HOME || path.join(CODEX_HOME, '.memory');
+const ASSISTANT_LOGS_DIR = path.join(ASSISTANT_MEMORY_HOME, 'logs');
 
 // 颜色输出
 const colors = {
@@ -103,7 +106,7 @@ function verifyRouterPaths() {
 
 /**
  * 检查关键目录 (重构后)
- * 注意：外置秘钥目录和 memory/logs 属于本地私密/运行时目录，
+ * 注意：外置秘钥目录和助手 .memory/logs 属于本地私密/运行时目录，
  * 在 CI 环境中不存在是正常的，不计入 P0 阻断项。
  */
 function checkCriticalDirectories() {
@@ -119,7 +122,7 @@ function checkCriticalDirectories() {
 
   // 本地专属目录：CI 环境跳过（私密 / 运行时生成）
   const localOnlyDirs = [
-    { name: 'Memory Logs', path: path.join(DOCS_DIR, 'memory/logs') },
+    { name: 'Assistant Logs', path: ASSISTANT_LOGS_DIR },
     { name: 'External Secrets', path: EXTERNAL_SECRETS_DIR }
   ];
 

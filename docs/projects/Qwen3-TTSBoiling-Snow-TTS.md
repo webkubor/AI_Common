@@ -21,4 +21,4 @@ repo: /Users/webkubor/Desktop/create/Qwen3-TTSBoiling-Snow-TTS
 ## 维护手册
 - **主流程**: `main.py` + `core/modes/*`
 - **规范**: 遵循 `CortexOS/docs/rules/webkubor_vibe_manifesto.md`
-- **记忆沉淀**: 关键演进同步写入 `CortexOS/docs/memory/logs/`
+- **记忆沉淀**: 关键演进同步写入 `$CODEX_HOME/.memory/logs/`
