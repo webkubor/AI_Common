@@ -1,3 +1,7 @@
+---
+aside: false
+---
+
 # 🎮 CortexOS 指挥中心 (AI Fleet Control Center)
 
 > **“感知全量武装，掌控协议矩阵。这是外部大脑的唯一真理来源。”**
@@ -5,6 +9,7 @@
 ---
 
 ## 🛠️ 1. 自动化基础设施 (Infrastructure & Extensions)
+
 这些是赋予 Agent 物理操作能力的**底层工具 (MCP Servers)**。
 
 | 工具名称 | 核心能力 (About) | 装载时间 | 调用方式 (Method) |
@@ -16,6 +21,7 @@
 ---
 
 ## 🛡️ 2. AI 核心技能兵器谱 (Skills Manifest)
+
 这些是定义了 SOP 和业务逻辑的**协议包 (Skills)**。
 
 | 技能名称 | 核心职能 (About) | 状态 | 安装路径 (Package) |

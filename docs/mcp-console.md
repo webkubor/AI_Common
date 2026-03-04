@@ -1,3 +1,7 @@
+---
+aside: false
+---
+
 # 🎛️ CortexOS MCP 工具控制台 (MCP Console)
 
 > **“工具是手的延伸。感知每一项 MCP 能力，掌控全量自动化接口。”**
@@ -23,11 +27,11 @@
 
 > **Agent 必读：当你进入本项目且由于沙箱限制无法感知全局时，必须按此顺序操作：**
 
-1.  **[入口感知]**: 首先读取 `docs/router.md`。这是大脑的最高协议，包含了所有动态路由。
-2.  **[技能对齐]**: 读取 `docs/skills.md` (或 `CortexOS_Control_Center.md`)。确认你是否拥有处理当前任务所需的 **Skill 包**。
-3.  **[工具自检]**: 访问本页面 (`docs/mcp-console.md`)。确认你是否拥有操作物理文件的 **MCP 工具**。
-4.  **[语义 RAG]**: 如果以上路径均无果，执行 `search_knowledge` 或调用 `query_brain.py` 进行跨目录语义检索。
-5.  **[操作留痕]**: 任何针对基础设施（MCP/Skill）的安装或修改，必须在 `logs/` 下创建独立的 `infra-install` 日志。
+1. **[入口感知]**: 首先读取 `docs/router.md`。这是大脑的最高协议，包含了所有动态路由。
+2. **[技能对齐]**: 读取 `docs/skills.md` (或 `CortexOS_Control_Center.md`)。确认你是否拥有处理当前任务所需的 **Skill 包**。
+3. **[工具自检]**: 访问本页面 (`docs/mcp-console.md`)。确认你是否拥有操作物理文件的 **MCP 工具**。
+4. **[语义 RAG]**: 如果以上路径均无果，执行 `search_knowledge` 或调用 `query_brain.py` 进行跨目录语义检索。
+5. **[操作留痕]**: 任何针对基础设施（MCP/Skill）的安装或修改，必须在 `logs/` 下创建独立的 `infra-install` 日志。
 
 ---
 
