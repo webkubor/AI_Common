@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-04T12:05:00.498Z",
+  "generatedAt": "2026-03-04T12:10:00.474Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
   "total": 4,
@@ -55,7 +55,7 @@
       "role": "未分配",
       "workspace": "~/Desktop/create/cinematic-storyboard-pro",
       "task": "待分配任务",
-      "since": "2026-03-04 19:00",
+      "since": "2026-03-04 20:07",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 55,
