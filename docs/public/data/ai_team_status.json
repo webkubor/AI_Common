@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-04T06:35:00.353Z",
+  "generatedAt": "2026-03-04T07:05:00.361Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 3,
-  "active": 3,
+  "total": 5,
+  "active": 5,
   "offline": 0,
   "queued": 0,
   "members": [
@@ -47,6 +47,34 @@
       "progress": 55,
       "isCaptain": false,
       "hasTodo": false,
+      "isStale": false
+    },
+    {
+      "member": "Candy-1 (Codex)",
+      "agent": "Codex",
+      "role": "后端",
+      "workspace": "/Users/webkubor/Documents/memory",
+      "task": "整理今天技术分享文档：Gemini Voyager + 自我进化思路 + AI大脑与引擎分离，输出到 shares 目录",
+      "since": "2026-03-04 14:47",
+      "status": "[ 执行中 ] 活跃",
+      "type": "active",
+      "progress": 55,
+      "isCaptain": false,
+      "hasTodo": false,
+      "isStale": false
+    },
+    {
+      "member": "Codex-4 (Codex)",
+      "agent": "Codex",
+      "role": "后端",
+      "workspace": "/Users/webkubor/Documents/CortexOS",
+      "task": "新增 Skills 管理页：聚合原生 skills 与本机已安装 skills 扫描",
+      "since": "2026-03-04 15:03",
+      "status": "[ 执行中 ] 活跃",
+      "type": "active",
+      "progress": 100,
+      "isCaptain": false,
+      "hasTodo": true,
       "isStale": false
     }
   ]

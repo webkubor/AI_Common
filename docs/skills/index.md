@@ -1,33 +1,23 @@
-# 🧩 技能矩阵 (Skills Matrix)
-
-> **“CortexOS 是中枢神经，Skills 是可接管各类终端的作战模组。”**
-
-CortexOS 的外部能力现已全部重构降噪。为保证轻量化运行，庞大的专业能力链条已被移出核心中枢。
-
 ---
-
-## 🌍 开源技能库 (Recommended)
-
-所有关于底层运维、长篇图文投递、视觉构思、小红书管理与智能探针等重负载能力，**均已 100% 拆分为独立的跨平台开源 Skill 包**。独立包拥有自身的迭代心智与专有工作流护栏。
-
-- [**👉 查阅开源技能总表及详细清单 (GitHub Repos)**](./github_repos.md)
-  *包含了所有现存的 13+ 项独立技能详细卡片及一键安装拉取指引。*
-
+description: Skills 能力入口与查找顺序。
 ---
+# Skills 索引
 
-## 🏠 本地集成生态 (重构声明)
+这部分只做一件事：告诉 AI 去哪里找 skills，以及先看哪里。
 
-> 💡 **架构解耦声明 (v5)**：  
-> 早中期的臃肿本地模组文件（含 `Core 通信协议手册`、`碎知识点 Snippets 存储器`、`项目进化更名管理体系`、`深度思考模型 (Socratic)` 及 `工厂封装器` 等）—— 因极易导致读取冗长且占用本地 Token 池——**目前已被全数清除出局。**
+## 查找顺序
 
-当下您的 `/skills/` 生态入口仅保留极简的路由导向标。
+1. 用户侧 skills 索引：`/Users/webkubor/Documents/memory/skills/index.md`
+2. 本地 skills 根目录：`/Users/webkubor/Desktop/skills`
+3. 开源仓库清单：[`github_repos`](./github_repos)
 
----
+## 边界
 
-## 🛠️ 后续扩展共识
+- `docs/skills/` 只保留索引与目录说明，不放长篇 SOP。
+- Skills 的业务细节、项目策略、运行态说明，写入用户 memory（`../memory`）。
 
-若需为现有智力注入新兵器，或封装私有管家能力：
-请直接在您的 Github 与本地终端（如 `~/.agents/skills/`）按标准化模式启建，**严防私向外接大脑 `docs` 层塞入长篇的操作流程 (SOP)。**
+## 常用动作
 
----
-*Last Updated: 2026-03-03 (v5.2.0 · Core Decoupled Edition)*
+- 查看可用开源 skills：打开 [`github_repos`](./github_repos)
+- 查本机私有 skills：先读 `/Users/webkubor/Documents/memory/skills/index.md`
+- 新增 skill：在 `/Users/webkubor/Desktop/skills` 建仓，并同步更新 `../memory/skills/index.md`
