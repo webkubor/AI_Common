@@ -5,15 +5,15 @@
 
 ### A. IP 角色与电影分镜 (IP & Cinematic)
 - **工具**: `edit_image` (nanobanana)
-- **前置条件**: 必须指定并加载 `docs/ucd/persona_refs/` 下的对应角色参考图。
-- **执行规范**: **强制遵循** [Persona System SOP](../ucd/persona_system.md) (包含 POV、RAW 质感、锁相协议)。
-- **归档**: `~/Documents/CortexOS/docs/ucd/persona_refs/history/`
+- **前置条件**: 必须指定并加载角色参考图（存放于私有素材目录，不入仓）。
+- **执行规范**: **强制遵循** [身份协议](../persona/identity.md) 与 [审美准则](../persona/webkubor_vibe_manifesto.md)（包含 POV、RAW 质感、锁相协议）。
+- **归档**: 私有素材目录（由本机环境决定）。
 
 ### B. 纯技术/工程化封面 (Technical Covers)
 - **工具**: `generate_image` (nanobanana)
-- **规范**: `docs/ucd/juejin_tech_covers.md`
+- **规范**: 统一遵循 `zero humans, zero faces` 与技术主题一致性。
 - **红线**: 必须包含 `zero humans, zero faces`。采用 3D Isometric 风格。
-- **归档**: `~/Documents/juejin/assets/`
+- **归档**: 私有素材目录（由本机环境决定）。
 
 ## 2. 完工定义 (DoD)
 1. 图像已生成并符合对应场景规范。

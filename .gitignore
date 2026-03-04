@@ -4,7 +4,6 @@
 *.log
 
 # 🔒 L2 Private Memory (必须忽略)
-docs/secrets/
 rules/retrospective.md
 retrospective.md
 scripts/wechat/articles/

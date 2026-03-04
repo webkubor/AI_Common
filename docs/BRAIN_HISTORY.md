@@ -38,7 +38,7 @@
 ## [v2.0.0] - 2026-02-02 (基础设施期)
 - **哨兵机制 (Sentinel)**: 引入物理日志记录，Agent 的每一次主动 Task 必须记入日志。
 - **VitePress 体系**: 正式确立知识库的可视化展示标准。
-- **深度复盘机制**: 建立 `retrospectives/` 文件夹，实现经验的闭环沉淀。
+- **深度复盘机制**: 历史上建立过 `retrospectives/`；现已收敛为助手侧 `$CODEX_HOME/.memory/retrospectives` 与用户侧 `../memory/knowledge/retrospective` 双轨沉淀。
 
 ## [v1.5.0] - 2026-01 (自动化萌芽期)
 - **脚本化尝试**: 引入 `log.sh` 与 `scripts/` 雏形，尝试用自动化替代手动记录。
