@@ -26,7 +26,7 @@ DEFAULT_SCOPE = {
         "/chroma_db/",
         "/.git/",
         "/.venv/",
-        "/memory/logs/",
+        "/.memory/logs/",
         "/memory/journal/",
         "/archive/logs/"
     ],

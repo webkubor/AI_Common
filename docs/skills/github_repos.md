@@ -37,11 +37,17 @@
 - **仓库**: [webkubor/pwa-master-skill](https://github.com/webkubor/pwa-master-skill)
 - **安装**: `gemini skills install https://github.com/webkubor/pwa-master-skill`
 
-### 🎨 Visual-Design-Studio (视觉构建大师)
+### 🎭 Persona-Generator (人像剧组专家)
 
-- **说明**: 视觉体系与交互规范建设、各平台品牌一致性落库与前端 UI 排版设计。
-- **仓库**: [webkubor/visual-studio-skill](https://github.com/webkubor/visual-studio-skill)
-- **安装**: `gemini skills install https://github.com/webkubor/visual-studio-skill`
+- **说明**: 专注于基于 nanobanana 锁相生成技术进行一致性角色打造与高保真复刻。
+- **仓库**: [webkubor/persona-generator-skill](https://github.com/webkubor/persona-generator-skill)
+- **安装**: `gemini skills install https://github.com/webkubor/persona-generator-skill`
+
+### 🎨 Web-UI (Web 前端与标志设计专家)
+
+- **说明**: 专注去除“AI 味”的高定前端页面还原工程与生产级别 SVG 矢量绘制。
+- **仓库**: [webkubor/web-ui-skill](https://github.com/webkubor/web-ui-skill)
+- **安装**: `gemini skills install https://github.com/webkubor/web-ui-skill`
 
 ### 📝 VitePress-Init (体系站构建管家)
 
