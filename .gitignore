@@ -10,6 +10,7 @@ retrospective.md
 scripts/wechat/articles/
 .aider*
 .gemini/
+.obsidian/
 
 # 🚫 Secrets & Keys (高风险)
 *.pem
