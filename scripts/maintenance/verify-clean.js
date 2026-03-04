@@ -85,7 +85,7 @@ function verify() {
   console.log('  ✅ 删除 docs/public/images/ (现在只保留 logo.svg)');
   console.log('  ✅ 删除 docs/ucd/persona_refs/ 目录');
   console.log('  ✅ 删除 .DS_Store 文件');
-  console.log('  ✅ 清空 docs/memory/journal/');
+  console.log('  ✅ 清理历史 docs/memory 目录残留');
   console.log('  ✅ 删除空的 retrospective_archive.md');
 
   console.log('\n✨ 外部大脑清理完成！');

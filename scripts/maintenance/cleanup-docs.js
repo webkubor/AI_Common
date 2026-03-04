@@ -161,7 +161,7 @@ function runCleanup() {
   console.log('📝 后续建议:');
   console.log('  1. 运行: git add docs/archive docs/public/images/persona');
   console.log('  2. 运行: git commit -m "docs: 整理外部大脑结构 - 归档日志与资源"');
-  console.log('  3. 检查: docs/memory/journal/ 是否为空目录，考虑删除');
+  console.log('  3. 检查: .memory/ 下是否存在历史冗余目录，按需归档');
   console.log('  4. 可选: 删除旧的 index.md 与 retrospective_archive.md\n');
   console.log('✨ 外部大脑现在更加清晰有序！');
   console.log('');
