@@ -59,15 +59,17 @@ export default defineConfig({
       {
         text: "🧩 技能矩阵 (Skills)",
         items: [
+          { text: "🎮 技能指挥部", link: "/skills" },
+          { text: "🛠️ MCP 控制台", link: "/mcp-console" },
           { text: "📊 Skills 管理台", link: "/skills/management" },
           { text: "🌍 开源技能库 (GitHub)", link: "/skills/github_repos" },
-          { text: "🏠 本地集成能力", link: "/skills/" },
+          { text: "🏠 本地集成能力", link: "/skills/index" },
         ],
       },
       {
         text: "📏 核心准则 (Rules)",
         items: [
-          
+
           { text: "📝 编码规范", link: "/rules/coding_rules" },
           { text: "🛡 Skill 准入门禁", link: "/rules/skill_vetting_gate" },
           { text: "🔒 隐私排除规范", link: "/rules/privacy_excludes" },
