@@ -62,7 +62,11 @@ fi
 printf "${GREEN}📥 正在执行首次全量知识入库 (Ingest)...${NC}\n"
 uv run ./scripts/ingest/chroma_ingest.py
 
-# 8. 启动或重启自动驾驶进程 (PM2)
+# 8. 同步 Skills 管理台（原生 + 本机安装态）
+printf "${GREEN}🧩 正在同步 Skills 管理台...${NC}\n"
+node ./scripts/tools/sync-skills-management.mjs
+
+# 9. 启动或重启自动驾驶进程 (PM2)
 if command -v "pm2" &> /dev/null; then
   printf "${GREEN}🔄 正在启动大脑自动驾驶仪 (PM2)...${NC}\n"
   PILOT_ENABLED="true"
@@ -87,13 +91,13 @@ if command -v "pm2" &> /dev/null; then
   pm2 save
 fi
 
-# 9. 智商自检
+# 10. 智商自检
 RAG_STATUS="${RED}PHYSICAL MODE (Ollama 未就绪)${NC}"
 if curl -s http://localhost:11434/api/tags | grep -q "nomic-embed-text"; then
   RAG_STATUS="${GREEN}SEMANTIC MODE (Full RAG Ready)${NC}"
 fi
 
-# 10. 完成
+# 11. 完成
 printf "\n${GREEN}🎉 恭喜！CortexOS 大脑已全面部署成功。${NC}\n"
 printf "----------------------------------------\n"
 printf "🧠 ${BLUE}智商状态: ${NC}$RAG_STATUS\n"

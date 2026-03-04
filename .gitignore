@@ -50,6 +50,8 @@ docs/skills/visual/cinematic-storyboard/assets/*
 /chroma_db/
 .last_notif.json
 .context_buffer.json
-.memory/
-# .obsidian/ 已在上方第 12 行整体忽略，无需单独列举
+.memory/*
+!.memory/memory_formula.md
+!.memory/persona/
+!.memory/identity/
 mcp_server/mcp_config.json

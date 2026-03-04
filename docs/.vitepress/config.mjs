@@ -59,6 +59,7 @@ export default defineConfig({
       {
         text: "🧩 技能矩阵 (Skills)",
         items: [
+          { text: "📊 Skills 管理台", link: "/skills/management" },
           { text: "🌍 开源技能库 (GitHub)", link: "/skills/github_repos" },
           { text: "🏠 本地集成能力", link: "/skills/" },
         ],

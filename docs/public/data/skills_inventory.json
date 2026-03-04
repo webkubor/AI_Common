@@ -1,0 +1,461 @@
+{
+  "generatedAt": "2026-03-04T07:06:45.237Z",
+  "generatedAtLocal": "2026-03-04 15:06",
+  "nativeSkills": [
+    {
+      "name": "omni-publisher-skill",
+      "canonical": "omni-publisher",
+      "repo": "https://github.com/webkubor/omni-publisher-skill",
+      "usage": "多平台内容分发（小红书/掘金/微信）"
+    },
+    {
+      "name": "ai-modification-skill",
+      "canonical": "ai-modification",
+      "repo": "https://github.com/webkubor/ai-modification-skill",
+      "usage": "项目 AI 原生化改造"
+    },
+    {
+      "name": "audio-music-engineer-skill",
+      "canonical": "audio-music-engineer",
+      "repo": "https://github.com/webkubor/audio-music-engineer-skill",
+      "usage": "音频创作与工程处理"
+    },
+    {
+      "name": "cinematic-storyboard-skill",
+      "canonical": "cinematic-storyboard",
+      "repo": "https://github.com/webkubor/cinematic-storyboard-skill",
+      "usage": "影视分镜与脚本策划"
+    },
+    {
+      "name": "pwa-master-skill",
+      "canonical": "pwa-master",
+      "repo": "https://github.com/webkubor/pwa-master-skill",
+      "usage": "PWA 能力接入与迁移"
+    },
+    {
+      "name": "persona-generator-skill",
+      "canonical": "persona-generator",
+      "repo": "https://github.com/webkubor/persona-generator-skill",
+      "usage": "一致性角色生成"
+    },
+    {
+      "name": "web-ui-skill",
+      "canonical": "web-ui",
+      "repo": "https://github.com/webkubor/web-ui-skill",
+      "usage": "高质量前端与视觉实现"
+    },
+    {
+      "name": "vitepress-init-skill",
+      "canonical": "vitepress-init",
+      "repo": "https://github.com/webkubor/vitepress-init-skill",
+      "usage": "文档站初始化与结构搭建"
+    },
+    {
+      "name": "brain-sentinel-skill",
+      "canonical": "brain-sentinel",
+      "repo": "https://github.com/webkubor/brain-sentinel-skill",
+      "usage": "大脑健康巡检与战报"
+    },
+    {
+      "name": "code-aureate-skill",
+      "canonical": "code-aureate",
+      "repo": "https://github.com/webkubor/code-aureate-skill",
+      "usage": "代码审查与质量优化"
+    },
+    {
+      "name": "knowledge-navigator-skill",
+      "canonical": "knowledge-navigator",
+      "repo": "https://github.com/webkubor/knowledge-navigator-skill",
+      "usage": "知识检索与路由导航"
+    },
+    {
+      "name": "file-hosting-master-skill",
+      "canonical": "file-hosting-master",
+      "repo": "https://github.com/webkubor/file-hosting-master-skill",
+      "usage": "资产托管与分发"
+    },
+    {
+      "name": "scm-ops-skill",
+      "canonical": "scm-ops",
+      "repo": "https://github.com/webkubor/scm-ops-skill",
+      "usage": "GitHub/GitLab 流水线与发版"
+    },
+    {
+      "name": "xhs-manager-skill",
+      "canonical": "xhs-manager",
+      "repo": "https://github.com/webkubor/xhs-manager-skill",
+      "usage": "小红书多账号管理"
+    }
+  ],
+  "installedSkills": [
+    {
+      "name": "ai-modification-skill",
+      "canonical": "ai-modification",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/ai-modification-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/ai-modification-skill"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "audio-music-engineer-skill",
+      "canonical": "audio-music-engineer",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/audio-music-engineer-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/audio-music-engineer-skill"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "brain-sentinel-skill",
+      "canonical": "brain-sentinel",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/brain-sentinel-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/brain-sentinel-skill"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "cinematic-storyboard-skill",
+      "canonical": "cinematic-storyboard",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/cinematic-storyboard-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/cinematic-storyboard-skill"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "code-aureate-skill",
+      "canonical": "code-aureate",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/code-aureate-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/code-aureate-skill"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "feishu-writer",
+      "canonical": "feishu-writer",
+      "sources": [
+        "~/.agents/skills",
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/feishu-writer",
+        "/Users/webkubor/.codex/skills/feishu-writer"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/feishu-writer"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "figma",
+      "canonical": "figma",
+      "sources": [
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.codex/skills/figma"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.codex/skills/figma"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "figma-implement-design",
+      "canonical": "figma-implement-design",
+      "sources": [
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.codex/skills/figma-implement-design"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.codex/skills/figma-implement-design"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "file-hosting-master-skill",
+      "canonical": "file-hosting-master",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/file-hosting-master-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/file-hosting-master-skill"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "frontend-design",
+      "canonical": "frontend-design",
+      "sources": [
+        "~/.agents/skills",
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/frontend-design",
+        "/Users/webkubor/.codex/skills/frontend-design"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/frontend-design"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "gemini-skill-vitepress-init",
+      "canonical": "vitepress-init",
+      "sources": [
+        "~/.agents/skills",
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/gemini-skill-vitepress-init",
+        "/Users/webkubor/.agents/skills/vitepress-init-skill",
+        "/Users/webkubor/.codex/skills/vitepress-init"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/gemini-skill-vitepress-init",
+        "/Users/webkubor/.agents/skills/vitepress-init-skill",
+        "/Users/webkubor/.codex/skills/vitepress-init"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "juejin-writer",
+      "canonical": "juejin-writer",
+      "sources": [
+        "~/.agents/skills",
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/juejin-writer",
+        "/Users/webkubor/.codex/skills/juejin-writer"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/juejin-writer"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "knowledge-navigator-skill",
+      "canonical": "knowledge-navigator",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/knowledge-navigator-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/knowledge-navigator-skill"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "logo-designer",
+      "canonical": "logo-designer",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/logo-designer"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/logo-designer"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "omni-publisher-skill",
+      "canonical": "omni-publisher",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/omni-publisher-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/omni-publisher-skill"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "pwa-master-skill",
+      "canonical": "pwa-master",
+      "sources": [
+        "~/.agents/skills",
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/pwa-master-skill",
+        "/Users/webkubor/.codex/skills/pwa-master"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/pwa-master-skill",
+        "/Users/webkubor/.codex/skills/pwa-master"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "remotion-best-practices",
+      "canonical": "remotion-best-practices",
+      "sources": [
+        "~/.agents/skills",
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/remotion-best-practices",
+        "/Users/webkubor/.codex/skills/remotion-best-practices"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/remotion-best-practices"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "scm-ops-skill",
+      "canonical": "scm-ops",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/scm-ops-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/scm-ops-skill"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "snippet-master",
+      "canonical": "snippet-master",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/snippet-master"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/snippet-master"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "start",
+      "canonical": "start",
+      "sources": [
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.codex/skills/start"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.codex/skills/start"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "think-skill",
+      "canonical": "think",
+      "sources": [
+        "~/.agents/skills",
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/think-skill",
+        "/Users/webkubor/.codex/skills/think"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/think-skill",
+        "/Users/webkubor/.codex/skills/think"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "canonical": "ui-ux-pro-max",
+      "sources": [
+        "~/.codex/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.codex/skills/ui-ux-pro-max"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.codex/skills/ui-ux-pro-max"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "visual-studio-skill",
+      "canonical": "visual-studio",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/visual-studio-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/visual-studio-skill"
+      ],
+      "hasSkillFile": true
+    },
+    {
+      "name": "xhs-manager-skill",
+      "canonical": "xhs-manager",
+      "sources": [
+        "~/.agents/skills"
+      ],
+      "paths": [
+        "/Users/webkubor/.agents/skills/xhs-manager-skill"
+      ],
+      "resolvedPaths": [
+        "/Users/webkubor/.agents/skills/xhs-manager-skill"
+      ],
+      "hasSkillFile": true
+    }
+  ],
+  "scanDirs": [
+    {
+      "label": "~/.agents/skills",
+      "path": "/Users/webkubor/.agents/skills"
+    },
+    {
+      "label": "~/.agent/skills",
+      "path": "/Users/webkubor/.agent/skills"
+    },
+    {
+      "label": "~/.codex/skills",
+      "path": "/Users/webkubor/.codex/skills"
+    }
+  ]
+}
