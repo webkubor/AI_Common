@@ -88,7 +88,7 @@ export default defineConfig({
         items: [
           { text: "🕒 深度复盘总览", link: "/retrospectives/" },
           { text: "📚 规则复盘", link: "/retrospectives/rules/" },
-          { text: "💾 历史日志", link: "/memory/logs/2026-03-02" },
+          { text: "🚦 舰队态势板", link: "/memory/fleet_status" },
         ]
       },
       {

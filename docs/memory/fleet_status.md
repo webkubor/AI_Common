@@ -13,7 +13,7 @@
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Candy-2 (Gemini)** | Gemini | 后端 | `/Users/webkubor/Desktop/skills` | 已完成：scm-ops-skill 与 xhs-manager-skill 的包装推送 | 2026-03-02 18:02 | [ 队长锁 ] 活跃 |
 | **Candy-Prime (0号机/Codex)** | Codex | 未分配 | `/Users/webkubor/Desktop/skills` | 删除 skills：slack-gif-creator 与 sora（先备份后删除） | 2026-03-03 17:09 | [ 队长锁 ] 活跃 |
-| **Codex-1 (Codex)** | Codex | 后端 | `/Users/webkubor/Documents/CortexOS` | 删除 docs/memory/logs 并清理相关引用死链 | 2026-03-04 10:59 | [ 执行中 ] 活跃 |
+| **Codex-1 (Codex)** | Codex | 后端 | `/Users/webkubor/Documents/CortexOS` | 先迁移 docs/memory/knowledge 内容到 ../memory/knowledge 再删除目录 | 2026-03-04 11:04 | [ 执行中 ] 活跃 |
 | **Candy-3 (Gemini)** | Gemini | 未分配 | `/Users/webkubor/Documents/CortexOS` | 待分配任务 | 2026-03-04 09:51 | [ 执行中 ] 活跃 |
 | *(示例节点)* | *(Gemini/Codex/Claude...)* | *(前端/后端)* | `/Users/webkubor/Desktop/some-project` | *(示例任务)* | *YYYY-MM-DD HH:MM* | `[ 等待分配 ]` |
 ---
