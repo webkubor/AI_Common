@@ -89,6 +89,9 @@ a {
 
 .dark .VPHero .name {
   background: linear-gradient(135deg, #c084fc 0%, #06b6d4 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
 
 .VPHero .text {
