@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-04T02:10:00.349Z",
+  "generatedAt": "2026-03-04T02:25:00.349Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": "docs/memory/fleet_status.md",
   "total": 4,
@@ -40,8 +40,8 @@
       "agent": "Codex",
       "role": "后端",
       "workspace": "/Users/webkubor/Documents/CortexOS",
-      "task": "制定并落地 SOUL 标准，区分用户 memory 与助手 .memory 私有调教记忆",
-      "since": "2026-03-04 10:08",
+      "task": "将 skill-vetter 按 CortexOS 规则本地化，落地技能准入门禁文档与执行模板",
+      "since": "2026-03-04 10:24",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 100,
