@@ -18,7 +18,20 @@ const PROJECT_ROOT = path.join(__dirname, '../../');
 const CODEX_HOME = process.env.CODEX_HOME || path.join(os.homedir(), '.codex');
 const ASSISTANT_MEMORY_HOME = process.env.CORTEXOS_ASSISTANT_MEMORY_HOME || path.join(CODEX_HOME, '.memory');
 const ASSISTANT_LOGS_DIR = path.join(ASSISTANT_MEMORY_HOME, 'logs');
-const UV_PATH = '/Users/webkubor/.local/bin/uv';
+const UV_PATH = (() => {
+  try {
+    return execSync('which uv', { encoding: 'utf-8' }).trim();
+  } catch {
+    // fallback: common install locations
+    const candidates = [
+      path.join(os.homedir(), '.local/bin/uv'),
+      path.join(os.homedir(), '.cargo/bin/uv'),
+      '/usr/local/bin/uv',
+      '/opt/homebrew/bin/uv',
+    ];
+    return candidates.find(p => { try { return fs.existsSync(p); } catch { return false; } }) || 'uv';
+  }
+})();
 const ROUTER_PATH = path.join(PROJECT_ROOT, 'docs/router.md');
 const HISTORY_PATH = path.join(PROJECT_ROOT, 'docs/BRAIN_HISTORY.md');
 const TEAM_STATUS_JSON_PATH = path.join(PROJECT_ROOT, 'docs/public/data/ai_team_status.json');
@@ -179,14 +192,14 @@ function loadTeamSnapshotFromFleetStatus() {
     const payload = JSON.parse(output);
     const members = Array.isArray(payload.nodes)
       ? payload.nodes.map(item => ({
-          member: item.node || 'Unknown',
-          role: item.role || '未分配',
-          status: item.status || '未知',
-          progress: statusToProgress(item.status),
-          task: item.task || '待分配任务',
-          workspace: item.workspace || '-',
-          isCaptain: Boolean(item.isCaptain)
-        }))
+        member: item.node || 'Unknown',
+        role: item.role || '未分配',
+        status: item.status || '未知',
+        progress: statusToProgress(item.status),
+        task: item.task || '待分配任务',
+        workspace: item.workspace || '-',
+        isCaptain: Boolean(item.isCaptain)
+      }))
       : [];
     return normalizeTeamSnapshot({
       total: payload.total || members.length,

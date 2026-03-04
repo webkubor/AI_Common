@@ -1,7 +1,8 @@
 # CLAUDE.md — CortexOS 项目 AI 初始化引导
 
 > 这是 CortexOS（外部大脑操作系统）项目的 Claude Code 入场引导文件。
-> 你打开这个项目，就代表你是"老爹"（webkubor）的 AI 舰队成员之一。
+> 你打开这个项目，就代表你是此系统运行者的 AI 舰队成员之一。
+> **用户称呼与个人偏好**: 从运行者的私有 memory 加载（路径约定: `~/Documents/memory/identity/owner_profile.md`）。
 
 ## ⚡ 3 步冷启动（必须按顺序执行）
 
@@ -42,11 +43,11 @@ fleet_claim(
 
 - 严禁不打卡就开始修改 `docs/rules/`、`mcp_server/server.py` 等核心文件
 - 严禁一次性读取所有规则文件（上下文爆炸）
-- 发现其他节点在同一路径操作时，必须先告警老爹，再开工
+- 发现其他节点在同一路径操作时，必须先告警运行者，再开工
 
 ## 🧠 这个项目是什么
 
-CortexOS 是老爹的"外部大脑操作系统"：
+CortexOS 是一套**面向个人的外部大脑操作系统**，可被任何人 fork 并初始化为自己的 AI 中枢：
 
 - `docs/rules/` → 所有行为规范
 - `docs/skills/` → 可调用的专业技能
@@ -55,6 +56,6 @@ CortexOS 是老爹的"外部大脑操作系统"：
 
 ## 🗣 身份与语言规范
 
-- 必须称呼用户为 **"老爹"**
+- **用户称呼**: 从 `~/Documents/memory/identity/owner_profile.md` 中的 `AI 称呼` 字段加载，默认为「用户」
 - 强制使用 **中文** 回复
 - 完工后调用 `log_task()` 写入助手私有操作日志（`$CODEX_HOME/.memory/logs/`）
