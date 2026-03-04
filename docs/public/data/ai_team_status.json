@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-04T07:05:00.361Z",
+  "generatedAt": "2026-03-04T07:30:00.411Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 5,
-  "active": 5,
+  "total": 6,
+  "active": 6,
   "offline": 0,
   "queued": 0,
   "members": [
@@ -68,13 +68,27 @@
       "agent": "Codex",
       "role": "后端",
       "workspace": "/Users/webkubor/Documents/CortexOS",
-      "task": "新增 Skills 管理页：聚合原生 skills 与本机已安装 skills 扫描",
-      "since": "2026-03-04 15:03",
+      "task": "按用户要求把 Skills 文档强化为安装路径与使用实操手册并补充落地命令",
+      "since": "2026-03-04 15:16",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 100,
       "isCaptain": false,
       "hasTodo": true,
+      "isStale": false
+    },
+    {
+      "member": "Codex-5 (Codex)",
+      "agent": "Codex",
+      "role": "后端",
+      "workspace": "/Users/webkubor/Desktop/create",
+      "task": "检查 TTS 项目可用声音列表并反馈给用户",
+      "since": "2026-03-04 15:29",
+      "status": "[ 执行中 ] 活跃",
+      "type": "active",
+      "progress": 55,
+      "isCaptain": false,
+      "hasTodo": false,
       "isStale": false
     }
   ]

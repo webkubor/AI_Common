@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-03-04T07:06:45.237Z",
-  "generatedAtLocal": "2026-03-04 15:06",
+  "generatedAt": "2026-03-04T07:23:37.423Z",
+  "generatedAtLocal": "2026-03-04 15:23",
   "nativeSkills": [
     {
       "name": "omni-publisher-skill",
@@ -447,15 +447,19 @@
   "scanDirs": [
     {
       "label": "~/.agents/skills",
-      "path": "/Users/webkubor/.agents/skills"
+      "path": "/Users/webkubor/.agents/skills",
+      "exists": true
     },
     {
       "label": "~/.agent/skills",
-      "path": "/Users/webkubor/.agent/skills"
+      "path": "/Users/webkubor/.agent/skills",
+      "exists": false
     },
     {
       "label": "~/.codex/skills",
-      "path": "/Users/webkubor/.codex/skills"
+      "path": "/Users/webkubor/.codex/skills",
+      "exists": true
     }
-  ]
+  ],
+  "localSkillsRoot": "/Users/webkubor/Desktop/skills"
 }

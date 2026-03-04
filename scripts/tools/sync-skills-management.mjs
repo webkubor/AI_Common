@@ -12,6 +12,7 @@ const projectRoot = path.join(__dirname, '../../')
 const skillsReposFile = path.join(projectRoot, 'docs/skills/github_repos.md')
 const outMarkdownFile = path.join(projectRoot, 'docs/skills/management.md')
 const outJsonFile = path.join(projectRoot, 'docs/public/data/skills_inventory.json')
+const localSkillsRoot = '/Users/webkubor/Desktop/skills'
 
 function nowLocal () {
   const d = new Date()
@@ -61,6 +62,7 @@ function listSkillEntriesInDir (dirPath, sourceLabel) {
   } catch {
     return []
   }
+
   const output = []
   for (const entry of entries) {
     if (entry.name.startsWith('.')) continue
@@ -72,9 +74,8 @@ function listSkillEntriesInDir (dirPath, sourceLabel) {
       resolvedPath = fs.realpathSync(fullPath)
     } catch {}
 
-    const skillFileByName = path.join(resolvedPath, 'SKILL.md')
-    const skillFileByCase = path.join(resolvedPath, 'skill.md')
-    const hasSkillFile = fs.existsSync(skillFileByName) || fs.existsSync(skillFileByCase)
+    const hasSkillFile = fs.existsSync(path.join(resolvedPath, 'SKILL.md')) || fs.existsSync(path.join(resolvedPath, 'skill.md'))
+
     output.push({
       name: entry.name,
       canonical: canonicalSkillName(entry.name),
@@ -108,6 +109,7 @@ function mergeInstalledSkills (raw) {
     prev.resolvedPaths.add(item.resolvedPath)
     prev.hasSkillFile = prev.hasSkillFile || item.hasSkillFile
   }
+
   return [...map.values()]
     .map(item => ({
       name: item.name,
@@ -121,11 +123,15 @@ function mergeInstalledSkills (raw) {
 }
 
 function buildMarkdown ({ generatedAt, nativeSkills, installedSkills, scanDirs }) {
+  const installedMap = new Map(installedSkills.map(s => [s.canonical, s]))
   const installedSet = new Set(installedSkills.map(s => s.canonical))
+  const sampleRepo = nativeSkills[0]?.repo || 'https://github.com/webkubor/omni-publisher-skill'
+
   const nativeRows = nativeSkills.map(item => {
     const installed = installedSet.has(item.canonical) ? '是' : '否'
+    const installedAt = installedMap.get(item.canonical)?.paths?.join('<br>') || '-'
     const installCmd = `gemini skills install ${item.repo}`
-    return `| ${item.name} | ${item.repo} | ${installed} | \`${installCmd}\` |`
+    return `| ${item.name} | ${item.repo} | ${installed} | ${installedAt} | \`${installCmd}\` |`
   }).join('\n')
 
   const installedRows = installedSkills.map(item => {
@@ -134,37 +140,94 @@ function buildMarkdown ({ generatedAt, nativeSkills, installedSkills, scanDirs }
     return `| ${item.name} | ${sourceText} | ${item.hasSkillFile ? '是' : '否'} | ${pathText} |`
   }).join('\n')
 
-  const scanRows = scanDirs.map(d => `- ${d.label}: \`${d.path}\``).join('\n')
+  const installLocationRows = scanDirs.map(d => {
+    return `| ${d.label} | \`${d.path}\` | ${d.exists ? '是' : '否'} | \`ls -la ${d.path}\` |`
+  }).join('\n')
 
   return `---
-description: Skills 管理页（初始化建议安装 + 本机已安装扫描）
+description: Skills 管理页（安装位置 + 使用方式 + 扫描结果）
 ---
 # Skills 管理台
 
 > 本页由脚本自动生成：\`node scripts/tools/sync-skills-management.mjs\`  
 > 最近生成时间：${generatedAt}
 
-## 1. 初始化建议安装（拆分原生 Skills）
+## 0. 先做这 3 步（实操）
 
-| Skill | 仓库 | 已安装 | 安装命令 |
+1. 安装拆分出去的原生 skill（从下方表格复制 \`gemini skills install ...\`）  
+2. 运行 \`node scripts/tools/sync-skills-management.mjs\` 刷新本页  
+3. 看“本机已安装 Skills”确认路径是否出现  
+4. 在对话里直接点名 skill（\`$skill-name\`）实际触发一次
+
+## 1. 安装在哪里
+
+### 1.1 运行时安装目录
+
+| 运行时 | 目录 | 当前存在 | 检查命令 |
 | :--- | :--- | :---: | :--- |
-${nativeRows || '| (空) | - | - | - |'}
+${installLocationRows}
 
-## 2. 本机已安装 Skills（自动扫描）
+### 1.2 本机私有 skills 源码目录
+
+- 源码目录：\`${localSkillsRoot}\`
+- 推荐做法：源码放这里，再链接到对应运行时目录。
+
+示例（把本地 skill 接入 Codex）：
+
+\`\`\`bash
+ln -s "${localSkillsRoot}/your-skill" "$HOME/.codex/skills/your-skill"
+\`\`\`
+
+## 2. 初始化建议安装（CortexOS 原生 skills）
+
+| Skill | 仓库 | 已安装 | 已安装路径 | 安装命令 |
+| :--- | :--- | :---: | :--- | :--- |
+${nativeRows || '| (空) | - | - | - | - |'}
+
+## 3. 本机已安装 Skills（自动扫描）
 
 | 名称 | 来源 | 包含 SKILL.md | 路径 |
 | :--- | :--- | :---: | :--- |
 ${installedRows || '| (未发现) | - | - | - |'}
 
-## 3. 扫描路径
+## 4. 怎么使用（落地步骤）
 
-${scanRows}
+### 4.1 先安装（Gemini 侧）
 
-## 4. 维护约定
+\`\`\`bash
+gemini skills install ${sampleRepo}
+ls -la "$HOME/.agents/skills"
+\`\`\`
 
-- 你拆分出去的原生 skills 以 \`docs/skills/github_repos.md\` 为 SSOT。
+### 4.2 本地源码接入 Codex（开发常用）
+
+\`\`\`bash
+mkdir -p "$HOME/.codex/skills"
+ln -sfn "${localSkillsRoot}/your-skill" "$HOME/.codex/skills/your-skill"
+test -f "$HOME/.codex/skills/your-skill/SKILL.md" && echo "OK: SKILL.md 已就绪"
+\`\`\`
+
+### 4.3 在对话里触发
+
+- 直接写 skill 名称（例如：\`xhs-manager-skill\`）
+- 或显式前缀（例如：\`$xhs-manager-skill\`）
+
+### 4.4 验收（不是“装了就算完”）
+
+\`\`\`bash
+node scripts/tools/sync-skills-management.mjs
+ls -la "$HOME/.codex/skills" | rg "xhs-manager|omni-publisher|scm-ops"
+\`\`\`
+
+- 管理台出现该 skill（见第 3 节）  
+- 路径下存在 \`SKILL.md\`  
+- 实际对话触发后，Agent 回应中体现该 skill 语义
+
+## 5. 维护约定
+
+- 原生拆分 skills 以 \`docs/skills/github_repos.md\` 为 SSOT。
 - 用户本机安装态以本页扫描结果为准。
-- 如新增私有 skill，请放在 \`/Users/webkubor/Desktop/skills\`，并同步更新 \`/Users/webkubor/Documents/memory/skills/index.md\`。
+- 新增私有 skill：放到 \`${localSkillsRoot}\`，并同步更新 \`/Users/webkubor/Documents/memory/skills/index.md\`。
 `
 }
 
@@ -174,7 +237,10 @@ function main () {
     { label: '~/.agents/skills', path: path.join(home, '.agents/skills') },
     { label: '~/.agent/skills', path: path.join(home, '.agent/skills') },
     { label: '~/.codex/skills', path: path.join(home, '.codex/skills') }
-  ]
+  ].map(item => ({
+    ...item,
+    exists: fs.existsSync(item.path)
+  }))
 
   const nativeSkills = parseNativeSkillsFromRepos(skillsReposFile)
   const installedRaw = scanDirs.flatMap(d => listSkillEntriesInDir(d.path, d.label))
@@ -185,7 +251,8 @@ function main () {
     generatedAtLocal: nowLocal(),
     nativeSkills,
     installedSkills,
-    scanDirs
+    scanDirs,
+    localSkillsRoot
   }
 
   fs.mkdirSync(path.dirname(outJsonFile), { recursive: true })
@@ -199,7 +266,7 @@ function main () {
   })
   fs.writeFileSync(outMarkdownFile, markdown, 'utf8')
 
-  console.log(`✅ skills 管理台已更新:`)
+  console.log('✅ skills 管理台已更新:')
   console.log(`- ${outMarkdownFile}`)
   console.log(`- ${outJsonFile}`)
   console.log(`- native: ${nativeSkills.length}, installed: ${installedSkills.length}`)

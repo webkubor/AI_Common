@@ -23,4 +23,4 @@ description: Skills 能力入口与查找顺序。
 - 查看可用开源 skills：打开 [`github_repos`](./github_repos)
 - 查本机私有 skills：先读 `/Users/webkubor/Documents/memory/skills/index.md`
 - 新增 skill：在 `/Users/webkubor/Desktop/skills` 建仓，并同步更新 `../memory/skills/index.md`
-- 刷新管理页：运行 `node scripts/tools/sync-skills-management.mjs`
+- 刷新管理页：运行 `pnpm run skills:sync`（或 `node scripts/tools/sync-skills-management.mjs`）
