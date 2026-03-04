@@ -80,8 +80,10 @@ pnpm run fleet:handover -- --to-workspace "/绝对路径" --to-agent "Claude"
 | :--- | :--- | :--- |
 | **🧠 助手操作记录** | `$CODEX_HOME/.memory/logs/` | 记录 Agent 的运行轨迹（私有，不进入用户记忆） |
 | **📚 知识总结/复盘** | `memory/knowledge/` | 沉淀深度复盘、避坑指南、架构分析 |
+| **🗂 个人项目索引** | `/Users/webkubor/Documents/memory/projects/index.md` | 查询你的项目档案、仓库路径与项目上下文 |
 | **🎭 业务方案/计划** | `memory/plans/` | 存放运营方案、执行策略、策略文档 |
 | **🧭 AI Team 协作入口** | `/Users/webkubor/Documents/memory/plans/projects/*-command-center.md` | 首先定位项目指挥中心，统一查看计划、队友与沟通区 |
+| **🧰 Skills 资产索引** | `/Users/webkubor/Documents/memory/skills/index.md` | 查询你的本地 skills 根目录与维护约定 |
 | **🧩 助手私有调教记忆** | `$CODEX_HOME/.memory` | 仅存助手自我调教与偏好，不写入用户 `memory` |
 | **🛡 Skill 准入门禁** | `rules/skill_vetting_gate.md` + `checklists/skill_vetting_report.md` | 第三方 Skill 安装前先审查，未出报告不得安装 |
 | **🛰 跨目录读取协议** | MCP tools (`read_router`/`get_fleet_status`) | 工作区受限时禁止直接 cat 越界路径，必须优先走 MCP |

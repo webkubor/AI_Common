@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-04T03:55:00.427Z",
+  "generatedAt": "2026-03-04T04:35:00.433Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
   "total": 3,
@@ -40,8 +40,8 @@
       "agent": "Codex",
       "role": "后端",
       "workspace": "/Users/webkubor/Documents/CortexOS",
-      "task": "清理老残留：删除 docs/memory 重建痕迹与 .memory/retrospectives 兼容旧文件",
-      "since": "2026-03-04 11:30",
+      "task": "建立 memory 项目索引与 skills 索引，并扩展 RAG 检索范围到 ../memory/projects",
+      "since": "2026-03-04 12:31",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 100,

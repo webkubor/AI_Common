@@ -16,7 +16,9 @@ DEFAULT_SCOPE = {
     "include": [
         "docs/router.md",
         "docs/rules",
-        "../memory/knowledge"
+        "../memory/knowledge",
+        "../memory/projects",
+        "../memory/skills"
     ],
     "exclude_path_contains": [
         "/.vitepress/",
