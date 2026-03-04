@@ -185,17 +185,18 @@
   },
   "active": "0cce9b774f045b18",
   "lastOpenFiles": [
-    "docs/checklists/skill_vetting_report_tavily_2026-03-04.md",
     "chroma_db/chroma.sqlite3-journal",
+    "chroma_db/217b91de-2e45-4e54-a308-59bdf9f62aed/data_level0.bin",
+    "chroma_db/217b91de-2e45-4e54-a308-59bdf9f62aed/link_lists.bin",
+    "chroma_db/217b91de-2e45-4e54-a308-59bdf9f62aed/length.bin",
+    "chroma_db/217b91de-2e45-4e54-a308-59bdf9f62aed/header.bin",
+    "chroma_db/217b91de-2e45-4e54-a308-59bdf9f62aed",
+    "docs/checklists/skill_vetting_report_tavily_2026-03-04.md",
     "chroma_db/b4f1a866-5dab-492b-8209-f6512a2e8b2d/link_lists.bin",
     "chroma_db/b4f1a866-5dab-492b-8209-f6512a2e8b2d/length.bin",
     "chroma_db/b4f1a866-5dab-492b-8209-f6512a2e8b2d/header.bin",
     "chroma_db/b4f1a866-5dab-492b-8209-f6512a2e8b2d/data_level0.bin",
     "chroma_db/b4f1a866-5dab-492b-8209-f6512a2e8b2d",
-    "chroma_db/3865c865-8af3-472a-9082-959a49a671b4/link_lists.bin",
-    "chroma_db/3865c865-8af3-472a-9082-959a49a671b4/length.bin",
-    "chroma_db/3865c865-8af3-472a-9082-959a49a671b4/header.bin",
-    "chroma_db/3865c865-8af3-472a-9082-959a49a671b4/data_level0.bin",
     "CHANGELOG.md",
     "README.md",
     "TODO.md",
@@ -219,7 +220,6 @@
     "CortexOS-Secrets/Brain/gmail.md",
     "CortexOS-Secrets/Brain/openrouter_token.md",
     "CortexOS-Secrets/Brain/github.md",
-    "CortexOS-Secrets/Docs/wechat.md",
-    "docs/memory/logs/2026-03-03.md"
+    "CortexOS-Secrets/Docs/wechat.md"
   ]
 }
