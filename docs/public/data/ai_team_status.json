@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-04T15:20:00.385Z",
+  "generatedAt": "2026-03-04T15:25:00.389Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
   "total": 3,
@@ -40,8 +40,8 @@
       "agent": "Codex",
       "role": "后端",
       "workspace": "~/Documents/CortexOS",
-      "task": "替换 OpenClaw 低级 fallback，加入 Kimi 2.5 与 GLM 4.7 并验证",
-      "since": "2026-03-04 23:15",
+      "task": "为 Gemini 配置跨文件只读权限（允许读取，写入需审批）",
+      "since": "2026-03-04 23:22",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 100,
