@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-05T06:30:00.352Z",
+  "generatedAt": "2026-03-05T06:40:00.383Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
   "total": 3,
@@ -22,12 +22,12 @@
       "isStale": false
     },
     {
-      "member": "Candy-3-3 (Gemini)",
+      "member": "Candy-3 (Gemini)",
       "agent": "Gemini",
-      "role": "视觉生成/执行者",
+      "role": "未分配",
       "workspace": "~/Documents/CortexOS",
-      "task": "生成三组影视化情绪人像：城市孤寂、复古旧梦、科技残余。",
-      "since": "2026-03-05 14:29",
+      "task": "待分配任务",
+      "since": "2026-03-05 14:35",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 100,
