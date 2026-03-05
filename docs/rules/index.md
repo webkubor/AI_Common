@@ -19,6 +19,7 @@ description: 核心研发、运维与协作规则集，确保 Agent 输出的一
 - [soul_contract_standard](./soul_contract_standard) — Agent 行为合同边界
 - [skill_vetting_gate](./skill_vetting_gate) — Skill 准入门禁与红线
 - [local_environment_constraints](./local_environment_constraints) — 环境执行边界约束
+- [permission_matrix_template](./permission_matrix_template) — Agent 权限矩阵模板（学习与落地）
 
 ## 🔀 已迁移到对应目录
 

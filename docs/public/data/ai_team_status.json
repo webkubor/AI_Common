@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-05T02:25:00.402Z",
+  "generatedAt": "2026-03-05T02:30:00.203Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 3,
-  "active": 3,
+  "total": 4,
+  "active": 4,
   "offline": 0,
   "queued": 0,
   "members": [
@@ -42,6 +42,20 @@
       "workspace": "~/Documents/CortexOS",
       "task": "新增权限矩阵学习模板并接入规则索引",
       "since": "2026-03-05 10:24",
+      "status": "[ 执行中 ] 活跃",
+      "type": "active",
+      "progress": 100,
+      "isCaptain": false,
+      "hasTodo": true,
+      "isStale": false
+    },
+    {
+      "member": "Candy (Gemini)-3 (Gemini)",
+      "agent": "Gemini",
+      "role": "CLI 交互助手",
+      "workspace": "~/Documents/CortexOS",
+      "task": "执行用户命令: pwd 并反馈当前工作目录。",
+      "since": "2026-03-05 10:26",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 100,
