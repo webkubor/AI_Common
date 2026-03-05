@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-05T07:55:00.370Z",
+  "generatedAt": "2026-03-05T08:25:00.328Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 5,
-  "active": 5,
+  "total": 4,
+  "active": 4,
   "offline": 0,
   "queued": 0,
   "members": [
@@ -28,20 +28,6 @@
       "workspace": "~/Documents/CortexOS",
       "task": "待分配任务",
       "since": "2026-03-05 14:35",
-      "status": "[ 执行中 ] 活跃",
-      "type": "active",
-      "progress": 100,
-      "isCaptain": false,
-      "hasTodo": true,
-      "isStale": false
-    },
-    {
-      "member": "Codex-1 (Codex)",
-      "agent": "Codex",
-      "role": "后端",
-      "workspace": "~/Documents/CortexOS",
-      "task": "整理并补齐 memory 中 npm/pnpm 环境依赖清单，修复失效引用",
-      "since": "2026-03-05 14:21",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 100,
