@@ -12,6 +12,12 @@ from datetime import datetime
 from pathlib import Path
 
 from fastmcp import FastMCP
+try:
+    import chromadb
+    from chromadb.utils import embedding_functions
+except Exception:
+    chromadb = None
+    embedding_functions = None
 
 # ===== 全局路径常量 =====
 BRAIN_ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +42,20 @@ SECRETS_DIR = Path(
 KNOWLEDGE_DIR = Path(os.environ.get("CORTEXOS_KNOWLEDGE_HOME", str((BRAIN_ROOT.parent / "memory" / "knowledge").resolve())))
 
 mcp = FastMCP(name="CortexOS Brain")
+
+# ChromaDB 语义检索客户端（不可用时自动降级为全文检索）
+CHROMA_CLIENT = None
+EMBED_FN = None
+if chromadb and embedding_functions:
+    try:
+        CHROMA_CLIENT = chromadb.PersistentClient(path=str(BRAIN_ROOT / "chroma_db"))
+        EMBED_FN = embedding_functions.OllamaEmbeddingFunction(
+            url=os.environ.get("CORTEXOS_OLLAMA_EMBED_URL", "http://localhost:11434/api/embeddings"),
+            model_name=os.environ.get("CORTEXOS_OLLAMA_EMBED_MODEL", "nomic-embed-text"),
+        )
+    except Exception:
+        CHROMA_CLIENT = None
+        EMBED_FN = None
 
 
 # ─────────────────────────────────────────────
@@ -286,26 +306,104 @@ def send_lark_notification(title: str, body: str) -> str:
 # ─────────────────────────────────────────────
 # Tool 12: 知识库关键词检索
 # ─────────────────────────────────────────────
-@mcp.tool()
-def search_knowledge(query: str) -> list[dict]:
-    """在外部知识库目录（默认 ../memory/knowledge）下全文检索包含指定关键词的知识文件。
-
-    参数:
-        query: 要检索的关键词或短语
-    """
+def _fulltext_search(query: str) -> list[dict]:
+    """全文检索兜底逻辑。"""
     results = []
     if not KNOWLEDGE_DIR.exists():
         return results
-    # 使用 rglob 递归扫描所有子目录
     for file_path in KNOWLEDGE_DIR.rglob("*"):
         if file_path.is_file() and not file_path.name.startswith("."):
             try:
                 if query.lower() in file_path.read_text(encoding="utf-8").lower():
                     relative = str(file_path.relative_to(KNOWLEDGE_DIR))
-                    results.append({"file": relative, "match": True})
+                    results.append({"file": relative, "match": True, "mode": "fulltext"})
             except Exception:
                 continue
     return results
+
+
+def _candidate_collections() -> list[str]:
+    """语义检索候选集合：优先 brain_knowledge，再补充已有集合。"""
+    names = ["brain_knowledge"]
+    if CHROMA_CLIENT is None:
+        return names
+    try:
+        existing = [item.name for item in CHROMA_CLIENT.list_collections()]
+        for preferred in ["cortexos_docs", "ai_common_docs"]:
+            if preferred in existing and preferred not in names:
+                names.append(preferred)
+        for name in existing:
+            if name not in names:
+                names.append(name)
+    except Exception:
+        pass
+    return names
+
+
+@mcp.tool()
+def search_knowledge(query: str, top_k: int = 5) -> list[dict]:
+    """在知识库中进行语义相似度搜索（ChromaDB + nomic-embed-text）。
+
+    参数:
+        query: 自然语言查询
+        top_k: 返回最相似结果数量（默认 5）
+    """
+    query = (query or "").strip()
+    if not query:
+        return []
+
+    # 语义依赖不可用时直接降级
+    if CHROMA_CLIENT is None or EMBED_FN is None:
+        return _fulltext_search(query) + [{"mode": "fallback", "error": "semantic_unavailable"}]
+
+    try:
+        top_k = max(1, int(top_k))
+        output = []
+        for name in _candidate_collections():
+            try:
+                if name == "brain_knowledge":
+                    collection = CHROMA_CLIENT.get_or_create_collection(
+                        name=name,
+                        embedding_function=EMBED_FN,
+                    )
+                else:
+                    collection = CHROMA_CLIENT.get_collection(
+                        name=name,
+                        embedding_function=EMBED_FN,
+                    )
+                count = collection.count()
+                if count <= 0:
+                    continue
+
+                payload = collection.query(
+                    query_texts=[query],
+                    n_results=min(top_k, count),
+                )
+                ids = payload.get("ids", [[]])[0]
+                documents = payload.get("documents", [[]])[0]
+                distances = payload.get("distances", [[]])[0]
+                metadatas = payload.get("metadatas", [[]])[0] if payload.get("metadatas") else []
+
+                for i, doc_id in enumerate(ids):
+                    output.append(
+                        {
+                            "id": doc_id,
+                            "document": (documents[i] if i < len(documents) else "")[:300],
+                            "distance": round(float(distances[i]), 4) if i < len(distances) else None,
+                            "metadata": metadatas[i] if i < len(metadatas) else {},
+                            "collection": name,
+                            "mode": "semantic",
+                        }
+                    )
+            except Exception:
+                continue
+
+        if output:
+            output.sort(key=lambda item: item["distance"] if item["distance"] is not None else 999999)
+            return output[:top_k]
+        return _fulltext_search(query)
+    except Exception as e:
+        return _fulltext_search(query) + [{"mode": "fallback", "error": str(e)}]
 
 
 # ─────────────────────────────────────────────

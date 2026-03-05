@@ -52,6 +52,17 @@ pnpm run fleet:handover -- --to-workspace "<路径>" --to-agent "Claude"
 2. 不唯一时，先让用户补充目标
 3. 完成后回报 `from -> to`、路径、时间
 
+## 2.5 Token 节约强制约束 ⚠️
+
+> **所有 Agent 必须遵守，违反视为严重失误**
+
+- ❌ **严禁冷启动时全量读取 `docs/rules/`**，必须用 `load_rule("<name>")` 按需加载
+- ❌ **严禁一次性 `cat` 多个规则/文档文件**，每次最多读 1 个
+- ✅ **冷启动优先调 `get_context_brief()`**，只在真正需要全貌时才调 `read_router()`
+- ✅ **`get_fleet_status()` 替代读 fleet_status.md**，不要直接 cat 文件
+
+> 💡 Token 分级原则：`get_context_brief()` (~100 token) → `read_router()` (~800 token) → 按需 `load_rule()` (~200 token/条)
+
 ## 3. 动态路由（按需读，不全量读）
 
 ### 核心路由
