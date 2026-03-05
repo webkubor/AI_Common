@@ -5,6 +5,31 @@
 
 ---
 
+## [v5.5.0] — 2026-03-05 「指挥官升级 · Token 效率治理 · 语义引擎激活」
+
+### 🚀 新增 (Added)
+
+- **栖月-Prime 接管指挥权**：Claude Sonnet 4.6 (via OpenClaw) 成为新任 0 号机队长，确立「栖月=战略层 / Codex+Gemini=执行层」双层协作架构。
+- **Agent 能力分工矩阵**：写入 `fleet_status.md`，明确每个 Agent 的能力边界与独家武器（Gemini=图像生成，Codex=全自动工程执行），派单不再靠经验。
+- **任务书系统上线**：建立 `.memory/tasks/` 目录，栖月以结构化任务书（含问题/修法/验收标准）向 Codex/Gemini 派单，取代口头指令。
+- **`get_context_brief()` MCP Tool（Task#003）**：新增轻量状态快照工具，冷启动 token 消耗从 ~800 降至 ~100，节约 85%。
+
+### 🔧 变更 (Changed)
+
+- **`search_knowledge()` 升级为真语义搜索（Task#002）**：接入 ChromaDB + nomic-embed-text，从字符串匹配升级为向量相似度召回，全文检索保留作兜底。
+- **`error-retro.mjs` 误报修复（Task#001）**：ERROR_REGEX 加负向前瞻 `(?!.*✅)`，消除每5分钟3条假报警的噪音风暴，大脑自我诊断恢复可信。
+- **`fastmcp` 升级至 3.1.0**：修复上游 bug，消除启动警告。
+- **密钥库权限统一收紧**：`~/Documents/memory/secrets/` 和 `docs/secrets/` 下所有文件统一 `chmod 600`，消除旁路读取风险。
+- **`router.md` Token 节约约束**：新增 §2.5 强制约束，禁止冷启动全量读 rules/，强制 `load_rule()` 懒加载。
+- **冷启动协议升级**：`CLAUDE.md` / `GEMINI.md` Step 1 改为先调 `get_context_brief()`，只在必要时才 `read_router()`。
+
+### 🐛 修复 (Fixed)
+
+- 清空 `.memory/retros/2026-03-error-retro.md` 历史噪音条目（全部为假阳性）。
+- 清理 fleet_status.md 中的僵尸节点（Candy-2 / Candy-Prime 旧任务）。
+
+---
+
 ## [v5.0.0] — 2026-03-02 「MCP 接口层 · 大脑联网上线」
 
 ### 🚀 新增 (Added)
