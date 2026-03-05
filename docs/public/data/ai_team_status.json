@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-05T06:40:00.383Z",
+  "generatedAt": "2026-03-05T07:55:00.370Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 3,
-  "active": 3,
+  "total": 5,
+  "active": 5,
   "offline": 0,
   "queued": 0,
   "members": [
@@ -47,6 +47,34 @@
       "progress": 100,
       "isCaptain": false,
       "hasTodo": true,
+      "isStale": false
+    },
+    {
+      "member": "Candy-2 (Codex)",
+      "agent": "Codex",
+      "role": "后端",
+      "workspace": "~/Desktop/skills/nanobanana-plus",
+      "task": "优化出图前的 API Key 检查与交互：缺失时提示输入、验证可用后继续生成",
+      "since": "2026-03-05 15:53",
+      "status": "[ 执行中 ] 活跃",
+      "type": "active",
+      "progress": 55,
+      "isCaptain": false,
+      "hasTodo": false,
+      "isStale": false
+    },
+    {
+      "member": "Candy-4 (Codex)",
+      "agent": "Codex",
+      "role": "后端",
+      "workspace": "~/Documents/memory",
+      "task": "审计个人大脑仓库当前存在的问题并输出优先级清单",
+      "since": "2026-03-05 15:54",
+      "status": "[ 执行中 ] 活跃",
+      "type": "active",
+      "progress": 55,
+      "isCaptain": false,
+      "hasTodo": false,
       "isStale": false
     }
   ]
