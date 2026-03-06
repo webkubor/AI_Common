@@ -14,34 +14,46 @@ const RETRO_DIR = path.join(ASSISTANT_MEMORY_HOME, 'retros')
 const SEEN_FILE = path.join(META_DIR, 'error-retro-seen.json')
 const RETRY_FILE = path.join(ASSISTANT_MEMORY_HOME, 'persona', 'retry_patterns.md')
 
-const ERROR_REGEX = /❌|失败|exception|traceback|超时|spawn_error|early_exit|connection closed|permission denied|denied|enoent|not found|fatal|panic/i
+const ERROR_REGEX = /❌|失败|exception|traceback|超时|spawn_error|early_exit|connection closed|permission denied|denied|enoent|not found|fatal|panic|conflict|rejected|untracked|failed to fetch/i
 const IGNORE_LINE_REGEXES = [
   /error-retro:\s*✅/i,
   /无新增错误事件/i,
   /^-?\s*scripts\/maintenance\/error-retro\.mjs/i,
-  /^-?\s*状态:\s*失败$/i
+  /^-?\s*状态:\s*失败$/i,
+  /npm notice/i,
+  /suggestion:/i
 ]
 
 const PATTERNS = [
   {
     key: 'mcp_connection',
     test: /connection closed|spawn_error|early_exit|mcp/i,
-    action: '检查 MCP 配置、依赖命令路径并重启客户端会话'
+    action: '检查 MCP 配置、环境变量及其依赖（如 npx/node）是否在 PATH 中。建议重启 MCP 服务。'
+  },
+  {
+    key: 'git_conflict_or_sync',
+    test: /conflict|rejected|stash|diverged|not a git repository/i,
+    action: '检测到 Git 同步风险。请执行 `git status` 确认状态，必要时手动合并或 `git stash` 保护工作区。'
+  },
+  {
+    key: 'lark_notification',
+    test: /lark|webhook|feishu|notification failed/i,
+    action: '飞书通知推送失败。检查网络连通性或 Webhook Token 是否失效，确认当前是否在通知时段（10:00-20:00）。'
   },
   {
     key: 'timeout',
     test: /超时|timeout/i,
-    action: '缩小任务粒度，先做最小命令验证，再逐步放大'
+    action: '任务响应超时。尝试拆分子任务，先验证最小可行路径，或增加 `run_shell_command` 的超时配额。'
   },
   {
     key: 'permission_or_path',
     test: /permission|denied|enoent|not found|不存在|路径/i,
-    action: '先校验路径与权限，再执行写操作'
+    action: '权限或路径错误。先执行 `ls -la` 确认目标权限，或检查环境变量中对应的 ROOT 路径是否正确。'
   },
   {
     key: 'command_failure',
     test: /exit [1-9]|失败|error/i,
-    action: '记录失败命令与关键报错，补充前置检查后重跑'
+    action: '命令执行失败。记录具体的 exit code 与 stderr，补充前置检查（如 `command -v`）后重试。'
   }
 ]
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-06T09:55:00.412Z",
+  "generatedAt": "2026-03-06T09:58:37.768Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
   "total": 3,
@@ -36,12 +36,12 @@
       "isStale": false
     },
     {
-      "member": "Candy-1 (Gemini)",
+      "member": "小烛-1 (Gemini)",
       "agent": "Gemini",
-      "role": "未分配",
+      "role": "战略官",
       "workspace": "~/Documents/CortexOS",
-      "task": "待分配任务",
-      "since": "2026-03-06 17:51",
+      "task": "激活大脑计划层，建立作战指挥中心文件 [[task-20260306-001]]",
+      "since": "2026-03-06 17:58",
       "status": "[ 执行中 ] 活跃",
       "type": "active",
       "progress": 55,
