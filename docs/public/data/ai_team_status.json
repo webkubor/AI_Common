@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-06T08:05:00.386Z",
+  "generatedAt": "2026-03-06T08:20:00.439Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 4,
-  "active": 4,
+  "total": 3,
+  "active": 3,
   "offline": 0,
   "queued": 0,
   "members": [
@@ -18,20 +18,6 @@
       "type": "active",
       "progress": 60,
       "isCaptain": true,
-      "hasTodo": false,
-      "isStale": false
-    },
-    {
-      "member": "Codex-1 (Codex)",
-      "agent": "Codex",
-      "role": "前端",
-      "workspace": "~/Documents/CortexOS",
-      "task": "将 AI Team 页面从 VitePress 文档拆分为独立大面板入口",
-      "since": "2026-03-06 14:18",
-      "status": "[ 执行中 ] 活跃",
-      "type": "active",
-      "progress": 55,
-      "isCaptain": false,
       "hasTodo": false,
       "isStale": false
     },
