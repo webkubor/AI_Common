@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-06T07:10:00.362Z",
+  "generatedAt": "2026-03-06T08:05:00.386Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 5,
-  "active": 5,
+  "total": 4,
+  "active": 4,
   "offline": 0,
   "queued": 0,
   "members": [
@@ -18,20 +18,6 @@
       "type": "active",
       "progress": 60,
       "isCaptain": true,
-      "hasTodo": false,
-      "isStale": false
-    },
-    {
-      "member": "Candy-4-4 (Gemini)",
-      "agent": "Gemini",
-      "role": "执行节点",
-      "workspace": "~/Desktop/create/cinematic-storyboard-pro/_dashboard",
-      "task": "移除未授权且失效的 huggingface-skills 扩展，并清理相关配置与文档。",
-      "since": "2026-03-06 14:03",
-      "status": "[ 执行中 ] 活跃",
-      "type": "active",
-      "progress": 55,
-      "isCaptain": false,
       "hasTodo": false,
       "isStale": false
     },
