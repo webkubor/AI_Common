@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-06T12:16:23.771Z",
+  "generatedAt": "2026-03-06T14:30:00.367Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 1,
-  "active": 1,
+  "total": 2,
+  "active": 2,
   "offline": 0,
   "queued": 0,
   "members": [
@@ -18,6 +18,20 @@
       "type": "active",
       "progress": 60,
       "isCaptain": true,
+      "hasTodo": false,
+      "isStale": false
+    },
+    {
+      "member": "Codex-1 (Codex)",
+      "agent": "Codex",
+      "role": "前端",
+      "workspace": "~/Desktop/create/cinematic-storyboard-pro",
+      "task": "为尚未出场的天榜人物设计首次亮相方案，结合现有世界观与项目风格输出可直接用于正片的出场设计。",
+      "since": "2026-03-06 22:27",
+      "status": "[ 执行中 ] 活跃",
+      "type": "active",
+      "progress": 55,
+      "isCaptain": false,
       "hasTodo": false,
       "isStale": false
     }
