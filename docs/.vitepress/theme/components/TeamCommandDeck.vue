@@ -1,39 +1,37 @@
 <template>
-  <section class="aureate-hero">
-    <div class="aureate-hero-media">
-      <img src="/CortexOS/images/aureate-hero.png" alt="Aureate Industrial Control" class="hero-img" />
-      <div class="aureate-overlay"></div>
+  <section class="aureate-command-strip">
+    <div class="strip-bg">
+      <img src="/CortexOS/images/aureate-hero.png" alt="Hero" class="hero-img" />
+      <div class="overlay"></div>
     </div>
     
-    <div class="aureate-content">
-      <div class="aureate-badge">AUREATE PROTOCOL v2.5</div>
-      <h1 class="aureate-title">CORTEX COMMAND DECK</h1>
-      <p class="aureate-subtitle">
-        Industrial Grade Intelligence · Agentic Neural Hub · Barbaric Minimalism
-      </p>
+    <div class="strip-content">
+      <div class="brand">
+        <span class="kicker">SYSTEM_ID:</span>
+        <h1 class="title">CORTEX_COMMAND</h1>
+      </div>
       
-      <div class="aureate-stats-strip">
-        <div class="stat-item"><span class="label">SECURE_TUNNEL:</span> <span class="value">ESTABLISHED</span></div>
-        <div class="stat-item"><span class="label">NEURAL_DENSITY:</span> <span class="value">OPTIMIZED</span></div>
-        <div class="stat-item"><span class="label">UCD_LOCK:</span> <span class="value">ACTIVE</span></div>
+      <div class="quick-metrics">
+        <div class="metric"><span class="m-label">UPLINK:</span> <span class="m-value">SECURE</span></div>
+        <div class="metric"><span class="m-label">MODE:</span> <span class="m-value">WAR_ROOM</span></div>
+        <div class="metric"><span class="m-label">VERSION:</span> <span class="m-value">AUREATE_2.5</span></div>
       </div>
     </div>
   </section>
 </template>
 
 <style scoped>
-.aureate-hero {
+.aureate-command-strip {
   position: relative;
   width: 100%;
-  aspect-ratio: 21 / 9;
-  min-height: 320px;
+  height: 100px; /* 大幅缩小，只占顶部一条 */
   background: #000;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 24px;
+  margin-bottom: 8px; /* 紧贴下面的矩阵 */
 }
 
-.aureate-hero-media {
+.strip-bg {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -43,81 +41,52 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(0.2) contrast(1.1);
-  opacity: 0.7;
+  opacity: 0.4;
+  filter: grayscale(1) contrast(1.2);
 }
 
-.aureate-overlay {
+.overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.9) 100%),
-              radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
-  pointer-events: none;
+  background: linear-gradient(90deg, #000 20%, transparent 60%, #000 100%);
 }
 
-.aureate-content {
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
-  right: 40px;
+.strip-content {
+  position: relative;
   z-index: 2;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
   font-family: var(--vp-font-family-mono);
 }
 
-.aureate-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: #f59e0b;
-  color: #000;
-  font-weight: 900;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  margin-bottom: 16px;
-}
-
-.aureate-title {
-  font-size: clamp(32px, 5vw, 48px) !important;
-  font-weight: 900 !important;
-  color: #fff;
-  letter-spacing: -0.04em;
-  margin: 0 0 8px 0 !important;
-  border: none !important;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-}
-
-.aureate-subtitle {
-  color: #94a3b8;
-  font-size: 14px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-}
-
-.aureate-stats-strip {
+.brand {
   display: flex;
-  gap: 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  padding-top: 20px;
+  flex-direction: column;
 }
 
-.stat-item {
-  font-size: 11px;
+.kicker { font-size: 10px; color: #f59e0b; letter-spacing: 0.2em; }
+.title { 
+  font-size: 24px !important; 
+  font-weight: 900 !important; 
+  color: #fff; 
+  margin: 0 !important; 
+  border: none !important;
+  letter-spacing: -0.02em;
 }
 
-.stat-item .label {
-  color: #64748b;
-  margin-right: 8px;
+.quick-metrics {
+  display: flex;
+  gap: 24px;
 }
 
-.stat-item .value {
-  color: #34d399;
-  font-weight: 700;
-  text-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
-}
+.metric { font-size: 11px; }
+.m-label { color: #64748b; margin-right: 8px; }
+.m-value { color: #34d399; font-weight: 700; }
 
 @media (max-width: 768px) {
-  .aureate-hero { aspect-ratio: 16 / 9; }
-  .aureate-stats-strip { display: none; }
-  .aureate-content { bottom: 20px; left: 20px; right: 20px; }
+  .quick-metrics { display: none; }
 }
 </style>
