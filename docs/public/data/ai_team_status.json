@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-09T08:30:00.341Z",
+  "generatedAt": "2026-03-09T08:35:00.348Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 5,
-  "active": 5,
+  "total": 4,
+  "active": 4,
   "offline": 0,
   "queued": 0,
   "members": [
@@ -18,20 +18,6 @@
       "type": "active",
       "progress": 60,
       "isCaptain": true,
-      "hasTodo": false,
-      "isStale": false
-    },
-    {
-      "member": "Candy-2 (Codex)",
-      "agent": "Codex",
-      "role": "后端",
-      "workspace": "~/Desktop",
-      "task": "删除 omni-publisher-skill 的远程 GitHub 仓库，并核实本地与文档残留状态。",
-      "since": "2026-03-09 14:33",
-      "status": "[ 执行中 ] 活跃",
-      "type": "active",
-      "progress": 55,
-      "isCaptain": false,
       "hasTodo": false,
       "isStale": false
     },
