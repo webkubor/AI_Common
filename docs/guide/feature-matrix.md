@@ -70,14 +70,9 @@
 bash scripts/core/init-project.sh
 ```
 
-常用操作：
+后台运维命令统一见：
 
-```bash
-pm2 ls
-pm2 describe brain-cortex-pilot
-pm2 restart brain-cortex-pilot
-pm2 logs brain-cortex-pilot --lines 100
-```
+- [运行命令总表（SSOT）](/ops/runtime-command-reference)
 
 详细规则见：`docs/rules/auto-pilot.md`
 

@@ -30,37 +30,13 @@
 
 ## 4. 启动与管理命令
 
-### 4.1 一键初始化（推荐）
+统一命令清单见：
 
-```bash
-cd CortexOS
-bash scripts/core/init-project.sh
-```
-
-### 4.2 手动启动
-
-```bash
-cd CortexOS
-pm2 start scripts/core/auto-pilot.js --name brain-cortex-pilot --cron-restart "*/5 * * * *" --no-autorestart
-pm2 save
-```
-
-### 4.3 验活 / 日志 / 重启 / 停止
-
-```bash
-pm2 ls
-pm2 describe brain-cortex-pilot
-pm2 logs brain-cortex-pilot --lines 100
-pm2 restart brain-cortex-pilot
-pm2 stop brain-cortex-pilot
-```
+- [运行命令总表（SSOT）](./runtime-command-reference.md)
 
 ## 5. 开机自启（建议一次配置）
 
-```bash
-pm2 startup
-pm2 save
-```
+开机自启命令也已收敛到 [运行命令总表（SSOT）](./runtime-command-reference.md)。
 
 ## 6. 故障排查
 

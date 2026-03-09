@@ -168,48 +168,14 @@ Lark 战报发送实现统一在：`scripts/services/lark-service.mjs`。
 - **每天开工前**：先看状态是不是 `online`。  
 - **你改了 `scripts/core/auto-pilot.js` 或相关脚本后**：重启一次进程。  
 
-### 怎么启动（推荐）
+后台任务的初始化、PM2 运维、重启与验活命令统一收敛到：
 
-```bash
-cd CortexOS
-bash scripts/core/init-project.sh
-```
+- [运行命令总表（SSOT）](/ops/runtime-command-reference)
 
-这个初始化脚本会自动启动 PM2 里的 `brain-cortex-pilot`。
+你在这里先记住判断标准即可：
 
-### 已安装环境下的手动启动
-
-```bash
-cd CortexOS
-pm2 start scripts/core/auto-pilot.js --name brain-cortex-pilot --cron-restart "*/5 * * * *" --no-autorestart
-pm2 save
-```
-
-### 怎么确认它在跑
-
-```bash
-pm2 ls
-pm2 describe brain-cortex-pilot
-pm2 logs brain-cortex-pilot --lines 80
-```
-
-判定标准：
-
-- `pm2 ls` 里 `brain-cortex-pilot` 状态是 `online`。  
-- 日志里能看到同步/维护输出，而不是持续报错重启。  
-
-### 改完代码后怎么生效
-
-```bash
-pm2 restart brain-cortex-pilot
-```
-
-### 开机自动恢复（只需配置一次）
-
-```bash
-pm2 startup
-pm2 save
-```
+- `pm2 ls` 里 `brain-cortex-pilot` 状态是 `online`
+- 日志里能看到同步/维护输出，而不是持续报错重启
 
 ---
 

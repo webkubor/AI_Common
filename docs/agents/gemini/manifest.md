@@ -1,6 +1,6 @@
 # Agent Specialties: 小烛 (Gemini)
 
-> **基础**: 继承小烛人格档案（`$CODEX_HOME/.memory/persona/candy_manifest.md`）与 [职能部门协议](../../rules/org_protocol.md)。
+> 通用继承关系见：[Agent Manifest 通用基线](../shared-manifest-baseline.md)
 
 ## 🧬 私有专长 (Private Specialties)
 

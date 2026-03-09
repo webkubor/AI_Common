@@ -1,7 +1,11 @@
+<script setup>
+import { withBase } from 'vitepress'
+</script>
+
 <template>
   <section class="aureate-command-strip">
     <div class="strip-bg">
-      <img src="/CortexOS/images/aureate-hero.png" alt="Hero" class="hero-img" />
+      <img :src="withBase('/images/aureate-hero.png')" alt="Hero" class="hero-img" />
       <div class="overlay"></div>
     </div>
     
