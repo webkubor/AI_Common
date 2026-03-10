@@ -26,7 +26,7 @@ import TeamCommandDeck from '../.vitepress/theme/components/TeamCommandDeck.vue'
   background: #000 !important;
 }
 
-.team-dashboard-page .VPCentere, 
+.team-dashboard-page .VPCentere,
 .team-dashboard-page .container {
   max-width: 100% !important;
   width: 100% !important;
@@ -35,7 +35,7 @@ import TeamCommandDeck from '../.vitepress/theme/components/TeamCommandDeck.vue'
 }
 
 /* 强制 Body 溢出隐藏，像个真正的 App */
-html.team-dashboard-page, 
+html.team-dashboard-page,
 body.team-dashboard-page {
   overflow: hidden !important;
   background: #000 !important;
@@ -64,8 +64,8 @@ body.team-dashboard-page {
 }
 
 .back-to-docs {
-  position: fixed;
-  bottom: 24px;
+  position: absolute;
+  top: 24px;
   right: 24px;
   z-index: 100;
   background: rgba(255, 255, 255, 0.05);

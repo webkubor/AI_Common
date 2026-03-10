@@ -860,10 +860,15 @@ async function makeCaptain(member) {
 
 .agent-logo-wrapper svg,
 .agent-logo-wrapper img {
-  width: 28px;
-  height: 28px;
+  width: 38px;
+  height: 38px;
   display: block;
   object-fit: contain;
+}
+
+.agent-logo-wrapper.mod-codex svg,
+.agent-logo-wrapper.mod-codex img {
+  filter: brightness(0) invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
 }
 
 .alw-icon {
@@ -982,6 +987,11 @@ async function makeCaptain(member) {
   background: rgba(30, 215, 96, 0.15);
   border-color: rgba(30, 215, 96, 0.3);
   color: #8affc1;
+}
+
+.engine-badge.mod-codex img,
+.engine-badge.mod-codex svg {
+  filter: brightness(0) invert(1);
 }
 
 .engine-badge.mod-lobster {
