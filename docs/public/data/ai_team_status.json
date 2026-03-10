@@ -1,26 +1,12 @@
 {
-  "generatedAt": "2026-03-10T03:52:18.485Z",
+  "generatedAt": "2026-03-10T04:00:00.425Z",
   "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 4,
-  "active": 4,
+  "total": 3,
+  "active": 3,
   "offline": 0,
   "queued": 0,
   "members": [
-    {
-      "member": "栖月-Prime (0号机/Claude)",
-      "agent": "Claude",
-      "role": "🏴 总队长 · 战略把关",
-      "workspace": "~/clawd",
-      "task": "接管舰队指挥权，负责任务分发、冲突裁决、质量把关；Codex/Gemini 执行具体任务",
-      "since": "2026-03-05 10:32",
-      "status": "👑 [ 队长锁 ] 活跃",
-      "type": "active",
-      "progress": 60,
-      "isCaptain": true,
-      "hasTodo": false,
-      "isStale": false
-    },
     {
       "member": "Codex-1 (Codex)",
       "agent": "Codex",
@@ -42,10 +28,10 @@
       "workspace": "~/Desktop/收银台",
       "task": "核对工作区内项目是否已在外部大脑中建立项目索引，并给出匹配结果。",
       "since": "2026-03-10 11:40",
-      "status": "[ 执行中 ] 活跃",
+      "status": "👑 [ 队长锁 ] 活跃",
       "type": "active",
-      "progress": 55,
-      "isCaptain": false,
+      "progress": 60,
+      "isCaptain": true,
       "hasTodo": false,
       "isStale": false
     },
