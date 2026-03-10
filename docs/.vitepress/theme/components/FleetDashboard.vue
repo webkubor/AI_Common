@@ -61,7 +61,7 @@ function missionStatusClass(status) {
 }
 
 const currentMembers = computed(() =>
-  data.value.members.filter((m) => m.type === "active" || m.type === "queued")
+  data.value.members.filter((m) => m.type === "active" || m.type === "queued" || m.type === "offline")
 );
 
 const REFRESH_INTERVAL = 8000;
