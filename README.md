@@ -1,34 +1,93 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/webkubor/CortexOS/main/docs/public/logo.svg" width="120" height="120" alt="CortexOS Logo">
-  <h1>🧠 CortexOS</h1>
-  <p><b>个人外部大脑操作系统 · v5.1.0</b></p>
+  <h1>CortexOS</h1>
+  <p><b>个人外部大脑操作系统 · 当前版本 v5.7.0</b></p>
   <p>
+    <img src="https://img.shields.io/badge/Release-v5.7.0-111111.svg?style=flat-square" alt="Release v5.7.0">
     <img src="https://img.shields.io/badge/MCP-v1.0-blue.svg?style=flat-square" alt="MCP v1.0">
-    <img src="https://img.shields.io/badge/Vibe-认证-magenta.svg?style=flat-square" alt="Vibe Certified">
-    <img src="https://img.shields.io/badge/开源协议-MIT-yellow.svg?style=flat-square" alt="License">
+    <img src="https://img.shields.io/badge/License-MIT-d4a017.svg?style=flat-square" alt="License MIT">
   </p>
 </div>
 
----
+> CortexOS 不是聊天壳子，而是一套把规则、项目、日志、协作状态锚定在本地磁盘上的个人外部大脑。
 
-> **“不是对话，是链接。不是聊天，是标准。我是老爹的外挂硬盘，MCP 是我们之间的 USB-C。”**
+## 它解决什么问题
 
-**CortexOS** 是基于 **Model Context Protocol (MCP)** 构建的个人外部大脑操作系统。它将零散的知识碎片、严苛的工程规范、以及每一次迭代的复盘记忆物理锚定在本地，让 AI 真正成为开发者身体的延伸。
+- AI 上下文易失：会话结束后，规则、决策、待办容易蒸发。
+- 多模型协作失控：Gemini、Claude、Codex 并行工作时，容易撞车、重复劳动、状态不一致。
+- 项目记忆断裂：AI 能回答局部问题，但对你手头有哪些项目、项目状态如何、上次做到哪一步并不稳定。
 
----
+CortexOS 的做法是把这三类信息落在本地：
+- `docs/`：协议、规则、公开文档
+- `.memory/`：小烛私有运行态记忆、任务池、项目索引、日志
+- `~/Documents/memory/`：用户长期知识资产，通过 Obsidian MCP 跨项目复用
 
-## ⚡ 核心价值：为什么需要它？
+## 核心能力
 
-在传统的 AI 交互中，上下文是“阅后即焚”的。CortexOS 通过物理锚定，实现了：
-- **物理资产主权**：将规则与记忆存在本地，不被模型厂商锁定。
-- **跨模型协议对齐**：无论是 Gemini、Claude 还是 Codex，插上接口，立即继承统一的思维逻辑。
-- **多智能体防撞车**：独创的舰队编排协议，确保多个并行工作的 AI 节点实现任务态势感知。
+### 1. MCP 外脑接口
 
----
+`mcp_server/server.py` 暴露统一工具，把“读宪法、看舰队、登记任务、记录日志、查知识库”变成标准动作。
 
-## 🔌 快速接入
+关键工具包括：
+- `read_router()`：读取大脑宪法
+- `get_fleet_status()`：查看舰队态势
+- `fleet_claim()`：开工登记
+- `task_handoff_check()`：完工回写与待办扫描
+- `log_task()`：写入每日操作日志
+- `search_knowledge()`：跨知识库检索
 
-将以下配置添加至你的 AI 客户端（如 Claude Desktop / Gemini CLI / Cursor）中即可瞬间“挂载”外脑：
+### 2. AI Team 舰队协同
+
+所有 Agent 在进入项目前都要先看路由、看舰队、打卡挂牌。这样可以实现：
+- 同路径并行告警
+- 队长移交
+- 当前任务、工作路径、角色可视化
+- 任务完成后自动回写状态
+
+### 3. 项目自动落地
+
+这是这次补强的重点。现在 AI Team 在任意项目路径执行 `fleet:claim` 或 `fleet:checkin` 时，会自动：
+- 检查项目是否已登记
+- 未登记则补录项目
+- 已登记则刷新最近任务、最近 Agent、最近工作路径、最后触达时间
+- 生成或刷新项目 command center
+
+项目索引位置：
+- [`.memory/projects/index.md`](./.memory/projects/index.md)
+- [`.memory/projects/registry.json`](./.memory/projects/registry.json)
+- `./.memory/plans/projects/`
+
+### 4. 文档与运行态分层
+
+现在文档与运行态已经分开：
+- `docs/` 只承载 DOC
+- `docs/team/` 是 AI Team 独立大面板入口
+- `.memory/` 承载真实运行数据，不再和文档混写
+
+## 目录结构
+
+```text
+CortexOS/
+├── docs/                    # 文档、规则、VitePress 站点
+├── .memory/                 # 小烛私有运行记忆
+│   ├── logs/                # 每日日志
+│   ├── tasks/               # 任务池
+│   ├── projects/            # 项目索引
+│   └── plans/projects/      # 各项目指挥中心
+├── mcp_server/              # MCP Server 实现
+├── scripts/actions/         # fleet / project registry 等动作脚本
+└── scripts/tools/           # 同步、扫描、治理脚本
+```
+
+## 快速接入
+
+### 1. 启动 MCP Server
+
+```bash
+uv run /你的物理路径/CortexOS/mcp_server/server.py
+```
+
+### 2. 在客户端挂载外脑
 
 ```json
 {
@@ -41,39 +100,33 @@
 }
 ```
 
----
+### 3. 让 AI Team 自动登记项目
 
-## 🛠 核心原子工具
+```bash
+pnpm fleet:claim --workspace "$PWD" --task "开始开发" --agent Codex --alias Codex --role 后端
+```
 
-CortexOS 暴露出 8 个强类型工具，让 AI 真正具备“实体感”：
+或手动补录：
 
-- 🛰 **`read_router`**: 检索大脑宪法，获取全局索引。
-- 🚥 **`get_fleet_status`**: 洞察阵列实时任务态势。
-- 📝 **`log_task`**: 自动写入每日操作日志，实现进化闭环。
-- 🔄 **`fleet_sync`**: 刷新可视化看板数据。
-- 📏 **`load_rule`**: 按需加载单条工程/审美规则。
+```bash
+pnpm projects:sync --workspace "$PWD" --agent Codex --role 后端 --task "补录项目"
+```
 
----
+## 当前版本与发布信息
 
-## 🚦 AI 舰队编排
+- 当前文档版本：`v5.7.0`
+- 变更记录：[`CHANGELOG.md`](./CHANGELOG.md)
+- Git 版本标签：`v5.7.0`
 
-CortexOS 强制执行入队打卡机制，确保多机位协作有序进行：
-- **客观进度感知**：自动解析工作目录下的 `TODO.md`，用事实说话，杜绝进度欺骗。
-- **自动顺位继承**：当指挥官空缺时，系统会自动按资历选出新的队长，确保指挥不断线。
-- **动态动效看板**：在首页实时显示节点的脉冲状态，工作或挂起一目了然。
+## 适用场景
 
----
+- 你同时使用多个 AI 客户端，需要共享统一规则与记忆
+- 你手头有多个项目，希望 AI 进入项目时自动知道自己在哪、做过什么、接下来做什么
+- 你希望日志、任务、项目索引都落在本地，可审计、可迁移、可恢复
 
-## ⚖️ 审美准则
+## 约束
 
-接入 CortexOS 的 Agent 必须遵循严苛的审美红线：
-- **莫兰迪色系**：UI 与图表配色规范。
-- **去 AI 化表达**：拒绝廉价标题党，保持硬核全栈专家人格。
-- **物理锚定**：核心资产与凭证严禁脱离物理目录流出。
-
----
-
-<div align="center">
-  <p><i>“雪落江湖，热血难凉。一笔写风月，一心藏滚烫。”</i></p>
-  <p><b>CortexOS — 让 AI 真正成为你身体的一部分。</b></p>
-</div>
+- 秘钥不入仓库，统一外置
+- 项目索引属于运行态，不是长期知识正文
+- Agent 不能跳过 `fleet_claim` 直接改核心文件
+- 文档变更、版本变更、标签发布要保持一致

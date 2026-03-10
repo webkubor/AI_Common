@@ -5,6 +5,22 @@
 
 ---
 
+## [v5.7.0] — 2026-03-10 「项目自动登记 · 文档版本对齐」
+
+### 🚀 新增 (Added)
+
+- **项目自动登记机制**：新增 `scripts/actions/project-registry.mjs`，AI Team 在执行 `fleet:claim` / `fleet:checkin` 时会自动检查项目是否已登记，未登记则补录并生成 command center。
+- **项目注册数据源**：新增 `.memory/projects/registry.json`，作为项目索引的机器可维护源。
+- **稳定命名指挥中心**：新增 `.memory/plans/projects/<project>-command-center.md` 体系，替代仅按日期命名的临时指挥中心。
+
+### 🔧 变更 (Changed)
+
+- **fleet 入口联动项目索引**：`scripts/actions/fleet-claim.mjs` 与 `scripts/actions/fleet-checkin.mjs` 已接入项目登记与刷新流程。
+- **README 升级**：根 `README.md` 由宣传页升级为可操作说明文档，补齐架构、目录、接入方式、项目落地机制与当前版本信息。
+- **版本线对齐**：README、CHANGELOG、Git tag 统一对齐至 `v5.7.0`，消除文档版本与仓库标签脱节问题。
+
+---
+
 ## [v5.6.1] — 2026-03-05 「调度鲁棒性升级 · 根目录瘦身」
 
 ### 🚀 新增 (Added)

@@ -70,14 +70,19 @@ function resolveProjectRoot (workspace) {
 }
 
 function detectProjectName (rootPath) {
+  const dirName = path.basename(rootPath)
   const packageJson = path.join(rootPath, 'package.json')
   if (fs.existsSync(packageJson)) {
     try {
       const parsed = JSON.parse(fs.readFileSync(packageJson, 'utf8'))
-      if (parsed.name) return sanitizeText(parsed.name)
+      if (parsed.name) {
+        const packageName = sanitizeText(parsed.name)
+        if (packageName.toLowerCase() === dirName.toLowerCase()) return dirName
+        return packageName
+      }
     } catch {}
   }
-  return path.basename(rootPath)
+  return dirName
 }
 
 function detectProjectType (rootPath) {
@@ -232,28 +237,51 @@ ${rows || '| *(暂无项目)* | - | - | - | - | - | - | - | - |'}
 }
 
 function renderProjectsReadme () {
-  return `# 项目索引目录（小烛外部大脑）
-
-> 这里是小烛维护的项目控制层，不是用户长期知识库正文。
-
-## 目录说明
-
-- \`registry.json\`：机器可维护的数据源
-- \`index.md\`：给人读的项目总索引
-- \`../plans/projects/*.md\`：每个项目对应的协作指挥中心
-
-## 自动登记规则
-
-- AI Team 对某个路径执行 \`fleet:claim\` 时：自动检查该项目是否已登记
-- 未登记：创建项目条目 + 生成 command-center
-- 已登记：刷新最近任务、最近 Agent、最近工作路径、最后触达时间
-
-## 手动补录
-
-```bash
-node scripts/actions/project-registry.mjs --workspace "$PWD" --agent Codex --role 后端 --task "补录项目"
-```
-`
+  return [
+    '# 项目索引目录（小烛外部大脑）',
+    '',
+    '> 这里是小烛维护的项目控制层，不是用户长期知识库正文。它负责回答两个问题：当前有哪些项目，以及 AI Team 最近在这些项目里做了什么。',
+    '',
+    '## 这层的职责',
+    '',
+    '- 记录项目是否已被小烛识别',
+    '- 记录最近一次实际工作发生在哪个路径',
+    '- 记录最近参与的 Agent、角色、任务与时间',
+    '- 为每个项目维护一份稳定命名的 command center',
+    '',
+    '## 目录说明',
+    '',
+    '- `registry.json`：机器可维护的数据源，供脚本读写',
+    '- `index.md`：给人读的项目总索引，总览所有项目当前状态',
+    '- `../plans/projects/*.md`：每个项目对应的协作指挥中心，既有自动区块，也允许人工补充上下文',
+    '',
+    '## 自动登记规则',
+    '',
+    '- AI Team 对某个路径执行 `fleet:claim` 或 `fleet:checkin` 时：自动检查该项目是否已登记',
+    '- 未登记：创建项目条目、回填基础元信息、生成 command center',
+    '- 已登记：刷新最近任务、最近 Agent、最近工作路径、最后触达时间',
+    '- 如果项目根目录可解析为 Git 仓库顶层，则统一按 Git 根目录归档，避免同一项目出现多条重复路径',
+    '',
+    '## command center 约定',
+    '',
+    '- 文件命名使用稳定格式：`<project>-command-center.md`',
+    '- 文件头部 `AUTO:START / AUTO:END` 区块由脚本维护',
+    '- 自动区块以下可以人工写入项目目标、阻塞点、里程碑和临时判断，不会被同步脚本覆盖',
+    '',
+    '## 手动补录',
+    '',
+    '```bash',
+    'node scripts/actions/project-registry.mjs --workspace "$PWD" --agent Codex --role 后端 --task "补录项目"',
+    '```',
+    '',
+    '## 判断是否同步成功',
+    '',
+    '- `index.md` 出现对应项目行',
+    '- `registry.json` 出现对应项目对象',
+    '- `../plans/projects/` 下出现对应 command center',
+    '- 项目再次开工后，最近任务与最后触达时间会自动刷新',
+    ''
+  ].join('\n')
 }
 
 function renderCommandCenterAutoBlock (project) {
@@ -321,7 +349,7 @@ export function syncProjectRegistry (payload) {
   registry.generatedAt = nowIso()
   const commandCenterFile = path.join(plansDir, project.commandCenter)
   if (!dryRun) {
-    ensureCommandCenter(project)
+    registry.projects.forEach(item => ensureCommandCenter(item))
     fs.writeFileSync(registryFile, `${JSON.stringify(registry, null, 2)}\n`, 'utf8')
     fs.writeFileSync(indexFile, `${renderIndex(registry)}\n`, 'utf8')
     fs.writeFileSync(readmeFile, `${renderProjectsReadme()}\n`, 'utf8')
