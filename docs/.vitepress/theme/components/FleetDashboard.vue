@@ -1,5 +1,8 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import geminiIcon from "../assets/gemini.svg";
+import claudeIcon from "../assets/claude.svg";
+import codexIcon from "../assets/codex.svg";
 
 const loading = ref(true);
 const error = ref("");
@@ -21,25 +24,26 @@ const data = ref({
   ]
 });
 
-// 顶级官方 Logo 路径与元数据 (LobeHub Icons Version)
+// 顶级官方 Logo 路径与元数据 (Local Assets Version)
 const agentModels = {
   gemini: {
-    icon: `<img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/gemini-color.svg" class="model-icon-img" alt="Gemini" />`,
+    icon: `<img src="${geminiIcon}" class="model-icon-img" alt="Gemini" />`,
     label: "Gemini 引擎",
     class: "mod-gemini"
   },
   claude: {
-    icon: `<img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/claude-color.svg" class="model-icon-img" alt="Claude" />`,
+    icon: `<img src="${claudeIcon}" class="model-icon-img" alt="Claude" />`,
     label: "Claude 引擎",
     class: "mod-claude"
   },
   codex: {
-    icon: `<img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai-color.svg" class="model-icon-img" alt="Chatgpt" />`,
+    icon: `<img src="${codexIcon}" class="model-icon-img" alt="ChatGPT" />`,
     label: "ChatGPT / OpenAI",
     class: "mod-codex"
   },
   lobster: {
-    icon: `<img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/lobehub-color.svg" class="model-icon-img" alt="OpenClaw" />`,
+    icon: `<img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/lobehub-color.svg" class="model-icon-img"
+  alt="OpenClaw" />`,
     label: "智能体引擎",
     class: "mod-lobster"
   }
@@ -119,15 +123,11 @@ onBeforeUnmount(() => {
 });
 
 function isWorking(member) {
-  return member.type === "active" && member.progress > 0 && member.progress < 100;
+  return member.type === "active" && (member.progress > 0 || member.type === "active");
 }
 
 function getStatusText(status) {
-  const map = {
-    'WORKING': '执行中',
-    'PENDING': '待处理',
-    'DONE': '已完成'
-  };
+  const map = { 'WORKING': '执行中', 'PENDING': '待处理', 'DONE': '已完成' };
   return map[status?.toUpperCase()] || status;
 }
 
