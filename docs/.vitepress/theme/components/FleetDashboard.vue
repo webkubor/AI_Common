@@ -289,16 +289,6 @@ async function makeCaptain(member) {
                 </div>
 
                 <div class="node-footer">
-                  <div class="load-bar-wrapper">
-                    <div class="load-labels">
-                      <span>指令负载</span>
-                      <span>{{ member.progress }}%</span>
-                    </div>
-                    <div class="load-track">
-                      <div class="load-fill" :style="{ width: member.progress + '%' }"
-                        :class="{ 'active': isWorking(member) }"></div>
-                    </div>
-                  </div>
                   <div class="node-meta">
                     <span class="meta-item">📍 {{ member.workspace.split('/').pop() }}</span>
                     <span class="meta-item">⏱ {{ member.since }}</span>
