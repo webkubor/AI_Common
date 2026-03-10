@@ -21,25 +21,25 @@ const data = ref({
   ]
 });
 
-// 顶级官方 Logo 路径与元数据
+// 顶级官方 Logo 路径与元数据 (LobeHub Icons Version)
 const agentModels = {
   gemini: {
-    icon: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z"/></svg>`,
+    icon: `<img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/gemini-color.svg" class="model-icon-img" alt="Gemini" />`,
     label: "Gemini 引擎",
     class: "mod-gemini"
   },
   claude: {
-    icon: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L3.5 19H5.8L12 7.2L18.2 19H20.5L12 3ZM12 11.5L8.5 18H15.5L12 11.5Z"/></svg>`,
+    icon: `<img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/claude-color.svg" class="model-icon-img" alt="Claude" />`,
     label: "Claude 引擎",
     class: "mod-claude"
   },
   codex: {
-    icon: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM11 7H13V13H11V7ZM11 15H13V17H11V15Z"/></svg>`,
+    icon: `<img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai-color.svg" class="model-icon-img" alt="Codex" />`,
     label: "Codex 矩阵",
     class: "mod-codex"
   },
   lobster: {
-    icon: `🦞`,
+    icon: `<img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/lobehub-color.svg" class="model-icon-img" alt="OpenClaw" />`,
     label: "智能体引擎",
     class: "mod-lobster"
   }
@@ -243,7 +243,7 @@ async function makeCaptain(member) {
                 <div class="node-header">
                   <div class="agent-identity">
                     <div class="agent-logo-wrapper" :class="getModelMeta(member.agent).class">
-                      <span class="alw-icon" v-if="getModelMeta(member.agent).icon.includes('<svg')"
+                      <span class="alw-icon" v-if="getModelMeta(member.agent).icon.includes('<')"
                         v-html="getModelMeta(member.agent).icon"></span>
                       <span v-else class="emoji-icon">{{ getModelMeta(member.agent).icon }}</span>
                     </div>
@@ -256,7 +256,7 @@ async function makeCaptain(member) {
 
                         <!-- 引擎徽章 -->
                         <div class="engine-badge" :class="getModelMeta(member.agent).class">
-                          <span class="eb-icon" v-if="getModelMeta(member.agent).icon.includes('<svg')"
+                          <span class="eb-icon" v-if="getModelMeta(member.agent).icon.includes('<')"
                             v-html="getModelMeta(member.agent).icon"></span>
                           <span class="eb-icon" v-else>{{ getModelMeta(member.agent).icon }}</span>
                           <span class="eb-label">{{ getModelMeta(member.agent).label }}</span>
@@ -868,10 +868,12 @@ async function makeCaptain(member) {
   transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.agent-logo-wrapper svg {
+.agent-logo-wrapper svg,
+.agent-logo-wrapper img {
   width: 28px;
   height: 28px;
   display: block;
+  object-fit: contain;
 }
 
 .alw-icon {
@@ -960,6 +962,14 @@ async function makeCaptain(member) {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.eb-icon svg,
+.eb-icon img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
 }
 
 .eb-icon.emoji {
