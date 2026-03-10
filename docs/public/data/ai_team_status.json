@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-10T09:40:00.506Z",
+  "generatedAt": "2026-03-10T09:45:35.719Z",
   "version": "v5.6.5 (系统环境透显 + 工具链路监控)",
   "source": ".memory/fleet/fleet_status.md",
   "environment": {
@@ -36,10 +36,10 @@
       "workspace": "~/Documents/CortexOS",
       "task": "精简前端项目技术基线表达并补充剪贴板依赖约定",
       "since": "2026-03-10 16:14",
-      "status": "👑 [ 队长锁 ] 活跃",
+      "status": "[ 执行中 ] 活跃",
       "type": "active",
-      "progress": 60,
-      "isCaptain": true,
+      "progress": 55,
+      "isCaptain": false,
       "hasTodo": false,
       "isStale": false
     },
@@ -53,7 +53,7 @@
       "status": "[ 队长锁 ] 活跃",
       "type": "active",
       "progress": 60,
-      "isCaptain": false,
+      "isCaptain": true,
       "hasTodo": false,
       "isStale": false
     },
