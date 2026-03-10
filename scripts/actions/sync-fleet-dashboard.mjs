@@ -173,7 +173,7 @@ export function syncFleetDashboard() {
     const workspaceRaw = row.workspace;
     const todoProgress = getProgressFromTodo(workspaceRaw);
     const finalProgress = todoProgress !== null ? todoProgress : statusToProgress(row.status);
-    
+
     // 检查是否为僵尸节点 (stale)
     let isStale = false;
     if (row.since.includes("-")) {
@@ -193,9 +193,31 @@ export function syncFleetDashboard() {
     });
   }
 
+  // 检查常驻智能体小龙虾 (OpenClaw)
+  const openclawDir = path.join(os.homedir(), ".openclaw");
+  const hasOpenClaw = fs.existsSync(openclawDir);
+  const isLobsterActive = rows.some(r => r.agent.toLowerCase().includes("lobster") || r.member.includes("栖月"));
+
+  if (hasOpenClaw && !isLobsterActive) {
+    rows.push({
+      member: "栖月-Prime",
+      agent: "Lobster",
+      role: "指挥官",
+      workspace: "系统沉睡舱",
+      task: "等待唤醒与派单...",
+      since: "-",
+      status: "已离线",
+      type: "offline",
+      progress: 100,
+      isCaptain: true,
+      hasTodo: false,
+      isStale: false
+    });
+  }
+
   const payload = {
     generatedAt: new Date().toISOString(),
-    version: "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
+    version: "v5.5.0 (智能体常驻 + 引擎可视化 + 阶级标定)",
     source: ".memory/fleet/fleet_status.md",
     total: rows.length,
     active: rows.filter((r) => r.type === "active").length,

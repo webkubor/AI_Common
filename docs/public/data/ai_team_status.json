@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-03-10T04:01:14.147Z",
-  "version": "v5.4.0 (角色分工 + 客观进度 + 僵尸检测)",
+  "generatedAt": "2026-03-10T04:15:00.442Z",
+  "version": "v5.5.0 (智能体常驻 + 引擎可视化 + 阶级标定)",
   "source": ".memory/fleet/fleet_status.md",
-  "total": 3,
+  "total": 4,
   "active": 3,
-  "offline": 0,
+  "offline": 1,
   "queued": 0,
   "members": [
     {
@@ -46,6 +46,20 @@
       "type": "active",
       "progress": 55,
       "isCaptain": false,
+      "hasTodo": false,
+      "isStale": false
+    },
+    {
+      "member": "栖月-Prime",
+      "agent": "Lobster",
+      "role": "指挥官",
+      "workspace": "系统沉睡舱",
+      "task": "等待唤醒与派单...",
+      "since": "-",
+      "status": "已离线",
+      "type": "offline",
+      "progress": 100,
+      "isCaptain": true,
       "hasTodo": false,
       "isStale": false
     }
