@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-10T12:40:00.416Z",
+  "generatedAt": "2026-03-10T13:00:00.413Z",
   "version": "v5.6.5 (系统环境透显 + 工具链路监控)",
   "source": ".memory/fleet/fleet_status.md",
   "environment": {
@@ -24,25 +24,11 @@
     "nodeVersion": "v22.19.0",
     "skillsCount": 17
   },
-  "total": 3,
-  "active": 2,
+  "total": 2,
+  "active": 1,
   "offline": 1,
   "queued": 0,
   "members": [
-    {
-      "member": "Codex-4 (Codex)",
-      "agent": "Codex",
-      "role": "后端",
-      "workspace": "~/Documents/CortexOS",
-      "task": "执行 AI Team 实时化改造 Phase 1：将舰队状态同步写入 SQLite 并接入现有操作链路",
-      "since": "2026-03-10 18:51",
-      "status": "[ 执行中 ] 活跃",
-      "type": "active",
-      "progress": 55,
-      "isCaptain": false,
-      "hasTodo": false,
-      "isStale": false
-    },
     {
       "member": "Candy-1 (Codex)",
       "agent": "Codex",
