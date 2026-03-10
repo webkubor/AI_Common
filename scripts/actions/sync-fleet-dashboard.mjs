@@ -237,15 +237,35 @@ export function syncFleetDashboard() {
     rows[captainIndex].isCaptain = true;
   }
 
+  // 技能库盘点 (Local Skill Inventory)
+  const skillPaths = [
+    path.join(os.homedir(), ".agents/skills"),
+    path.join(os.homedir(), ".codex/skills")
+  ];
+  let skillsCount = 0;
+  skillPaths.forEach(p => {
+    if (fs.existsSync(p)) {
+      try {
+        const dirs = fs.readdirSync(p, { withFileTypes: true })
+          .filter(dirent => dirent.isDirectory() && !dirent.name.startsWith("."));
+        skillsCount += dirs.length;
+      } catch (e) { /* ignore */ }
+    }
+  });
+
   const payload = {
     generatedAt: new Date().toISOString(),
-    version: "v5.6.0 (工具链路监控 + 智能体常驻 + 阶级标定)",
+    version: "v5.6.5 (系统环境透显 + 工具链路监控)",
     source: ".memory/fleet/fleet_status.md",
     environment: {
-      codex: checkCLI("codex"),
-      gemini: checkCLI("gemini"),
-      claude: checkCLI("claude-code"),
-      openclaw: checkCLI("openclaw"),
+      tools: {
+        codex: checkCLI("codex"),
+        gemini: checkCLI("gemini"),
+        claude: checkCLI("claude-code"),
+        openclaw: checkCLI("openclaw"),
+      },
+      nodeVersion: process.version,
+      skillsCount: skillsCount,
     },
     total: rows.length,
     active: rows.filter((r) => r.type === "active").length,

@@ -320,7 +320,8 @@ async function makeCaptain(member) {
           <div class="health-group">
             <span class="health-label">核心链路体检:</span>
             <div class="health-items">
-              <div v-for="(status, key) in data.environment" :key="key" class="health-item" :class="status?.status">
+              <div v-for="(status, key) in data.environment?.tools" :key="key" class="health-item"
+                :class="status?.status">
                 <span class="h-dot"></span>
                 <span class="h-name">{{ key.toUpperCase() }}</span>
                 <!-- 🧪 Tooltip 气泡 -->
@@ -331,9 +332,21 @@ async function makeCaptain(member) {
               </div>
             </div>
           </div>
+
+          <div class="footer-system-stats" v-if="data.environment">
+            <div class="stat-item">
+              <span class="stat-label">📦 SKILLS:</span>
+              <span class="stat-value">{{ data.environment.skillsCount || 0 }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">🚀 NODE:</span>
+              <span class="stat-value">{{ data.environment.nodeVersion || '--' }}</span>
+            </div>
+          </div>
+
           <div class="footer-meta">
             <span class="sync-info">同步周期: {{ REFRESH_INTERVAL / 1000 }}s</span>
-            <span class="version-tag">{{ data.version || 'V5.6.0' }}</span>
+            <span class="version-tag">{{ data.version || 'V5.6.5' }}</span>
           </div>
         </div>
       </footer>
@@ -1315,6 +1328,37 @@ async function makeCaptain(member) {
   font-size: 10px;
   color: #444;
   font-family: ui-monospace;
+}
+
+.footer-system-stats {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 40px;
+  padding: 0 20px;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-label {
+  font-size: 9px;
+  color: #555;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.stat-value {
+  font-size: 11px;
+  color: var(--c-aureate-glow);
+  font-family: ui-monospace;
+  text-shadow: 0 0 8px rgba(245, 200, 123, 0.3);
 }
 
 .version-tag {

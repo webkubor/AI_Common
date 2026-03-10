@@ -1,27 +1,31 @@
 {
-  "generatedAt": "2026-03-10T08:35:00.480Z",
-  "version": "v5.6.0 (工具链路监控 + 智能体常驻 + 阶级标定)",
+  "generatedAt": "2026-03-10T09:05:00.701Z",
+  "version": "v5.6.5 (系统环境透显 + 工具链路监控)",
   "source": ".memory/fleet/fleet_status.md",
   "environment": {
-    "codex": {
-      "status": "online",
-      "reason": "命令链路正常"
+    "tools": {
+      "codex": {
+        "status": "online",
+        "reason": "命令链路正常"
+      },
+      "gemini": {
+        "status": "online",
+        "reason": "命令链路正常"
+      },
+      "claude": {
+        "status": "offline",
+        "reason": "未在系统 PATH 中找到 claude-code，请检查是否已安装。"
+      },
+      "openclaw": {
+        "status": "online",
+        "reason": "命令链路正常"
+      }
     },
-    "gemini": {
-      "status": "online",
-      "reason": "命令链路正常"
-    },
-    "claude": {
-      "status": "offline",
-      "reason": "未在系统 PATH 中找到 claude-code，请检查是否已安装。"
-    },
-    "openclaw": {
-      "status": "online",
-      "reason": "命令链路正常"
-    }
+    "nodeVersion": "v22.19.0",
+    "skillsCount": 17
   },
-  "total": 3,
-  "active": 2,
+  "total": 4,
+  "active": 3,
   "offline": 1,
   "queued": 0,
   "members": [
@@ -50,6 +54,20 @@
       "type": "active",
       "progress": 60,
       "isCaptain": true,
+      "hasTodo": false,
+      "isStale": false
+    },
+    {
+      "member": "Candy-2 (Gemini)",
+      "agent": "Gemini",
+      "role": "主笔 / 架构师",
+      "workspace": "~/Desktop/create/雪夜无名",
+      "task": "已完成《雪夜无名》AI 改造（MOD/llms.txt/即时看板），现正根据网文头部节奏制定第十三章爆发方案。",
+      "since": "2026-03-10 17:00",
+      "status": "[ 执行中 ] 活跃",
+      "type": "active",
+      "progress": 55,
+      "isCaptain": false,
       "hasTodo": false,
       "isStale": false
     },
