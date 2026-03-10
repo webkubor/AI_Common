@@ -14,11 +14,17 @@ const projectRoot = path.join(__dirname, "../../");
 const { fleetFile: sourceFile } = ensureFleetPaths(projectRoot);
 const outputFile = path.join(projectRoot, "docs/public/data/ai_team_status.json");
 
-function checkCLI(cmd) {
+function checkCLI(cmd, dirPath = null) {
   try {
     execSync(`which ${cmd}`, { stdio: "ignore" });
     return { status: "online", reason: "命令链路正常" };
   } catch (err) {
+    if (dirPath && fs.existsSync(dirPath)) {
+      return {
+        status: "offline",
+        reason: `命令 ${cmd} 未找到，但在 ${dirPath.replace(os.homedir(), "~")} 发现配置目录。可能需要配置 PATH。`
+      };
+    }
     return { status: "offline", reason: `未在系统 PATH 中找到 ${cmd}，请检查是否已安装。` };
   }
 }
@@ -261,8 +267,8 @@ export function syncFleetDashboard() {
       tools: {
         codex: checkCLI("codex"),
         gemini: checkCLI("gemini"),
-        claude: checkCLI("claude-code"),
-        openclaw: checkCLI("openclaw"),
+        claude: checkCLI("claude", path.join(os.homedir(), ".claude")),
+        openclaw: checkCLI("openclaw", path.join(os.homedir(), ".openclaw")),
       },
       nodeVersion: process.version,
       skillsCount: skillsCount,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-10T09:05:00.701Z",
+  "generatedAt": "2026-03-10T09:10:00.587Z",
   "version": "v5.6.5 (系统环境透显 + 工具链路监控)",
   "source": ".memory/fleet/fleet_status.md",
   "environment": {
@@ -13,8 +13,8 @@
         "reason": "命令链路正常"
       },
       "claude": {
-        "status": "offline",
-        "reason": "未在系统 PATH 中找到 claude-code，请检查是否已安装。"
+        "status": "online",
+        "reason": "命令链路正常"
       },
       "openclaw": {
         "status": "online",
