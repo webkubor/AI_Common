@@ -150,18 +150,16 @@ function getComparablePayload(payload) {
   return clone;
 }
 
-function main() {
+export function syncFleetDashboard() {
   if (!fs.existsSync(sourceFile)) {
-    console.error(`❌ 未找到源文件: ${sourceFile}`);
-    process.exit(1);
+    throw new Error(`未找到源文件: ${sourceFile}`);
   }
 
   const content = fs.readFileSync(sourceFile, "utf8");
   const lines = content.split("\n");
   const headerIndex = lines.findIndex((line) => line.includes("| 节点 ID (模型/别名) |"));
   if (headerIndex === -1) {
-    console.error("❌ 在 fleet_status.md 中未找到表格头。");
-    process.exit(1);
+    throw new Error("在 fleet_status.md 中未找到表格头。");
   }
 
   const now = new Date();
@@ -219,13 +217,36 @@ function main() {
   }
 
   if (!shouldWrite) {
-    console.log(`ℹ️ 看板数据无实质变化，跳过写入: ${outputFile}`);
-    return;
+    return {
+      ok: true,
+      changed: false,
+      outputFile,
+      payload
+    };
   }
 
   fs.mkdirSync(path.dirname(outputFile), { recursive: true });
   fs.writeFileSync(outputFile, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
-  console.log(`✅ 看板数据同步成功: ${outputFile} (已开启客观进度感知)`);
+  return {
+    ok: true,
+    changed: true,
+    outputFile,
+    payload
+  };
+}
+
+function main() {
+  try {
+    const result = syncFleetDashboard();
+    if (!result.changed) {
+      console.log(`ℹ️ 看板数据无实质变化，跳过写入: ${result.outputFile}`);
+      return;
+    }
+    console.log(`✅ 看板数据同步成功: ${result.outputFile} (已开启客观进度感知)`);
+  } catch (error) {
+    console.error(`❌ ${error?.message || error}`);
+    process.exit(1);
+  }
 }
 
 main();

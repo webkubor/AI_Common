@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 
 const loading = ref(true);
 const error = ref("");
@@ -38,22 +38,53 @@ const currentMembers = computed(() =>
   data.value.members.filter((m) => m.type === "active" || m.type === "queued")
 );
 
+const REFRESH_INTERVAL = 8000;
+let refreshTimer = null;
+let requestId = 0;
+
 async function loadData() {
-  loading.value = true;
+  const currentRequestId = ++requestId;
+  if (!data.value.generatedAt) loading.value = true;
+  error.value = "";
   try {
-    const res = await fetch("/CortexOS/data/ai_team_status.json", { cache: "no-store" });
+    const url = new URL("/CortexOS/data/ai_team_status.json", window.location.origin);
+    url.searchParams.set("t", String(Date.now()));
+    const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error();
     const json = await res.json();
+    if (currentRequestId !== requestId) return;
     data.value = { ...data.value, ...json };
   } catch (e) {
+    if (currentRequestId !== requestId) return;
     error.value = "Neural Link Fault";
   } finally {
-    loading.value = false;
+    if (currentRequestId === requestId) loading.value = false;
   }
+}
+
+function startAutoRefresh() {
+  if (refreshTimer) clearInterval(refreshTimer);
+  refreshTimer = window.setInterval(() => {
+    if (document.hidden) return;
+    loadData();
+  }, REFRESH_INTERVAL);
+}
+
+function handleVisibilityRefresh() {
+  if (!document.hidden) loadData();
 }
 
 onMounted(() => {
   loadData();
+  startAutoRefresh();
+  window.addEventListener("focus", handleVisibilityRefresh);
+  document.addEventListener("visibilitychange", handleVisibilityRefresh);
+});
+
+onBeforeUnmount(() => {
+  if (refreshTimer) clearInterval(refreshTimer);
+  window.removeEventListener("focus", handleVisibilityRefresh);
+  document.removeEventListener("visibilitychange", handleVisibilityRefresh);
 });
 
 function isWorking(member) {

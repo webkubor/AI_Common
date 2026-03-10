@@ -3,6 +3,7 @@
 import path from "path";
 import { touchFleetMeta } from "./fleet-meta.mjs";
 import { syncProjectRegistry } from "./project-registry.mjs";
+import { syncFleetDashboard } from "./sync-fleet-dashboard.mjs";
 
 function sanitize(value) {
   return String(value ?? "").replace(/\|/g, "｜").trim();
@@ -108,6 +109,12 @@ function main() {
     });
   } catch {
     // 心跳本身不能因为项目索引异常而失败，这里保持静默兜底。
+  }
+
+  try {
+    syncFleetDashboard();
+  } catch {
+    // 看板同步失败不影响心跳主流程，页面轮询时会继续尝试拉取旧数据。
   }
 
   console.log(
