@@ -65,8 +65,8 @@ body.team-dashboard-page {
 
 .back-to-docs {
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: 20px;
+  right: 220px;
   z-index: 100;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
