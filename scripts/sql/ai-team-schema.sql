@@ -4,12 +4,17 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS agents (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   member_id TEXT NOT NULL UNIQUE,
+  node_id TEXT,
   agent_name TEXT NOT NULL,
   alias TEXT,
   role TEXT,
   workspace TEXT,
+  task TEXT,
+  type TEXT,
   is_captain INTEGER NOT NULL DEFAULT 0,
   status TEXT,
+  heartbeat_at TEXT,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
