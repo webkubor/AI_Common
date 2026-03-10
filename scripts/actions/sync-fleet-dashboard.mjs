@@ -17,9 +17,9 @@ const outputFile = path.join(projectRoot, "docs/public/data/ai_team_status.json"
 function checkCLI(cmd) {
   try {
     execSync(`which ${cmd}`, { stdio: "ignore" });
-    return "online";
-  } catch {
-    return "offline";
+    return { status: "online", reason: "命令链路正常" };
+  } catch (err) {
+    return { status: "offline", reason: `未在系统 PATH 中找到 ${cmd}，请检查是否已安装。` };
   }
 }
 

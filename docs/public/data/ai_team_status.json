@@ -1,12 +1,24 @@
 {
-  "generatedAt": "2026-03-10T08:30:00.476Z",
+  "generatedAt": "2026-03-10T08:35:00.480Z",
   "version": "v5.6.0 (工具链路监控 + 智能体常驻 + 阶级标定)",
   "source": ".memory/fleet/fleet_status.md",
   "environment": {
-    "codex": "online",
-    "gemini": "online",
-    "claude": "offline",
-    "openclaw": "online"
+    "codex": {
+      "status": "online",
+      "reason": "命令链路正常"
+    },
+    "gemini": {
+      "status": "online",
+      "reason": "命令链路正常"
+    },
+    "claude": {
+      "status": "offline",
+      "reason": "未在系统 PATH 中找到 claude-code，请检查是否已安装。"
+    },
+    "openclaw": {
+      "status": "online",
+      "reason": "命令链路正常"
+    }
   },
   "total": 3,
   "active": 2,

@@ -320,21 +320,14 @@ async function makeCaptain(member) {
           <div class="health-group">
             <span class="health-label">核心链路体检:</span>
             <div class="health-items">
-              <div class="health-item" :class="data.environment?.codex">
+              <div v-for="(status, key) in data.environment" :key="key" class="health-item" :class="status?.status">
                 <span class="h-dot"></span>
-                <span class="h-name">CODEX</span>
-              </div>
-              <div class="health-item" :class="data.environment?.gemini">
-                <span class="h-dot"></span>
-                <span class="h-name">GEMINI</span>
-              </div>
-              <div class="health-item" :class="data.environment?.claude">
-                <span class="h-dot"></span>
-                <span class="h-name">CLAUDE</span>
-              </div>
-              <div class="health-item" :class="data.environment?.openclaw">
-                <span class="h-dot"></span>
-                <span class="h-name">OPENCLAW</span>
+                <span class="h-name">{{ key.toUpperCase() }}</span>
+                <!-- 🧪 Tooltip 气泡 -->
+                <div v-if="status?.status === 'offline'" class="h-tooltip">
+                  <div class="h-tooltip-arrow"></div>
+                  {{ status.reason }}
+                </div>
               </div>
             </div>
           </div>
@@ -1227,6 +1220,7 @@ async function makeCaptain(member) {
 }
 
 .health-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1235,6 +1229,40 @@ async function makeCaptain(member) {
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
+  cursor: help;
+}
+
+.health-item .h-tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(30, 10, 10, 0.95);
+  color: #ef4444;
+  font-size: 11px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.health-item:hover .h-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.h-tooltip-arrow {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(239, 68, 68, 0.3);
 }
 
 .health-item .h-dot {
