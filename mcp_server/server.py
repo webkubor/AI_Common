@@ -401,7 +401,7 @@ def write_secret(name: str, content: str) -> str:
 # ─────────────────────────────────────────────
 @mcp.tool()
 def send_lark_notification(title: str, body: str) -> str:
-    """通过飞书 Webhook 向老爹发送通知（仅工作时间 10:00-20:00 有效）。
+    """通过飞书 Webhook 发送通知（仅工作时间 10:00-20:00 有效）。
 
     参数:
         title: 通知标题

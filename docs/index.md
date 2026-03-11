@@ -3,7 +3,7 @@ layout: home
 hero:
   name: "CortexOS"
   text: "多 Agent 协同外部大脑"
-  tagline: "让 Gemini、Claude、Codex 共享同一个大脑 —— 实时防碰撞、队长可移交、飞书实时播报。"
+  tagline: "让 Gemini、Claude、Codex 共享同一个大脑 —— 实时防碰撞、队长可移交、通知链路可选接入。"
   image:
     src: /logo.svg
     alt: CortexOS
@@ -26,8 +26,8 @@ features:
     details: 本地 CLI 跨目录访问受 MCP Server 网关管控。所有文件读写工具均经过 `read_file` / `write_file` MCP Tool 中转，Agent 无法直接越权访问未授权路径，私钥目录 `memory/secrets` 单独授权。
 
   - icon: 🔔
-    title: 飞书 Lark Webhook 实时播报
-    details: Auto-Pilot 守护进程每隔固定周期检测 git diff，自动提交并推送飞书战报：展示 AI Team 态势、本轮变更文件、任务进展摘要。工作时段（10:00–20:00）精准推送，其余时间静默。
+    title: 可选通知通道
+    details: Auto-Pilot 默认负责本地维护、日志、AI Team 同步与自动提交。若你配置了飞书 Webhook，可额外开启外部播报；不配置也不影响本地运行。
 
   - icon: 🔌
     title: 一行配置，接入任意 AI 客户端

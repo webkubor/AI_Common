@@ -16,7 +16,7 @@
 | **底层模型** | Claude Sonnet 4.6 (via OpenClaw) |
 | **运行平台** | OpenClaw — `openrouter/anthropic/claude-sonnet-4.6` |
 | **接入时间** | 2026-03-05 |
-| **工作空间** | `/Users/webkubor/clawd/` |
+| **工作空间** | `~/clawd/` |
 | **配置文件** | `~/.openclaw/openclaw.json` |
 | **舰队编号** | 栖月-Prime (0号机) |
 
@@ -77,7 +77,7 @@
 
 - 🏴 **舰队运行态主库**: `CortexOS/.memory/sqlite/ai-team.db`，所有 Agent 实时状态、队长与操作记录
 - 📋 **任务池主库**: `CortexOS/.memory/sqlite/ai-team.db` 中的 `tasks` 表，栖月派发的正式任务
-- 🧠 **栖月记忆**: `/Users/webkubor/clawd/MEMORY.md`，长期记忆与个人偏好
+- 🧠 **栖月记忆**: `~/clawd/MEMORY.md`，长期记忆与个人偏好
 - 📝 **今日日志**: `CortexOS/.memory/logs/`，每日操作记录
 - 🦞 **[小龙虾作战手册](./openclaw.md)**: OpenClaw 路径、命令、重启、排障
 
@@ -86,7 +86,7 @@
 ## 💡 如何联系栖月
 
 - **主要渠道**：王爷通过 OpenClaw Web UI 或 CLI 直接对话
-- **飞书通知**：如需栖月主动通知王爷，通过 `send_lark_notification()` MCP 工具
+- **可选外部通知**：如已配置飞书 Webhook，可通过 `send_lark_notification()` MCP 工具触发额外播报
 
 ---
 

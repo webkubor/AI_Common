@@ -41,7 +41,7 @@
 
 | 命令 | 用途 | 什么时候用 |
 | :--- | :--- | :--- |
-| `pnpm run feishu:bot` | 启动飞书机器人桥接服务 | 需要飞书桥接时 |
+| `pnpm run feishu:bot` | 启动飞书机器人桥接服务 | 仅在你需要飞书双向桥接时 |
 | `pnpm run gemini:auto` | Gemini 自动接入脚本（不注入 `$start`） | Gemini 端快速开工 |
 | `pnpm run claude:auto` | Claude 自动接入脚本 | Claude 端快速开工 |
 | `pnpm run codex:auto` | Codex 自动接入脚本 | Codex 端快速开工 |
@@ -56,7 +56,7 @@
 - 脚本：`scripts/core/auto-pilot.js`
 - 托管：PM2（5 分钟节奏）
 - 统一配置：`config/brain-runtime.json`
-- Lark 统一服务：`scripts/services/lark-service.mjs`
+- 可选通知服务：`scripts/services/lark-service.mjs`
 
 ### 2.1 后台任务清单（来自配置）
 
@@ -94,7 +94,7 @@ bash scripts/core/init-project.sh
 | `list_secrets` | 列出外置秘钥文件 | 检查秘钥清单 |
 | `read_secret` | 读取指定秘钥文件 | 读取 token/env |
 | **`write_secret`** | **(NEW)** 安全地写入或更新外置秘钥文件 | 保存新 Key |
-| `send_lark_notification` | 发送飞书通知 | 战报推送 |
+| `send_lark_notification` | 发送飞书通知 | 可选外部通知 |
 | `search_knowledge` | 检索知识库文档（语义 + 全文） | 经验召回/复盘查询 |
 | `task_handoff_check` | 标记任务完成并扫描未认领任务 | 每次收工后执行 |
 
