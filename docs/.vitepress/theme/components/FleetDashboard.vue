@@ -815,7 +815,7 @@ async function makeCaptain(member) {
 .flow-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .mission-glass-card {
@@ -823,8 +823,8 @@ async function makeCaptain(member) {
   backdrop-filter: var(--glass-blur);
   border: 1px solid rgba(255, 255, 255, 0.04);
   box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.6);
-  padding: 24px;
-  border-radius: 16px;
+  padding: 16px;
+  border-radius: 12px;
   position: relative;
   overflow: hidden;
   animation: slideIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -852,7 +852,7 @@ async function makeCaptain(member) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .m-id {
@@ -897,11 +897,11 @@ async function makeCaptain(member) {
 }
 
 .m-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #fff;
-  margin: 0 0 16px 0;
-  line-height: 1.5;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
   letter-spacing: 0.02em;
 }
 
