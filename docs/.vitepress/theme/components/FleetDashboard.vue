@@ -1213,11 +1213,20 @@ async function makeCaptain(member) {
   overflow: hidden;
   word-break: break-all;
   white-space: normal;
-  transition: all 0.3s ease;
+  transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.m-title.hover-expand {
+  max-height: 17px;
+}
+
+.m-published-at.hover-expand {
+  max-height: 12px;
 }
 
 .mission-glass-card:hover .hover-expand {
-  -webkit-line-clamp: unset;
+  -webkit-line-clamp: 20;
+  max-height: 150px;
 }
 
 .mission-empty-state {
@@ -1240,15 +1249,27 @@ async function makeCaptain(member) {
   padding: 24px;
   background: rgba(5, 7, 10, 0.72);
   backdrop-filter: blur(14px);
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .task-creator-panel {
   width: min(560px, calc(100vw - 32px));
-  padding: 22px;
-  border: 1px solid rgba(245, 200, 123, 0.18);
+  padding: 24px 28px;
+  border: 1px solid rgba(245, 200, 123, 0.15);
   border-radius: 22px;
-  background: linear-gradient(180deg, rgba(10, 12, 16, 0.96), rgba(15, 18, 24, 0.94));
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  background: linear-gradient(180deg, rgba(20, 24, 32, 0.95), rgba(10, 12, 16, 0.98));
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; backdrop-filter: blur(0px); }
+  100% { opacity: 1; backdrop-filter: blur(14px); }
+}
+
+@keyframes scaleUp {
+  0% { transform: scale(0.95) translateY(10px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 .task-creator-header {
@@ -1302,17 +1323,33 @@ async function makeCaptain(member) {
 .task-field-input {
   width: 100%;
   min-height: 48px;
-  padding: 0 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.03);
   color: #fff;
+  font-size: 14px;
   box-sizing: border-box;
   outline: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.task-field-input:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.task-field-input:focus {
+  border-color: rgba(245, 200, 123, 0.5);
+  background: rgba(15, 18, 24, 0.9);
+  box-shadow: 0 0 0 3px rgba(245, 200, 123, 0.15);
 }
 
 .task-field-select {
   appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5' stroke='%23F5C87B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
 }
 
 .task-field-hint {
@@ -1359,20 +1396,40 @@ async function makeCaptain(member) {
 }
 
 .task-secondary-btn {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.03);
   color: #e4e4e4;
+  transition: all 0.3s ease;
+}
+
+.task-secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .task-primary-btn {
   border: none;
   background: linear-gradient(135deg, var(--c-aureate-base), var(--c-aureate-dim));
   color: #0b0d10;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(245, 200, 123, 0.15);
+}
+
+.task-primary-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(245, 200, 123, 0.3);
+  background: linear-gradient(135deg, var(--c-aureate-glow), var(--c-aureate-base));
+}
+
+.task-primary-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(245, 200, 123, 0.2);
 }
 
 .task-primary-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+  filter: grayscale(0.5);
 }
 
 /* 💎 Agent 矩阵 - 液态玻璃节点 */
