@@ -10,7 +10,6 @@ pageClass: team-dashboard-page
 
 <script setup>
 import FleetDashboard from '../.vitepress/theme/components/FleetDashboard.vue'
-import TeamCommandDeck from '../.vitepress/theme/components/TeamCommandDeck.vue'
 </script>
 
 <style>
@@ -43,7 +42,6 @@ body.team-dashboard-page {
 </style>
 
 <div class="immersive-wrapper">
-  <TeamCommandDeck />
   <FleetDashboard />
   
   <!-- 返回文档的悬浮入口，避免压住中枢头部 HUD -->

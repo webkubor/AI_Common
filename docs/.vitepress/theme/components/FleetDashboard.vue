@@ -779,6 +779,163 @@ async function makeCaptain(member) {
 
 <style scoped>
 /* 🔴 核心：现代高奢 Aether 设计系统 (Aureate Void) */
+.aether-nexus {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at top left, rgba(245, 200, 123, 0.08), transparent 24%),
+    radial-gradient(circle at top right, rgba(96, 165, 250, 0.08), transparent 20%),
+    linear-gradient(180deg, #040507 0%, #070a10 100%);
+  overflow: hidden;
+}
+
+.aether-hud {
+  position: relative;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) auto auto;
+  align-items: center;
+  gap: 18px;
+  margin: 24px 24px 0;
+  padding: 18px 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(245, 200, 123, 0.14);
+  background:
+    linear-gradient(180deg, rgba(14, 18, 26, 0.9), rgba(9, 12, 18, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 24px 60px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+}
+
+.hud-left,
+.hud-center,
+.hud-right {
+  min-width: 0;
+}
+
+.hud-kicker {
+  color: rgba(245, 200, 123, 0.82);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  margin-bottom: 8px;
+}
+
+.hud-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hud-main-title {
+  color: #f7f9fb;
+  font-size: 36px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.hud-version-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(245, 200, 123, 0.18);
+  background: rgba(245, 200, 123, 0.1);
+  color: rgba(245, 200, 123, 0.95);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.hud-subtitle {
+  margin-top: 10px;
+  color: rgba(226, 232, 240, 0.62);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.live-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(248, 250, 252, 0.86);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.live-scanner {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #5ee0a1;
+  box-shadow: 0 0 12px rgba(94, 224, 161, 0.45);
+}
+
+.live-text {
+  color: rgba(255, 255, 255, 0.74);
+  letter-spacing: 0.08em;
+}
+
+.live-divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.live-meta {
+  color: #f7f9fb;
+}
+
+.hud-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.hud-source-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  background: rgba(96, 165, 250, 0.08);
+  color: rgba(191, 219, 254, 0.92);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.quantum-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--vp-font-family-mono);
+  color: #f8fafc;
+}
+
+.q-time,
+.q-colon {
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .aether-stage {
   display: flex;
   flex: 1;
@@ -1428,6 +1585,18 @@ async function makeCaptain(member) {
   letter-spacing: 0.2em;
   font-weight: 400;
   color: #888;
+}
+
+@media (max-width: 1100px) {
+  .aether-hud {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+
+  .hud-right {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
 }
 
 /* 动画库 */
