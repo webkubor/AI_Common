@@ -1340,16 +1340,18 @@ async function makeCaptain(member) {
   padding: 12px 16px;
   border-radius: 10px;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; Removed so tooltip is not cropped */
   animation: slideIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   animation-delay: var(--delay);
   transition: all 0.4s ease;
+  z-index: 1; /* Base plane */
 }
 
 .mission-glass-card:hover {
   transform: translateX(4px);
   border-color: rgba(245, 200, 123, 0.2);
   box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.1), inset 0 0 30px rgba(245, 200, 123, 0.03), 0 12px 32px rgba(0, 0, 0, 0.8);
+  z-index: 50; /* Bring above sibling cards */
 }
 
 .mission-glass-card::before {
@@ -1502,21 +1504,21 @@ async function makeCaptain(member) {
 
 .mission-detail-bubble {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  top: -8px; 
+  left: -8px;
+  width: calc(100% + 16px);
   height: auto;
-  min-height: 100%;
+  min-height: calc(100% + 16px);
   background: rgba(15, 18, 24, 0.98);
-  border-radius: 10px;
+  border-radius: 14px;
   padding: 16px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(12px) scale(0.98);
-  backdrop-filter: blur(20px);
-  z-index: 20;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(245, 200, 123, 0.2);
+  transform: translateY(6px) scale(0.95);
+  backdrop-filter: blur(25px);
+  z-index: 100;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(245, 200, 123, 0.4);
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   display: flex;
   flex-direction: column;
