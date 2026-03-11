@@ -669,6 +669,10 @@ async function makeCaptain(member) {
               <span class="stat-value">{{ data.environment.skillsCount || 0 }}</span>
             </div>
             <div class="stat-item">
+              <span class="stat-label">🔌 MCP:</span>
+              <span class="stat-value">{{ data.environment.mcpCount || 0 }}</span>
+            </div>
+            <div class="stat-item">
               <span class="stat-label">🚀 NODE:</span>
               <span class="stat-value">{{ data.environment.nodeVersion || '--' }}</span>
             </div>
@@ -694,6 +698,9 @@ async function makeCaptain(member) {
               </svg>
             </button>
           </div>
+
+          <!-- Invisible backdrop to close dropdowns -->
+          <div v-if="isWorkspaceSelectOpen || isPrioritySelectOpen" class="dropdown-backdrop" @click="closeDropdowns"></div>
 
           <label class="task-field">
             <span class="task-field-label">任务标题</span>
@@ -2167,7 +2174,7 @@ async function makeCaptain(member) {
   display: flex;
   gap: 20px;
   font-size: 10px;
-  color: #444;
+  color: rgba(255, 255, 255, 0.5);
   font-family: ui-monospace;
 }
 

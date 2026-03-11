@@ -77,6 +77,17 @@ function getComparablePayload(payload) {
   return clone
 }
 
+function getMcpToolsCount() {
+  try {
+    const serverPath = path.join(projectRoot, 'mcp_server/server.py')
+    if (!fs.existsSync(serverPath)) return 0
+    const content = fs.readFileSync(serverPath, 'utf8')
+    return (content.match(/@mcp\.tool\(/g) || []).length
+  } catch {
+    return 0
+  }
+}
+
 export function buildFleetDashboardPayload(state = getAiTeamState()) {
   const rows = state.agents.map((agent) => {
     const workspace = sanitizeWorkspaceForOutput(agent.workspace)
@@ -110,6 +121,7 @@ export function buildFleetDashboardPayload(state = getAiTeamState()) {
         openclaw: checkCLI('openclaw', path.join(os.homedir(), '.openclaw'))
       },
       nodeVersion: process.version,
+      mcpCount: getMcpToolsCount(),
       skillsCount: [path.join(os.homedir(), '.agents/skills'), path.join(os.homedir(), '.codex/skills')]
         .filter((dirPath) => fs.existsSync(dirPath))
         .reduce((count, dirPath) => {
