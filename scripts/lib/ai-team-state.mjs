@@ -133,6 +133,61 @@ function normalizeTaskRecord(task, index = 0) {
   }
 }
 
+function insertTaskRecord(db, normalized, { operator = 'system', reason = 'tasks:create', action = 'create-task' } = {}) {
+  db.prepare(`
+    INSERT INTO tasks (
+      task_id,
+      title,
+      assignee,
+      assignee_member_id,
+      assignee_agent,
+      assignee_role,
+      workspace,
+      published_at,
+      status,
+      priority,
+      priority_rank,
+      completed,
+      source_file,
+      updated_at,
+      synced_at
+    ) VALUES (
+      @taskId,
+      @title,
+      @assignee,
+      @assigneeMemberId,
+      @assigneeAgent,
+      @assigneeRole,
+      @workspace,
+      @publishedAt,
+      @status,
+      @priority,
+      @priorityRank,
+      @completed,
+      @sourceFile,
+      @updatedAt,
+      @syncedAt
+    )
+  `).run(normalized)
+
+  db.prepare(`
+    INSERT INTO operation_logs (action, target_type, target_id, payload_json)
+    VALUES (?, ?, ?, ?)
+  `).run(
+    action,
+    'tasks',
+    normalized.taskId,
+    JSON.stringify({
+      operator,
+      reason,
+      taskId: normalized.taskId,
+      title: normalized.title,
+      workspace: normalized.workspace,
+      assigneeMemberId: normalized.assigneeMemberId || null
+    })
+  )
+}
+
 export function replaceAiTeamTasks(tasks = [], { operator = 'system', reason = 'tasks:replace' } = {}) {
   const db = ensureAiTeamDb()
   const normalized = tasks.map((task, index) => normalizeTaskRecord(task, index))
@@ -220,61 +275,112 @@ export function createAiTeamTask(task, { operator = 'system', reason = 'tasks:cr
     const stamp = nowIso().replace(/[-:TZ.]/g, '').slice(0, 12)
     normalized.taskId = `task-${stamp}-${Math.random().toString(36).slice(2, 6)}`
   }
-
-  db.prepare(`
-    INSERT INTO tasks (
-      task_id,
-      title,
-      assignee,
-      assignee_member_id,
-      assignee_agent,
-      assignee_role,
-      workspace,
-      published_at,
-      status,
-      priority,
-      priority_rank,
-      completed,
-      source_file,
-      updated_at,
-      synced_at
-    ) VALUES (
-      @taskId,
-      @title,
-      @assignee,
-      @assigneeMemberId,
-      @assigneeAgent,
-      @assigneeRole,
-      @workspace,
-      @publishedAt,
-      @status,
-      @priority,
-      @priorityRank,
-      @completed,
-      @sourceFile,
-      @updatedAt,
-      @syncedAt
-    )
-  `).run(normalized)
-
-  db.prepare(`
-    INSERT INTO operation_logs (action, target_type, target_id, payload_json)
-    VALUES (?, ?, ?, ?)
-  `).run(
-    'create-task',
-    'tasks',
-    normalized.taskId,
-    JSON.stringify({
-      operator,
-      reason,
-      taskId: normalized.taskId,
-      title: normalized.title,
-      workspace: normalized.workspace
-    })
-  )
+  insertTaskRecord(db, normalized, { operator, reason, action: 'create-task' })
 
   db.close()
   return normalized
+}
+
+function isIdleTaskText(task) {
+  const text = stripMarkdown(task)
+  if (!text) return true
+  const normalized = text.replace(/\s+/g, '')
+  return [
+    '待分配任务',
+    '待分配',
+    '待命状态',
+    '待命',
+    '空闲',
+    '无任务',
+    '心跳打卡'
+  ].includes(normalized)
+}
+
+function pickIdleAgentForWorkspace(agents, workspace) {
+  const normalizedWorkspace = stripMarkdown(workspace)
+  return agents
+    .filter(agent => agent.workspace === normalizedWorkspace)
+    .filter(agent => agent.type !== 'offline')
+    .filter(agent => isIdleTaskText(agent.task))
+    .sort((a, b) => {
+      if (Boolean(a.isCaptain) !== Boolean(b.isCaptain)) {
+        return Number(a.isCaptain) - Number(b.isCaptain)
+      }
+      if (a.type !== b.type) {
+        if (a.type === 'active') return -1
+        if (b.type === 'active') return 1
+      }
+      return parseDate(b.heartbeatAt || b.updatedAt) - parseDate(a.heartbeatAt || a.updatedAt)
+    })[0] || null
+}
+
+export function createAndDispatchAiTeamTask(task, { operator = 'system', reason = 'tasks:create-dispatch' } = {}) {
+  const agents = getCurrentAgents().map(item => ({ ...item }))
+  const normalized = normalizeTaskRecord(task)
+  if (!normalized.title) {
+    throw new Error('任务标题不能为空')
+  }
+  if (!normalized.workspace) {
+    throw new Error('工作路径不能为空')
+  }
+
+  if (!normalized.taskId || normalized.taskId.startsWith('task-')) {
+    const stamp = nowIso().replace(/[-:TZ.]/g, '').slice(0, 12)
+    normalized.taskId = `task-${stamp}-${Math.random().toString(36).slice(2, 6)}`
+  }
+
+  const idleAgent = pickIdleAgentForWorkspace(agents, normalized.workspace)
+  if (idleAgent) {
+    normalized.assignee = idleAgent.alias || idleAgent.memberId
+    normalized.assigneeMemberId = idleAgent.memberId
+    normalized.assigneeAgent = idleAgent.agentName
+    normalized.assigneeRole = idleAgent.role
+    normalized.status = '执行中'
+    normalized.completed = 0
+  }
+
+  const db = ensureAiTeamDb()
+  insertTaskRecord(db, normalized, {
+    operator,
+    reason,
+    action: idleAgent ? 'dispatch-task' : 'create-task'
+  })
+  db.close()
+
+  if (idleAgent) {
+    idleAgent.task = `${normalized.taskId}｜${normalized.title}`
+    idleAgent.updatedAt = nowLocal()
+    idleAgent.heartbeatAt = idleAgent.heartbeatAt || idleAgent.updatedAt
+    if (!idleAgent.isCaptain) {
+      idleAgent.type = 'active'
+      idleAgent.status = '[ 执行中 ] 活跃'
+    }
+
+    persistAiTeamAgents(agents, {
+      action: 'dispatch-task',
+      operator,
+      reason,
+      payload: {
+        taskId: normalized.taskId,
+        workspace: normalized.workspace,
+        assigneeMemberId: idleAgent.memberId
+      }
+    })
+  }
+
+  return {
+    task: normalized,
+    dispatched: Boolean(idleAgent),
+    assignee: idleAgent
+      ? {
+          memberId: idleAgent.memberId,
+          alias: idleAgent.alias,
+          agent: idleAgent.agentName,
+          role: idleAgent.role,
+          workspace: idleAgent.workspace
+        }
+      : null
+  }
 }
 
 function statusToType(status) {

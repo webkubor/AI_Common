@@ -1424,8 +1424,13 @@ async function makeCaptain(member) {
 }
 
 .agent-logo-wrapper.mod-codex svg,
-.agent-logo-wrapper.mod-codex img {
-  filter: brightness(0) invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+.agent-logo-wrapper.mod-codex img,
+.agent-logo-wrapper.mod-codex svg,
+.engine-badge.mod-codex svg,
+.mod-codex svg {
+  color: white !important;
+  fill: white !important;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.4));
 }
 
 .alw-icon {

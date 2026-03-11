@@ -6,7 +6,7 @@ import path from 'path'
 import { spawn } from 'child_process'
 import { fileURLToPath } from 'url'
 import { ensureAiTeamDb } from '../lib/ai-team-db.mjs'
-import { createAiTeamTask, getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline } from '../lib/ai-team-state.mjs'
+import { createAndDispatchAiTeamTask, getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline } from '../lib/ai-team-state.mjs'
 import { buildFleetDashboardPayload } from '../actions/sync-fleet-dashboard.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -240,7 +240,7 @@ const server = http.createServer(async (req, res) => {
         return
       }
 
-      const task = createAiTeamTask({
+      const result = createAndDispatchAiTeamTask({
         title,
         workspace: String(workspace).trim(),
         priority,
@@ -253,7 +253,7 @@ const server = http.createServer(async (req, res) => {
       })
       await syncFleetDashboard()
       const { state } = refreshStateCache({ forceBroadcast: true, event: 'state' })
-      writeJson(res, 200, { success: true, task, state }, origin)
+      writeJson(res, 200, { success: true, ...result, state }, origin)
       return
     }
 
