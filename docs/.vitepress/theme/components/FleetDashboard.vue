@@ -733,7 +733,7 @@ async function makeCaptain(member) {
                     </div>
                   </div>
                 </div>
-                <p class="m-title text-ellipsis">{{ task.title }}</p>
+                <p class="m-title">{{ task.title }}</p>
                 <div class="m-owner">
                   <span class="text-ellipsis owner-name" :title="task.owner">{{ task.owner }}</span>
                   <span v-if="(task.assigneeAgent || task.assigneeRole) && (task.assigneeAgent !== task.owner)" class="m-owner-meta text-ellipsis" :title="[task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ')">
@@ -743,7 +743,7 @@ async function makeCaptain(member) {
                     {{ task.assigneeRole }}
                   </span>
                 </div>
-                <div v-if="task.workspace" class="m-published-at text-ellipsis">工作路径 {{ task.workspace }}</div>
+                <div v-if="task.workspace" class="m-workspace" :title="'工作路径 ' + task.workspace">工作路径 {{ task.workspace }}</div>
                 <div v-if="task.publishedAt" class="m-published-at text-ellipsis" :title="'发布时间 ' + task.publishedAt">发布时间 {{ task.publishedAt }}</div>
               </div>
             </section>
@@ -1620,6 +1620,11 @@ async function makeCaptain(member) {
   margin: 0 0 10px 0;
   line-height: 1.3;
   letter-spacing: 0.02em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  word-break: break-word;
 }
 
 .m-owner {
@@ -1651,6 +1656,19 @@ async function makeCaptain(member) {
   color: #6a6a6a;
   font-family: ui-monospace;
   margin-bottom: 4px;
+}
+
+.m-workspace {
+  font-size: 9px;
+  color: #7d7d7d;
+  font-family: ui-monospace;
+  margin-bottom: 4px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-all;
 }
 
 .text-ellipsis {
