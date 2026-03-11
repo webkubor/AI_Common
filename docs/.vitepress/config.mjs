@@ -44,7 +44,7 @@ export default defineConfig({
       })
     ]
   },
-  head: [["link", { rel: "icon", href: "/logo.svg" }]],
+  head: [["link", { rel: "icon", href: "/CortexOS/logo.svg" }]],
   themeConfig: {
     logo: "/logo.svg",
     search: {

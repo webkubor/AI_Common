@@ -12,8 +12,10 @@ const showTaskCreator = ref(false);
 const loadingWorkspaces = ref(false);
 const creatingTask = ref(false);
 const deletingTaskId = ref("");
+const completingTaskId = ref("");
 const hoveredMission = ref(null);
 const missionTooltipStyle = ref({});
+const taskCreatorTargetMember = ref(null);
 
 function showMissionTooltip(event, task) {
   hoveredMission.value = task;
@@ -124,6 +126,10 @@ function missionStatusClass(status) {
 
 function canDeleteMission(task) {
   return String(task?.status || "").trim() === "待启动" && Boolean(String(task?.taskId || "").trim());
+}
+
+function canCompleteMemberTask(task) {
+  return Boolean(String(task?.taskId || "").trim()) && String(task?.status || "").trim() !== "已完成";
 }
 
 function isIdleTask(task) {
@@ -449,16 +455,21 @@ async function loadWorkspaces() {
   }
 }
 
-async function openTaskCreator() {
+async function openTaskCreator(member = null) {
+  taskCreatorTargetMember.value = member;
   showTaskCreator.value = true;
   error.value = "";
   if (workspaceOptions.value.length === 0) {
     await loadWorkspaces();
   }
+  if (member?.workspace) {
+    createTaskForm.value.workspace = member.workspace;
+  }
 }
 
 function closeTaskCreator() {
   showTaskCreator.value = false;
+  taskCreatorTargetMember.value = null;
   createTaskForm.value = {
     title: "",
     workspace: workspaceOptions.value[0]?.workspace || "",
@@ -483,10 +494,11 @@ async function submitTask() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        action: "create-task",
+        action: taskCreatorTargetMember.value ? "create-member-task" : "create-task",
         title: createTaskForm.value.title.trim(),
         workspace: createTaskForm.value.workspace.trim(),
-        priority: createTaskForm.value.priority
+        priority: createTaskForm.value.priority,
+        memberId: taskCreatorTargetMember.value?.member || ""
       })
     });
     const payload = await response.json().catch(() => ({}));
@@ -503,6 +515,37 @@ async function submitTask() {
     error.value = e.message || "任务发布失败";
   } finally {
     creatingTask.value = false;
+  }
+}
+
+async function completeMemberTask(member, task) {
+  if (!canCompleteMemberTask(task)) return;
+
+  completingTaskId.value = task.taskId;
+  error.value = "";
+  try {
+    const response = await fetch(actionEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "complete-task",
+        taskId: task.taskId,
+        memberId: member.member
+      })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(payload.error || "标记完成失败");
+    }
+    if (payload.state) {
+      applyBridgeState(payload.state);
+    } else {
+      await loadData();
+    }
+  } catch (e) {
+    error.value = e.message || "标记完成失败";
+  } finally {
+    completingTaskId.value = "";
   }
 }
 
@@ -751,6 +794,11 @@ async function makeCaptain(member) {
                   <div class="header-actions">
                     <div class="working-spinner" v-if="isWorking(member)"></div>
                     <div class="action-menu">
+                      <button class="action-btn add-task" @click="openTaskCreator(member)" title="给该成员新增任务">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </button>
                       <button class="action-btn make-captain" v-if="!member.isCaptain" @click="makeCaptain(member)"
                         title="调配为队长">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -776,9 +824,20 @@ async function makeCaptain(member) {
                   <div v-if="member.recentTasks?.length" class="task-history-scroll">
                     <article v-for="taskItem in member.recentTasks" :key="taskItem.id" class="task-history-item">
                       <div class="task-history-topline">
-                        <span class="task-history-status" :class="taskHistoryStatusClass(taskItem)">
-                          {{ getTaskHistoryStatusLabel(taskItem) }}
-                        </span>
+                        <div class="task-history-topline-left">
+                          <span class="task-history-status" :class="taskHistoryStatusClass(taskItem)">
+                            {{ getTaskHistoryStatusLabel(taskItem) }}
+                          </span>
+                          <button
+                            v-if="canCompleteMemberTask(taskItem)"
+                            class="task-complete-btn"
+                            :disabled="completingTaskId === taskItem.taskId"
+                            @click="completeMemberTask(member, taskItem)"
+                            title="标记完成"
+                          >
+                            完成
+                          </button>
+                        </div>
                         <span class="task-history-time">{{ formatTaskHistoryTime(taskItem) }}</span>
                       </div>
                       <p class="task-history-name" :title="taskItem.title">{{ taskItem.title }}</p>
@@ -856,7 +915,7 @@ async function makeCaptain(member) {
           <div class="task-creator-header">
             <div>
               <div class="task-creator-kicker">任务发布</div>
-              <h3>发布到真实任务池</h3>
+              <h3>{{ taskCreatorTargetMember ? `给 ${taskCreatorTargetMember.alias || taskCreatorTargetMember.member} 新增任务` : '发布到真实任务池' }}</h3>
             </div>
             <button class="task-creator-close" @click="closeTaskCreator" title="关闭">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2012,6 +2071,13 @@ async function makeCaptain(member) {
   box-shadow: 0 0 15px rgba(245, 200, 123, 0.2);
 }
 
+.action-btn.add-task:hover {
+  background: rgba(125, 229, 173, 0.1);
+  border-color: rgba(125, 229, 173, 0.35);
+  color: #a7f0ca;
+  box-shadow: 0 0 15px rgba(125, 229, 173, 0.16);
+}
+
 .action-btn.kick-out:hover {
   background: rgba(255, 85, 85, 0.1);
   border-color: rgba(255, 85, 85, 0.4);
@@ -2311,6 +2377,13 @@ async function makeCaptain(member) {
   gap: 10px;
 }
 
+.task-history-topline-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
 .task-history-status {
   display: inline-flex;
   align-items: center;
@@ -2348,6 +2421,30 @@ async function makeCaptain(member) {
   flex-shrink: 0;
   font-size: 10px;
   color: rgba(255, 255, 255, 0.36);
+}
+
+.task-complete-btn {
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(125, 229, 173, 0.22);
+  background: rgba(125, 229, 173, 0.08);
+  color: #a7f0ca;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.task-complete-btn:hover:not(:disabled) {
+  border-color: rgba(125, 229, 173, 0.4);
+  background: rgba(125, 229, 173, 0.14);
+}
+
+.task-complete-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
 }
 
 .task-history-name {

@@ -57,6 +57,13 @@ CortexOS 的做法是把这三类信息落在本地：
 - 当前任务、工作路径、角色可视化
 - 任务完成后自动回写状态
 
+<div align="center">
+  <img src="./docs/public/images/ai_team_dashboard_lobster.png" width="800" alt="AI Team 面板与小龙虾接入状态">
+  <p><i>▲ 实时展示当前项目的工作 Agent 流转，现已完整支持 <b>小龙虾 (Lobster) / 栖月</b> 接入本地中枢。</i></p>
+</div>
+
+CortexOS 的 AI Team 面板不仅支持多常见大语言模型引擎，更具备对**「小龙虾」**架构的深度结合。你可以在这个大面板里清楚看到小龙虾的实时攻坚进展、它的打卡任务和并行协作节点流转。
+
 ### 3. 项目自动落地
 
 这是这次补强的重点。现在 AI Team 在任意项目路径执行 `fleet:claim` 或 `fleet:checkin` 时，会自动：

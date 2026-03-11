@@ -216,6 +216,11 @@ function normalizeTaskRecord(task, index = 0) {
   }
 }
 
+function generateTaskId() {
+  const stamp = nowIso().replace(/[-:TZ.]/g, '').slice(0, 12)
+  return `task-${stamp}-${Math.random().toString(36).slice(2, 6)}`
+}
+
 function insertTaskRecord(db, normalized, { operator = 'system', reason = 'tasks:create', action = 'create-task' } = {}) {
   db.prepare(`
     INSERT INTO tasks (
@@ -355,8 +360,7 @@ export function createAiTeamTask(task, { operator = 'system', reason = 'tasks:cr
   }
 
   if (!normalized.taskId) {
-    const stamp = nowIso().replace(/[-:TZ.]/g, '').slice(0, 12)
-    normalized.taskId = `task-${stamp}-${Math.random().toString(36).slice(2, 6)}`
+    normalized.taskId = generateTaskId()
   }
   insertTaskRecord(db, normalized, { operator, reason, action: 'create-task' })
 
@@ -458,8 +462,7 @@ export function createAndDispatchAiTeamTask(task, { operator = 'system', reason 
   }
 
   if (!normalized.taskId) {
-    const stamp = nowIso().replace(/[-:TZ.]/g, '').slice(0, 12)
-    normalized.taskId = `task-${stamp}-${Math.random().toString(36).slice(2, 6)}`
+    normalized.taskId = generateTaskId()
   }
 
   const idleAgent = pickIdleAgentForWorkspace(agents, normalized.workspace)
@@ -513,6 +516,185 @@ export function createAndDispatchAiTeamTask(task, { operator = 'system', reason 
           workspace: idleAgent.workspace
         }
       : null
+  }
+}
+
+export function assignAiTeamTaskToMember(task, memberId, { operator = 'system', reason = 'tasks:assign-member' } = {}) {
+  const normalizedMemberId = stripMarkdown(memberId)
+  if (!normalizedMemberId) {
+    throw new Error('memberId 不能为空')
+  }
+
+  const agents = getCurrentAgents().map(item => ({ ...item }))
+  const target = agents.find(agent => agent.memberId === normalizedMemberId)
+  if (!target) {
+    throw new Error(`未找到成员: ${normalizedMemberId}`)
+  }
+  if (target.type === 'offline') {
+    throw new Error('离线成员不能直接领取任务')
+  }
+
+  const normalized = normalizeTaskRecord(task)
+  if (!normalized.title) {
+    throw new Error('任务标题不能为空')
+  }
+  if (!normalized.workspace) {
+    normalized.workspace = stripMarkdown(target.workspace || '')
+  }
+  if (!normalized.workspace) {
+    throw new Error('工作路径不能为空')
+  }
+  if (!normalized.taskId) {
+    normalized.taskId = generateTaskId()
+  }
+
+  normalized.assignee = target.alias || target.memberId
+  normalized.assigneeMemberId = target.memberId
+  normalized.assigneeAgent = target.agentName
+  normalized.assigneeRole = target.role
+  normalized.completed = 0
+
+  const targetBusy = !isIdleTaskText(target.task)
+  normalized.status = targetBusy ? '待启动' : '执行中'
+
+  const db = ensureAiTeamDb()
+  insertTaskRecord(db, normalized, {
+    operator,
+    reason,
+    action: 'assign-task'
+  })
+  db.close()
+
+  if (!targetBusy) {
+    target.task = `${normalized.taskId}｜${normalized.title}`
+    target.updatedAt = nowLocal()
+    target.heartbeatAt = target.heartbeatAt || target.updatedAt
+    if (!target.isCaptain) {
+      target.type = 'active'
+      target.status = '[ 执行中 ] 活跃'
+    }
+
+    persistAiTeamAgents(agents, {
+      action: 'assign-task',
+      operator,
+      reason,
+      payload: {
+        taskId: normalized.taskId,
+        workspace: normalized.workspace,
+        assigneeMemberId: target.memberId
+      }
+    })
+  }
+
+  return {
+    task: normalized,
+    assignee: {
+      memberId: target.memberId,
+      alias: target.alias,
+      agent: target.agentName,
+      role: target.role,
+      workspace: target.workspace
+    },
+    activated: !targetBusy
+  }
+}
+
+export function completeAiTeamTask(taskId, {
+  memberId = '',
+  summary = '',
+  operator = 'system',
+  reason = 'tasks:complete'
+} = {}) {
+  const normalizedTaskId = stripMarkdown(taskId)
+  if (!normalizedTaskId) {
+    throw new Error('taskId 不能为空')
+  }
+
+  const db = ensureAiTeamDb()
+  const existing = db.prepare(`
+    SELECT
+      task_id AS taskId,
+      title,
+      assignee,
+      assignee_member_id AS assigneeMemberId,
+      assignee_agent AS assigneeAgent,
+      assignee_role AS assigneeRole,
+      workspace,
+      status,
+      completed
+    FROM tasks
+    WHERE lower(task_id) = lower(?)
+    LIMIT 1
+  `).get(normalizedTaskId)
+
+  if (!existing) {
+    db.close()
+    throw new Error(`未找到任务: ${normalizedTaskId}`)
+  }
+
+  if (Number(existing.completed) === 1 || stripMarkdown(existing.status) === '已完成') {
+    db.close()
+    return existing
+  }
+
+  const completedAt = nowIso()
+  db.prepare(`
+    UPDATE tasks
+    SET
+      status = '已完成',
+      completed = 1,
+      updated_at = ?,
+      synced_at = ?
+    WHERE lower(task_id) = lower(?)
+  `).run(completedAt, completedAt, normalizedTaskId)
+
+  db.prepare(`
+    INSERT INTO operation_logs (action, target_type, target_id, payload_json)
+    VALUES (?, ?, ?, ?)
+  `).run(
+    'complete-task',
+    'tasks',
+    existing.taskId,
+    JSON.stringify({
+      operator,
+      reason,
+      taskId: existing.taskId,
+      title: existing.title,
+      memberId: stripMarkdown(memberId || existing.assigneeMemberId || ''),
+      summary: stripMarkdown(summary || '')
+    })
+  )
+  db.close()
+
+  const normalizedMemberId = stripMarkdown(memberId || existing.assigneeMemberId || '')
+  if (normalizedMemberId) {
+    const agents = getCurrentAgents().map(item => ({ ...item }))
+    const target = agents.find(agent => agent.memberId === normalizedMemberId)
+    if (target) {
+      const liveTaskIds = extractTaskIds(target.task)
+      if (liveTaskIds.includes(existing.taskId.toLowerCase())) {
+        target.task = '待分配任务'
+        target.updatedAt = nowLocal()
+        target.heartbeatAt = target.heartbeatAt || target.updatedAt
+        persistAiTeamAgents(agents, {
+          action: 'complete-task',
+          operator,
+          reason,
+          payload: {
+            taskId: existing.taskId,
+            memberId: target.memberId,
+            summary: stripMarkdown(summary || '')
+          }
+        })
+      }
+    }
+  }
+
+  return {
+    ...existing,
+    status: '已完成',
+    completed: 1,
+    completedAt
   }
 }
 

@@ -6,7 +6,7 @@ import path from 'path'
 import { spawn } from 'child_process'
 import { fileURLToPath } from 'url'
 import { ensureAiTeamDb } from '../lib/ai-team-db.mjs'
-import { createAndDispatchAiTeamTask, deleteAiTeamTask, getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline } from '../lib/ai-team-state.mjs'
+import { assignAiTeamTaskToMember, completeAiTeamTask, createAndDispatchAiTeamTask, deleteAiTeamTask, getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline } from '../lib/ai-team-state.mjs'
 import { buildFleetDashboardPayload } from '../actions/sync-fleet-dashboard.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -257,6 +257,34 @@ const server = http.createServer(async (req, res) => {
       return
     }
 
+    if (action === 'create-member-task') {
+      const { title, memberId, workspace = '', priority = '未标注' } = data
+      if (!title || !String(title).trim()) {
+        writeJson(res, 400, { error: 'title is required' }, origin)
+        return
+      }
+      if (!memberId || !String(memberId).trim()) {
+        writeJson(res, 400, { error: 'memberId is required' }, origin)
+        return
+      }
+
+      const result = assignAiTeamTaskToMember({
+        title,
+        workspace: String(workspace || '').trim(),
+        priority,
+        status: '待启动',
+        owner: String(memberId).trim(),
+        publishedAt: new Date().toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-')
+      }, String(memberId).trim(), {
+        operator: 'bridge',
+        reason: 'fleet-control-bridge:create-member-task'
+      })
+      await syncFleetDashboard()
+      const { state } = refreshStateCache({ forceBroadcast: true, event: 'state' })
+      writeJson(res, 200, { success: true, ...result, state }, origin)
+      return
+    }
+
     if (action === 'delete-task') {
       const { taskId } = data
       if (!taskId || !String(taskId).trim()) {
@@ -271,6 +299,25 @@ const server = http.createServer(async (req, res) => {
       await syncFleetDashboard()
       const { state } = refreshStateCache({ forceBroadcast: true, event: 'state' })
       writeJson(res, 200, { success: true, deleted: result, state }, origin)
+      return
+    }
+
+    if (action === 'complete-task') {
+      const { taskId, memberId = '', summary = '' } = data
+      if (!taskId || !String(taskId).trim()) {
+        writeJson(res, 400, { error: 'taskId is required' }, origin)
+        return
+      }
+
+      const result = completeAiTeamTask(String(taskId).trim(), {
+        memberId: String(memberId || '').trim(),
+        summary: String(summary || '').trim(),
+        operator: 'bridge',
+        reason: 'fleet-control-bridge:complete-task'
+      })
+      await syncFleetDashboard()
+      const { state } = refreshStateCache({ forceBroadcast: true, event: 'state' })
+      writeJson(res, 200, { success: true, completed: result, state }, origin)
       return
     }
 

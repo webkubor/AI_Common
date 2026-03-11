@@ -40,3 +40,7 @@ pnpm run fleet:sync-dashboard
 - `pnpm run fleet:sync-dashboard` 现在只会把数据库状态投影到 `.memory/cache/ai_team_status.local.json`
 - 线上文档站不再承载 `AI Team` 运行态数据，也不再展示本地中枢菜单
 - 队长切换、节点心跳、离线清理都直接写数据库，不再依赖 `fleet_status.md / fleet_meta.json`
+
+任务规范：
+
+- [AI Team 任务生命周期标准](./ai-team-task-lifecycle.md)
