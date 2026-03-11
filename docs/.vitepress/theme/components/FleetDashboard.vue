@@ -325,6 +325,36 @@ function getStatusText(status) {
   return map[status?.toUpperCase()] || status;
 }
 
+function normalizePriorityLabel(priority) {
+  const text = String(priority || '').trim();
+  if (!text || text === '未标注') return '中';
+  if (text.includes('紧急') || text.includes('高')) return '高';
+  if (text.includes('低')) return '低';
+  return '中';
+}
+
+function priorityClass(priority) {
+  const normalized = normalizePriorityLabel(priority);
+  if (normalized === '高') return 'is-high';
+  if (normalized === '低') return 'is-low';
+  return 'is-medium';
+}
+
+function missionStatusClass(status) {
+  const text = String(status || '').trim();
+  if (text === '执行中') return 'working';
+  if (text === '已完成') return 'done';
+  return 'pending';
+}
+
+function canDeleteMission(task) {
+  return Boolean(String(task?.taskId || '').trim()) && String(task?.status || '').trim() === '待启动';
+}
+
+function canCompleteMemberTask(task) {
+  return Boolean(String(task?.taskId || '').trim()) && String(task?.status || '').trim() !== '已完成';
+}
+
 function applyBridgeState(state) {
   data.value = {
     ...data.value,
@@ -859,6 +889,162 @@ async function makeCaptain(member) {
   background: rgba(255, 255, 255, 0.02);
   color: rgba(255, 255, 255, 0.38);
   font-size: 12px;
+}
+
+.mission-glass-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(180deg, rgba(20, 24, 32, 0.82), rgba(12, 15, 20, 0.9));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 12px 30px rgba(0, 0, 0, 0.24);
+}
+
+.card-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(245, 200, 123, 0.14), transparent 30%, transparent 70%, rgba(245, 200, 123, 0.08));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  padding: 1px;
+}
+
+.m-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.m-top-left,
+.m-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.m-id {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.m-priority-orb {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.02);
+}
+
+.m-priority-orb.is-high {
+  background: #ff6b6b;
+  box-shadow: 0 0 12px rgba(255, 107, 107, 0.35);
+}
+
+.m-priority-orb.is-medium {
+  background: #f5c87b;
+  box-shadow: 0 0 12px rgba(245, 200, 123, 0.28);
+}
+
+.m-priority-orb.is-low {
+  background: #4dd4ac;
+  box-shadow: 0 0 12px rgba(77, 212, 172, 0.28);
+}
+
+.mission-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 107, 107, 0.24);
+  border-radius: 10px;
+  background: rgba(255, 107, 107, 0.08);
+  color: #ff8d8d;
+  cursor: pointer;
+}
+
+.mission-delete-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.mission-delete-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.m-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.m-status-badge .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.m-status-badge.working {
+  color: #7fb2ff;
+  background: rgba(48, 103, 197, 0.14);
+  border-color: rgba(48, 103, 197, 0.25);
+}
+
+.m-status-badge.pending {
+  color: #f5c87b;
+  background: rgba(245, 200, 123, 0.1);
+  border-color: rgba(245, 200, 123, 0.22);
+}
+
+.m-status-badge.done {
+  color: #5ee0a1;
+  background: rgba(94, 224, 161, 0.1);
+  border-color: rgba(94, 224, 161, 0.22);
+}
+
+.m-title {
+  margin: 0;
+  color: #f2f4f8;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.m-owner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+}
+
+.m-owner-meta,
+.m-workspace,
+.m-published-at {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .flow-container::-webkit-scrollbar {
