@@ -65,48 +65,56 @@ const props = defineProps({
 </template>
 
 <style scoped>
-/* 🧪 CLI Health Footer Styles */
 .cli-health-footer {
   position: fixed;
-  bottom: 85px;  /* Raised to make room for command hub */
-  left: 0;
-  right: 0;
+  left: 24px;
+  right: 24px;
+  bottom: 20px;
   z-index: 100;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  border-top: 1px solid rgba(139, 115, 71, 0.2);
-  background: rgba(9, 10, 14, 0.85);
-  backdrop-filter: blur(20px);
+  pointer-events: none;
 }
 
 .footer-container {
   width: 100%;
-  max-width: 1800px;
+  max-width: 1480px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 12px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-radius: 22px;
+  border: 1px solid rgba(245, 200, 123, 0.12);
+  background:
+    linear-gradient(180deg, rgba(12, 16, 22, 0.92), rgba(8, 10, 14, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 18px 40px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+  pointer-events: auto;
 }
 
 .health-group {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .health-label {
   font-size: 11px;
-  color: #666;
+  color: rgba(226, 232, 240, 0.46);
   letter-spacing: 0.1em;
+  white-space: nowrap;
 }
 
 .health-items {
   display: flex;
   align-items: center;
-  gap: 16px;
-  white-space: nowrap;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .health-item {
@@ -114,10 +122,11 @@ const props = defineProps({
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  height: 32px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.035);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   transition: all 0.3s ease;
   cursor: help;
 }
@@ -163,10 +172,10 @@ const props = defineProps({
 }
 
 .health-item .h-name {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #555;
+  letter-spacing: 0.08em;
+  color: rgba(226, 232, 240, 0.48);
 }
 
 /* 🟢 Online State */
@@ -202,31 +211,33 @@ const props = defineProps({
 .footer-meta {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.4);
   font-family: ui-monospace, sans-serif;
   white-space: nowrap;
+  margin-left: auto;
 }
 
 .sync-info {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
+  height: 32px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
   letter-spacing: 0.05em;
 }
 
 .sync-label {
-  color: #888888;
+  color: rgba(226, 232, 240, 0.46);
 }
 
 .sync-status {
   font-weight: 600;
-  color: #888888;
+  color: rgba(226, 232, 240, 0.58);
 }
 
 .sync-status.is-online {
@@ -236,23 +247,21 @@ const props = defineProps({
 
 .footer-system-stats {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
-  margin-left: auto;
-  margin-right: 40px;
-  padding: 0 20px;
-  border-left: 1px solid rgba(255, 255, 255, 0.05);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  flex-wrap: wrap;
+  padding: 0 8px 0 0;
 }
 
 .stat-item {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
+  height: 32px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
   white-space: nowrap;
 }
 
@@ -264,7 +273,7 @@ const props = defineProps({
 
 .stat-label {
   font-size: 10px;
-  color: #888888;
+  color: rgba(226, 232, 240, 0.46);
   font-weight: 600;
   letter-spacing: 0.05em;
 }
@@ -278,15 +287,52 @@ const props = defineProps({
 }
 
 .version-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
   color: var(--c-aureate-dim, #8B7347);
   background: rgba(139, 115, 71, 0.1);
-  padding: 2px 8px;
-  border-radius: 4px;
+  border: 1px solid rgba(139, 115, 71, 0.16);
+  border-radius: 999px;
 }
 
 @keyframes h-pulse {
   0% { opacity: 1; }
   50% { opacity: 0.4; }
   100% { opacity: 1; }
+}
+
+@media (max-width: 1280px) {
+  .footer-container {
+    padding: 12px 14px;
+  }
+
+  .footer-meta {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 960px) {
+  .cli-health-footer {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .footer-container {
+    gap: 12px;
+  }
+
+  .health-group,
+  .footer-system-stats,
+  .footer-meta {
+    width: 100%;
+  }
+
+  .footer-meta {
+    justify-content: space-between;
+    white-space: normal;
+  }
 }
 </style>
