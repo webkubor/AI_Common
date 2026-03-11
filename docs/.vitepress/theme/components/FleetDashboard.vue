@@ -179,6 +179,28 @@ const currentWorkspaceName = computed(() => {
   const current = workspaceOptions.value.find((item) => item.workspace === createTaskForm.value.workspace);
   return current?.name || "";
 });
+const missionSections = computed(() => {
+  const groups = [
+    { key: "pending", title: "待启动", items: [] },
+    { key: "working", title: "执行中", items: [] },
+    { key: "done", title: "已完成", items: [] }
+  ];
+
+  for (const task of data.value.missions) {
+    const status = String(task?.status || "").trim();
+    if (status === "已完成") {
+      groups[2].items.push(task);
+      continue;
+    }
+    if (status === "执行中") {
+      groups[1].items.push(task);
+      continue;
+    }
+    groups[0].items.push(task);
+  }
+
+  return groups;
+});
 const displayVersion = computed(() => {
   const raw = String(data.value.version || "").trim();
   const match = raw.match(/v\d+(?:\.\d+){0,2}(?:-[a-z0-9.]+)?/i);
@@ -620,7 +642,7 @@ async function makeCaptain(member) {
         <!-- 3. 作战清单 (Mission Flow) -->
         <aside class="mission-flow">
           <div class="flow-header">
-            <span>任务队列</span>
+            <span>任务池</span>
             <button class="task-create-trigger" @click="openTaskCreator" title="发布任务">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 5v14M5 12h14" />
@@ -628,48 +650,60 @@ async function makeCaptain(member) {
             </button>
           </div>
           <div class="flow-container">
-            <div v-for="(task, idx) in data.missions" :key="task.id" class="mission-glass-card"
-              :style="{ '--delay': idx * 0.1 + 's' }"
-              @mouseenter="showMissionTooltip($event, task)"
-              @mouseleave="hideMissionTooltip"
-            >
-              <div class="card-edge"></div>
-              <div class="m-top">
-                <span class="m-id">{{ task.id }}</span>
-                <div class="m-top-actions">
-                  <button
-                    v-if="canDeleteMission(task)"
-                    class="mission-delete-btn"
-                    :disabled="deletingTaskId === task.taskId"
-                    @click="removeTask(task)"
-                    title="删除待启动任务"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M3 6h18" />
-                      <path d="M8 6V4h8v2" />
-                      <path d="M19 6l-1 14H6L5 6" />
-                      <path d="M10 11v6M14 11v6" />
-                    </svg>
-                  </button>
-                  <div class="m-status-badge" :class="missionStatusClass(task.status)">
-                    <span class="status-dot"></span>
-                    {{ task.status }}
+            <section v-for="section in missionSections" :key="section.key" class="mission-section">
+              <div class="mission-section-header">
+                <span class="mission-section-title">{{ section.title }}</span>
+                <span class="mission-section-count">{{ section.items.length }}</span>
+              </div>
+              <div v-if="section.items.length === 0" class="mission-section-empty">
+                当前没有{{ section.title }}任务
+              </div>
+              <div
+                v-for="(task, idx) in section.items"
+                :key="task.id"
+                class="mission-glass-card"
+                :style="{ '--delay': idx * 0.1 + 's' }"
+                @mouseenter="showMissionTooltip($event, task)"
+                @mouseleave="hideMissionTooltip"
+              >
+                <div class="card-edge"></div>
+                <div class="m-top">
+                  <span class="m-id">{{ task.id }}</span>
+                  <div class="m-top-actions">
+                    <button
+                      v-if="canDeleteMission(task)"
+                      class="mission-delete-btn"
+                      :disabled="deletingTaskId === task.taskId"
+                      @click="removeTask(task)"
+                      title="删除待启动任务"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4h8v2" />
+                        <path d="M19 6l-1 14H6L5 6" />
+                        <path d="M10 11v6M14 11v6" />
+                      </svg>
+                    </button>
+                    <div class="m-status-badge" :class="missionStatusClass(task.status)">
+                      <span class="status-dot"></span>
+                      {{ task.status }}
+                    </div>
                   </div>
                 </div>
+                <p class="m-title text-ellipsis">{{ task.title }}</p>
+                <div class="m-owner">
+                  <span class="text-ellipsis owner-name" :title="task.owner">{{ task.owner }}</span>
+                  <span v-if="(task.assigneeAgent || task.assigneeRole) && (task.assigneeAgent !== task.owner)" class="m-owner-meta text-ellipsis" :title="[task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ')">
+                    {{ [task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ') }}
+                  </span>
+                  <span v-else-if="task.assigneeRole" class="m-owner-meta text-ellipsis" :title="task.assigneeRole">
+                    {{ task.assigneeRole }}
+                  </span>
+                </div>
+                <div v-if="task.workspace" class="m-published-at text-ellipsis">工作路径 {{ task.workspace }}</div>
+                <div v-if="task.publishedAt" class="m-published-at text-ellipsis" :title="'发布时间 ' + task.publishedAt">发布时间 {{ task.publishedAt }}</div>
               </div>
-              <p class="m-title text-ellipsis">{{ task.title }}</p>
-              <div class="m-owner">
-                <span class="text-ellipsis owner-name" :title="task.owner">{{ task.owner }}</span>
-                <span v-if="(task.assigneeAgent || task.assigneeRole) && (task.assigneeAgent !== task.owner)" class="m-owner-meta text-ellipsis" :title="[task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ')">
-                  {{ [task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ') }}
-                </span>
-                <span v-else-if="task.assigneeRole" class="m-owner-meta text-ellipsis" :title="task.assigneeRole">
-                  {{ task.assigneeRole }}
-                </span>
-              </div>
-              <div v-if="task.workspace" class="m-published-at text-ellipsis">工作路径 {{ task.workspace }}</div>
-              <div v-if="task.publishedAt" class="m-published-at text-ellipsis" :title="'发布时间 ' + task.publishedAt">发布时间 {{ task.publishedAt }}</div>
-            </div>
+            </section>
             <div v-if="data.missions.length === 0" class="mission-empty-state">
               <div>当前任务池为空</div>
               <div>点击左上角 + 发布任务</div>
@@ -1326,12 +1360,57 @@ async function makeCaptain(member) {
 .flow-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 18px;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding-right: 8px;
+}
+
+.mission-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mission-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.mission-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.mission-section-count {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mission-section-empty {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 12px;
 }
 
 .flow-container::-webkit-scrollbar {

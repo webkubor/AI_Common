@@ -91,11 +91,7 @@ function buildTaskQueue(db) {
     LIMIT 20
   `).all()
 
-  const displayRows = rows.some(task => Number(task.completed) === 0)
-    ? rows.filter(task => Number(task.completed) === 0)
-    : rows
-
-  return displayRows.map((task, index) => ({
+  return rows.map((task, index) => ({
     id: `任务-${String(index + 1).padStart(2, '0')}`,
     taskId: task.taskId,
     title: task.title || task.taskId,
