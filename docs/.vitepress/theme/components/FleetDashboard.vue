@@ -856,7 +856,6 @@ async function makeCaptain(member) {
   padding: 24px;
   gap: 24px;
   z-index: 10;
-  position: relative;
 }
 
 /* 🧊 任务清单 - 玻璃态 */
@@ -992,14 +991,16 @@ async function makeCaptain(member) {
 
 /* ⚡️ 主令输入枢纽 (Command Input Hub) */
 .command-hub-overlay {
-  position: absolute;
-  bottom: 0px; /* 沉浸在 stage 底部 */
+  position: fixed;
+  bottom: 80px; /* 浮于 footer 之上 */
   left: 50%;
   transform: translateX(-50%);
   z-index: 200;
-  width: 100%;
+  width: calc(100% - 48px);
   max-width: 800px;
   pointer-events: none; /* 让外层不阻挡点击，子元素自身开启 */
+  display: flex;
+  justify-content: center;
 }
 
 .command-input-container {
@@ -1016,6 +1017,7 @@ async function makeCaptain(member) {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
   width: 100%;
+  overflow: hidden; /* 防止 glow 溢出容器 */
 }
 
 .command-input-container:focus-within {
@@ -1027,9 +1029,12 @@ async function makeCaptain(member) {
 
 .input-glow {
   position: absolute;
-  inset: -1px;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
   border-radius: 21px;
-  background: linear-gradient(90deg, rgba(245, 200, 123, 0), rgba(245, 200, 123, 0.3), rgba(245, 200, 123, 0));
+  background: linear-gradient(90deg, transparent, rgba(245, 200, 123, 0.15), transparent);
   z-index: -1;
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -1038,12 +1043,12 @@ async function makeCaptain(member) {
 
 .command-input-container:focus-within .input-glow {
   opacity: 1;
-  animation: slide-glow 3s linear infinite;
+  animation: slide-glow 4s linear infinite;
 }
 
 @keyframes slide-glow {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(50%); }
 }
 
 .input-icon {

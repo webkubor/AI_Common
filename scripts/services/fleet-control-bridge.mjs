@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 
 import http from 'http'
+import fs from 'fs'
 import path from 'path'
 import { spawn } from 'child_process'
 import { fileURLToPath } from 'url'
 import { ensureAiTeamDb } from '../lib/ai-team-db.mjs'
-import { getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline } from '../lib/ai-team-state.mjs'
+import { createAiTeamTask, getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline } from '../lib/ai-team-state.mjs'
 import { buildFleetDashboardPayload } from '../actions/sync-fleet-dashboard.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const projectRoot = path.join(__dirname, '../../')
+const registryFile = path.join(projectRoot, '.memory/projects/registry.json')
 const port = Number(process.env.FLEET_CONTROL_PORT || 18790)
 const host = process.env.FLEET_CONTROL_HOST || '127.0.0.1'
 const STATE_POLL_INTERVAL = 2000
@@ -25,6 +27,26 @@ function getSerializableState() {
   const comparable = JSON.parse(JSON.stringify(state))
   delete comparable.generatedAt
   return { state, signature: JSON.stringify(comparable) }
+}
+
+function loadActivatedWorkspaces() {
+  try {
+    const raw = JSON.parse(fs.readFileSync(registryFile, 'utf8'))
+    const projects = Array.isArray(raw?.projects) ? raw.projects : []
+    return projects
+      .filter(project => (project.participants || []).length > 0 || project.lastAgent)
+      .map(project => ({
+        slug: project.slug,
+        name: project.name,
+        rootPath: project.rootPath,
+        workspace: project.lastWorkspace || project.rootPath,
+        lastAgent: project.lastAgent || '',
+        lastRole: project.lastRole || '',
+        participants: project.participants || []
+      }))
+  } catch {
+    return []
+  }
 }
 
 function runCommand(command, args) {
@@ -182,6 +204,11 @@ const server = http.createServer(async (req, res) => {
     return
   }
 
+  if (req.method === 'GET' && req.url === '/api/fleet/workspaces') {
+    writeJson(res, 200, { ok: true, workspaces: loadActivatedWorkspaces() }, origin)
+    return
+  }
+
   if (req.method === 'GET' && req.url === '/api/fleet/events') {
     attachSseClient(req, res, origin)
     return
@@ -195,6 +222,40 @@ const server = http.createServer(async (req, res) => {
   try {
     const data = await readJsonBody(req)
     const { action, memberId } = data
+
+    if (action === 'create-task') {
+      const { title, workspace, priority = '未标注' } = data
+      if (!title || !String(title).trim()) {
+        writeJson(res, 400, { error: 'title is required' }, origin)
+        return
+      }
+      if (!workspace || !String(workspace).trim()) {
+        writeJson(res, 400, { error: 'workspace is required' }, origin)
+        return
+      }
+
+      const availableWorkspaces = new Set(loadActivatedWorkspaces().map(item => item.workspace || item.rootPath))
+      if (!availableWorkspaces.has(String(workspace).trim())) {
+        writeJson(res, 400, { error: 'workspace is not activated' }, origin)
+        return
+      }
+
+      const task = createAiTeamTask({
+        title,
+        workspace: String(workspace).trim(),
+        priority,
+        status: '待启动',
+        owner: '待分配',
+        publishedAt: new Date().toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-')
+      }, {
+        operator: 'bridge',
+        reason: 'fleet-control-bridge:create-task'
+      })
+      await syncFleetDashboard()
+      const { state } = refreshStateCache({ forceBroadcast: true, event: 'state' })
+      writeJson(res, 200, { success: true, task, state }, origin)
+      return
+    }
 
     if (!memberId) {
       writeJson(res, 400, { error: 'memberId is required' }, origin)

@@ -204,6 +204,79 @@ export function replaceAiTeamTasks(tasks = [], { operator = 'system', reason = '
   return normalized
 }
 
+export function createAiTeamTask(task, { operator = 'system', reason = 'tasks:create' } = {}) {
+  const db = ensureAiTeamDb()
+  const normalized = normalizeTaskRecord(task)
+  if (!normalized.title) {
+    db.close()
+    throw new Error('任务标题不能为空')
+  }
+  if (!normalized.workspace) {
+    db.close()
+    throw new Error('工作路径不能为空')
+  }
+
+  if (!normalized.taskId || normalized.taskId.startsWith('task-')) {
+    const stamp = nowIso().replace(/[-:TZ.]/g, '').slice(0, 12)
+    normalized.taskId = `task-${stamp}-${Math.random().toString(36).slice(2, 6)}`
+  }
+
+  db.prepare(`
+    INSERT INTO tasks (
+      task_id,
+      title,
+      assignee,
+      assignee_member_id,
+      assignee_agent,
+      assignee_role,
+      workspace,
+      published_at,
+      status,
+      priority,
+      priority_rank,
+      completed,
+      source_file,
+      updated_at,
+      synced_at
+    ) VALUES (
+      @taskId,
+      @title,
+      @assignee,
+      @assigneeMemberId,
+      @assigneeAgent,
+      @assigneeRole,
+      @workspace,
+      @publishedAt,
+      @status,
+      @priority,
+      @priorityRank,
+      @completed,
+      @sourceFile,
+      @updatedAt,
+      @syncedAt
+    )
+  `).run(normalized)
+
+  db.prepare(`
+    INSERT INTO operation_logs (action, target_type, target_id, payload_json)
+    VALUES (?, ?, ?, ?)
+  `).run(
+    'create-task',
+    'tasks',
+    normalized.taskId,
+    JSON.stringify({
+      operator,
+      reason,
+      taskId: normalized.taskId,
+      title: normalized.title,
+      workspace: normalized.workspace
+    })
+  )
+
+  db.close()
+  return normalized
+}
+
 function statusToType(status) {
   const text = String(status ?? '')
   if (text.includes('已离线')) return 'offline'
