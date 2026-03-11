@@ -35,7 +35,7 @@ const workspaceOptions = ref([]);
 const createTaskForm = ref({
   title: "",
   workspace: "",
-  priority: "未标注"
+  priority: "中"
 });
 let timeInterval = null;
 let reconnectTimer = null;
@@ -153,6 +153,20 @@ function getMemberStateTag(member) {
   if (text.includes("等待") || text.includes("待处理") || text.includes("待命")) return "待命";
   if (text.includes("执行中") || text.includes("队长锁")) return "执行中";
   return text || "在线";
+}
+
+function normalizePriorityLabel(priority) {
+  const text = String(priority || "").trim();
+  if (!text || text === "未标注") return "中";
+  return text;
+}
+
+function priorityClass(priority) {
+  const text = normalizePriorityLabel(priority);
+  if (text.includes("🔴") || text.includes("紧急") || text.includes("高")) return "high";
+  if (text.includes("🟡") || text.includes("中") || text.toLowerCase().includes("medium")) return "medium";
+  if (text.includes("🟢") || text.includes("低") || text.toLowerCase().includes("low")) return "low";
+  return "plain";
 }
 
 function taskHistoryStatusClass(task) {
@@ -473,7 +487,7 @@ function closeTaskCreator() {
   createTaskForm.value = {
     title: "",
     workspace: workspaceOptions.value[0]?.workspace || "",
-    priority: "未标注"
+    priority: "中"
   };
 }
 
@@ -711,7 +725,12 @@ async function makeCaptain(member) {
               >
                 <div class="card-edge"></div>
                 <div class="m-top">
-                  <span class="m-id">{{ task.id }}</span>
+                  <div class="m-top-left">
+                    <span class="m-id">{{ task.id }}</span>
+                    <span class="m-priority-badge" :class="priorityClass(task.priority)">
+                      {{ normalizePriorityLabel(task.priority) }}
+                    </span>
+                  </div>
                   <div class="m-top-actions">
                     <button
                       v-if="canDeleteMission(task)"
@@ -841,6 +860,11 @@ async function makeCaptain(member) {
                         <span class="task-history-time">{{ formatTaskHistoryTime(taskItem) }}</span>
                       </div>
                       <p class="task-history-name" :title="taskItem.title">{{ taskItem.title }}</p>
+                      <div class="task-history-meta">
+                        <span class="task-history-priority" :class="priorityClass(taskItem.priority)">
+                          {{ normalizePriorityLabel(taskItem.priority) }}
+                        </span>
+                      </div>
                     </article>
                   </div>
                   <div v-else class="task-history-empty">当前无任务记录</div>
@@ -1529,6 +1553,13 @@ async function makeCaptain(member) {
   margin-bottom: 6px;
 }
 
+.m-top-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
 .m-top-actions {
   display: flex;
   align-items: center;
@@ -1540,6 +1571,44 @@ async function makeCaptain(member) {
   font-weight: 800;
   color: #666;
   letter-spacing: 0.1em;
+}
+
+.m-priority-badge,
+.task-history-priority {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.m-priority-badge.high,
+.task-history-priority.high {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(248, 113, 113, 0.22);
+}
+
+.m-priority-badge.medium,
+.task-history-priority.medium {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(251, 191, 36, 0.22);
+}
+
+.m-priority-badge.low,
+.task-history-priority.low {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(74, 222, 128, 0.22);
 }
 
 .m-status-badge {
@@ -2501,6 +2570,12 @@ async function makeCaptain(member) {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.task-history-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .task-history-empty {
