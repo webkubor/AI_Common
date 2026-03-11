@@ -114,8 +114,9 @@ function normalizeTaskRecord(task, index = 0) {
   const status = stripMarkdown(task.status || '待启动')
   const completed = status === '已完成' ? 1 : 0
   const priority = stripMarkdown(task.priority || '未标注')
+  const explicitTaskId = stripMarkdown(task.taskId || task.id || '')
   return {
-    taskId: stripMarkdown(task.taskId || task.id || `task-${Date.now()}-${index + 1}`),
+    taskId: explicitTaskId || `task-${Date.now()}-${index + 1}`,
     title: stripMarkdown(task.title || task.taskId || `任务-${index + 1}`),
     assignee: stripMarkdown(task.owner || task.assignee || '待分配'),
     assigneeMemberId: stripMarkdown(task.assigneeMemberId || ''),
@@ -271,7 +272,7 @@ export function createAiTeamTask(task, { operator = 'system', reason = 'tasks:cr
     throw new Error('工作路径不能为空')
   }
 
-  if (!normalized.taskId || normalized.taskId.startsWith('task-')) {
+  if (!normalized.taskId) {
     const stamp = nowIso().replace(/[-:TZ.]/g, '').slice(0, 12)
     normalized.taskId = `task-${stamp}-${Math.random().toString(36).slice(2, 6)}`
   }
@@ -374,7 +375,7 @@ export function createAndDispatchAiTeamTask(task, { operator = 'system', reason 
     throw new Error('工作路径不能为空')
   }
 
-  if (!normalized.taskId || normalized.taskId.startsWith('task-')) {
+  if (!normalized.taskId) {
     const stamp = nowIso().replace(/[-:TZ.]/g, '').slice(0, 12)
     normalized.taskId = `task-${stamp}-${Math.random().toString(36).slice(2, 6)}`
   }
@@ -542,6 +543,78 @@ function syncTaskClaimsFromAgents(db, agents) {
   }
 }
 
+function reconcileTaskAssignments(db, agents) {
+  const tasks = db.prepare(`
+    SELECT
+      task_id AS taskId,
+      title,
+      assignee,
+      assignee_member_id AS assigneeMemberId,
+      assignee_agent AS assigneeAgent,
+      assignee_role AS assigneeRole,
+      workspace,
+      completed,
+      status
+    FROM tasks
+    WHERE completed = 0
+  `).all()
+
+  const activeAgents = agents.filter(agent => agent.type !== 'offline')
+  if (activeAgents.length === 0) return
+
+  const updateClaim = db.prepare(`
+    UPDATE tasks
+    SET
+      assignee = @assignee,
+      assignee_member_id = @assigneeMemberId,
+      assignee_agent = @assigneeAgent,
+      assignee_role = @assigneeRole,
+      workspace = @workspace,
+      synced_at = @syncedAt
+    WHERE task_id = @taskId
+  `)
+
+  for (const task of tasks) {
+    const currentMemberId = stripMarkdown(task.assigneeMemberId)
+    if (currentMemberId && activeAgents.some(agent => agent.memberId === currentMemberId)) continue
+
+    let candidates = activeAgents.slice()
+    const normalizedWorkspace = stripMarkdown(task.workspace)
+    const normalizedAgent = normalizeAgent(task.assigneeAgent)
+    const normalizedAssignee = stripMarkdown(task.assignee)
+
+    if (normalizedWorkspace) {
+      const workspaceMatches = candidates.filter(agent => agent.workspace === normalizedWorkspace)
+      if (workspaceMatches.length > 0) candidates = workspaceMatches
+    }
+
+    if (normalizedAgent) {
+      const agentMatches = candidates.filter(agent => agent.agentName === normalizedAgent)
+      if (agentMatches.length > 0) candidates = agentMatches
+    }
+
+    if (normalizedAssignee && normalizedAssignee !== '待分配') {
+      const assigneeMatches = candidates.filter(agent =>
+        agent.alias === normalizedAssignee || agent.memberId === normalizedAssignee
+      )
+      if (assigneeMatches.length > 0) candidates = assigneeMatches
+    }
+
+    if (candidates.length !== 1) continue
+
+    const resolved = candidates[0]
+    updateClaim.run({
+      taskId: task.taskId,
+      assignee: resolved.alias || resolved.memberId,
+      assigneeMemberId: resolved.memberId,
+      assigneeAgent: resolved.agentName,
+      assigneeRole: resolved.role,
+      workspace: resolved.workspace || normalizedWorkspace,
+      syncedAt: nowIso()
+    })
+  }
+}
+
 function normalizeStoredAgent(agent) {
   const normalized = {
     identityKey: stripMarkdown(agent.identityKey || ''),
@@ -670,6 +743,7 @@ function persistAiTeamAgents(agents, { action = 'sync', operator = 'system', pay
 
   syncAgents(normalizedAgents)
   syncTaskClaimsFromAgents(db, normalizedAgents)
+  reconcileTaskAssignments(db, normalizedAgents)
 
   const nextCaptain = db.prepare(`
     SELECT member_id

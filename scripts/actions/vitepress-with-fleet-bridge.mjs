@@ -14,12 +14,40 @@ const bridgeEnv = {
   ...process.env,
   FLEET_CONTROL_PORT: process.env.FLEET_CONTROL_PORT || '18790'
 }
+const BRIDGE_RESTART_DELAY = 1200
+let bridge = null
+let bridgeRestartTimer = null
+let shuttingDown = false
 
-const bridge = spawn('node', ['scripts/services/fleet-control-bridge.mjs'], {
-  cwd: projectRoot,
-  stdio: 'inherit',
-  env: bridgeEnv
-})
+function clearBridgeRestartTimer() {
+  if (!bridgeRestartTimer) return
+  clearTimeout(bridgeRestartTimer)
+  bridgeRestartTimer = null
+}
+
+function spawnBridge() {
+  clearBridgeRestartTimer()
+  bridge = spawn('node', ['scripts/services/fleet-control-bridge.mjs'], {
+    cwd: projectRoot,
+    stdio: 'inherit',
+    env: bridgeEnv
+  })
+
+  bridge.on('exit', (code, signal) => {
+    if (shuttingDown) return
+    console.warn(`fleet-control-bridge 已退出 (code=${code ?? 'null'}, signal=${signal ?? 'null'})，${BRIDGE_RESTART_DELAY}ms 后自动重启`)
+    bridgeRestartTimer = setTimeout(() => {
+      spawnBridge()
+    }, BRIDGE_RESTART_DELAY)
+  })
+
+  bridge.on('error', (error) => {
+    if (shuttingDown) return
+    console.error('fleet-control-bridge 启动失败:', error)
+  })
+}
+
+spawnBridge()
 
 const vitepress = spawn('pnpm', ['exec', 'vitepress', ...vitepressArgs], {
   cwd: projectRoot,
@@ -31,7 +59,9 @@ const vitepress = spawn('pnpm', ['exec', 'vitepress', ...vitepressArgs], {
 })
 
 function shutdown(code = 0) {
-  if (!bridge.killed) {
+  shuttingDown = true
+  clearBridgeRestartTimer()
+  if (bridge && !bridge.killed) {
     bridge.kill('SIGTERM')
   }
   process.exit(code)
