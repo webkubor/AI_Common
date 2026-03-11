@@ -12,6 +12,23 @@ const showTaskCreator = ref(false);
 const loadingWorkspaces = ref(false);
 const creatingTask = ref(false);
 const deletingTaskId = ref("");
+const hoveredMission = ref(null);
+const missionTooltipStyle = ref({});
+
+function showMissionTooltip(event, task) {
+  hoveredMission.value = task;
+  const rect = event.currentTarget.getBoundingClientRect();
+  // Anchor to the right of the card, with slight padding
+  missionTooltipStyle.value = {
+    top: `${Math.max(20, rect.top)}px`,
+    left: `${rect.right + 12}px`
+  };
+}
+
+function hideMissionTooltip() {
+  hoveredMission.value = null;
+}
+
 const workspaceOptions = ref([]);
 const createTaskForm = ref({
   title: "",
@@ -612,7 +629,10 @@ async function makeCaptain(member) {
           </div>
           <div class="flow-container">
             <div v-for="(task, idx) in data.missions" :key="task.id" class="mission-glass-card"
-              :style="{ '--delay': idx * 0.1 + 's' }">
+              :style="{ '--delay': idx * 0.1 + 's' }"
+              @mouseenter="showMissionTooltip($event, task)"
+              @mouseleave="hideMissionTooltip"
+            >
               <div class="card-edge"></div>
               <div class="m-top">
                 <span class="m-id">{{ task.id }}</span>
@@ -649,35 +669,6 @@ async function makeCaptain(member) {
               </div>
               <div v-if="task.workspace" class="m-published-at text-ellipsis">工作路径 {{ task.workspace }}</div>
               <div v-if="task.publishedAt" class="m-published-at text-ellipsis" :title="'发布时间 ' + task.publishedAt">发布时间 {{ task.publishedAt }}</div>
-              
-              <!-- Hover Detail Bubble overlay -->
-              <div class="mission-detail-bubble">
-                <h4 class="mb-title">{{ task.title }}</h4>
-                
-                <div class="mb-meta-item" v-if="task.workspace">
-                  <span class="mb-label">工作区</span>
-                  <span class="mb-value">{{ task.workspace }}</span>
-                </div>
-                
-                <div class="mb-meta-divider"></div>
-                
-                <div class="mb-owner-row">
-                  <div class="mb-meta-item">
-                    <span class="mb-label">所有者</span>
-                    <span class="mb-value">{{ task.owner }}</span>
-                  </div>
-                  
-                  <div class="mb-meta-item" v-if="task.assigneeAgent || task.assigneeRole">
-                    <span class="mb-label">执行方</span>
-                    <span class="mb-value">{{ [task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ') }}</span>
-                  </div>
-                </div>
-
-                <div class="mb-meta-item" v-if="task.publishedAt" style="margin-top: 8px;">
-                  <span class="mb-label">发布时间</span>
-                  <span class="mb-value">{{ task.publishedAt }}</span>
-                </div>
-              </div>
             </div>
             <div v-if="data.missions.length === 0" class="mission-empty-state">
               <div>当前任务池为空</div>
@@ -923,6 +914,37 @@ async function makeCaptain(member) {
     </div>
 
     <div v-if="error" class="action-error-banner">{{ error }}</div>
+
+    <!-- 全局悬浮气泡 -->
+    <transition name="tooltip-fade">
+      <div v-if="hoveredMission" class="global-mission-tooltip" :style="missionTooltipStyle">
+        <h4 class="gmt-title">{{ hoveredMission.title }}</h4>
+        
+        <div class="gmt-meta-item" v-if="hoveredMission.workspace">
+          <span class="gmt-label">工作路径</span>
+          <span class="gmt-value">{{ hoveredMission.workspace }}</span>
+        </div>
+        
+        <div class="gmt-meta-divider"></div>
+        
+        <div class="gmt-owner-row">
+          <div class="gmt-meta-item">
+            <span class="gmt-label">所有者</span>
+            <span class="gmt-value">{{ hoveredMission.owner }}</span>
+          </div>
+          
+          <div class="gmt-meta-item" v-if="hoveredMission.assigneeAgent || hoveredMission.assigneeRole">
+            <span class="gmt-label">执行方</span>
+            <span class="gmt-value">{{ [hoveredMission.assigneeAgent, hoveredMission.assigneeRole].filter(Boolean).join(' / ') }}</span>
+          </div>
+        </div>
+
+        <div class="gmt-meta-item" v-if="hoveredMission.publishedAt" style="margin-top: 10px;">
+          <span class="gmt-label">发布时间</span>
+          <span class="gmt-value">{{ hoveredMission.publishedAt }}</span>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -1340,18 +1362,16 @@ async function makeCaptain(member) {
   padding: 12px 16px;
   border-radius: 10px;
   position: relative;
-  /* overflow: hidden; Removed so tooltip is not cropped */
+  overflow: hidden; /* Restore standard card overflow */
   animation: slideIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   animation-delay: var(--delay);
   transition: all 0.4s ease;
-  z-index: 1; /* Base plane */
 }
 
 .mission-glass-card:hover {
   transform: translateX(4px);
   border-color: rgba(245, 200, 123, 0.2);
   box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.1), inset 0 0 30px rgba(245, 200, 123, 0.03), 0 12px 32px rgba(0, 0, 0, 0.8);
-  z-index: 50; /* Bring above sibling cards */
 }
 
 .mission-glass-card::before {
@@ -1500,83 +1520,6 @@ async function makeCaptain(member) {
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
-}
-
-.mission-detail-bubble {
-  position: absolute;
-  top: -8px; 
-  left: -8px;
-  width: calc(100% + 16px);
-  height: auto;
-  min-height: calc(100% + 16px);
-  background: rgba(15, 18, 24, 0.98);
-  border-radius: 14px;
-  padding: 16px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(6px) scale(0.95);
-  backdrop-filter: blur(25px);
-  z-index: 100;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(245, 200, 123, 0.4);
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  pointer-events: none; /* Keeps it strictly hover-view only */
-}
-
-.mission-glass-card:hover .mission-detail-bubble {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) scale(1);
-}
-
-.mb-title {
-  margin: 0 0 12px 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: #fff;
-  line-height: 1.5;
-  letter-spacing: 0.02em;
-}
-
-.mb-meta-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 8px;
-}
-
-.mb-meta-item:last-child {
-  margin-bottom: 0;
-}
-
-.mb-label {
-  font-size: 10px;
-  color: #777;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.mb-value {
-  font-size: 11px;
-  color: #cfcfcf;
-  font-family: ui-monospace, sans-serif;
-  word-break: break-all;
-  line-height: 1.4;
-}
-
-.mb-meta-divider {
-  width: 100%;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.06);
-  margin: 10px 0;
-}
-
-.mb-owner-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
 }
 
 .mission-empty-state {
@@ -1888,7 +1831,9 @@ async function makeCaptain(member) {
 .matrix-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-auto-rows: 1fr;
   gap: 24px;
+  align-items: stretch;
 }
 
 .agent-glass-node {
@@ -1903,6 +1848,9 @@ async function makeCaptain(member) {
   overflow: hidden;
   animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   animation-delay: var(--delay);
+  min-height: 548px;
+  display: flex;
+  flex-direction: column;
 }
 
 .agent-glass-node:hover {
@@ -1996,29 +1944,35 @@ async function makeCaptain(member) {
   display: flex;
   align-items: center;
   gap: 20px;
+  min-width: 0;
+  flex: 1;
 }
 
 .agent-logo-wrapper {
-  width: 56px;
-  height: 56px;
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  aspect-ratio: 1 / 1;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.8));
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-top: 1px solid rgba(245, 200, 123, 0.4);
-  border-radius: 16px;
+  border-radius: 18px;
   box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.8), 0 4px 12px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #666;
   transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: hidden;
 }
 
 .agent-logo-wrapper svg,
 .agent-logo-wrapper img {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   display: block;
   object-fit: contain;
+  object-position: center;
 }
 
 .agent-logo-wrapper.mod-codex svg,
@@ -2035,6 +1989,8 @@ async function makeCaptain(member) {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .is-working .agent-logo-wrapper {
@@ -2055,6 +2011,18 @@ async function makeCaptain(member) {
     transform: scale(1.1);
     opacity: 1;
   }
+}
+
+.node-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.agent-info {
+  min-width: 0;
+  flex: 1;
 }
 
 .agent-name {
@@ -2169,7 +2137,13 @@ async function makeCaptain(member) {
 }
 
 .emoji-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 32px;
+  line-height: 1;
 }
 
 .working-spinner {
@@ -2325,6 +2299,7 @@ async function makeCaptain(member) {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-top: auto;
 }
 
 .load-bar-wrapper {
@@ -2504,6 +2479,14 @@ async function makeCaptain(member) {
 }
 
 @media (max-width: 1024px) {
+  .matrix-grid {
+    grid-auto-rows: auto;
+  }
+
+  .agent-glass-node {
+    min-height: auto;
+  }
+
   .aether-stage {
     flex-direction: column;
     overflow: auto;
@@ -2639,6 +2622,96 @@ async function makeCaptain(member) {
 .health-item.offline {
   border-color: rgba(239, 68, 68, 0.2);
   background: rgba(239, 68, 68, 0.05);
+}
+
+/* 💠 Global Fixed Tooltip */
+.global-mission-tooltip {
+  position: fixed;
+  z-index: 9999;
+  width: 340px;
+  max-width: 90vw;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(20, 24, 32, 0.95), rgba(10, 12, 16, 0.98));
+  backdrop-filter: blur(28px) saturate(120%);
+  border: 1px solid rgba(245, 200, 123, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  pointer-events: none; /* Let mouse pass through to underlying card */
+  display: flex;
+  flex-direction: column;
+}
+
+.global-mission-tooltip::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 24px;
+  transform: translateY(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: rgba(20, 24, 32, 0.95);
+  border-left: 1px solid rgba(245, 200, 123, 0.3);
+  border-bottom: 1px solid rgba(245, 200, 123, 0.3);
+}
+
+.gmt-title {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+.gmt-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.gmt-meta-item:last-child {
+  margin-bottom: 0;
+}
+
+.gmt-label {
+  font-size: 10px;
+  color: #888;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.gmt-value {
+  font-size: 11px;
+  color: #e2e2e2;
+  font-family: ui-monospace, sans-serif;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.gmt-meta-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent);
+  margin: 12px 0;
+}
+
+.gmt-owner-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.tooltip-fade-enter-active,
+.tooltip-fade-leave-active {
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tooltip-fade-enter-from,
+.tooltip-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-12px) scale(0.98);
 }
 
 .health-item.offline .h-dot {
