@@ -988,6 +988,8 @@ async function makeCaptain(member) {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   pointer-events: auto; /* 恢复子元素交互 */
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .command-input-container:focus-within {
@@ -1043,6 +1045,8 @@ async function makeCaptain(member) {
   font-weight: 500;
   letter-spacing: 0.03em;
   padding: 12px 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .aether-command-input::placeholder {

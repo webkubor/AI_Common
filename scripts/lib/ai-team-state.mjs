@@ -81,14 +81,14 @@ function iterTaskFiles() {
 }
 
 function taskIsCompleted(content) {
-  return /^>\s*状态[:：].*(?:✅\s*)?已完成/m.test(content)
+  return /^>\s*状态[:：]\s*(?:✅\s*)?已完成(?:\s*\||\s*$)/m.test(content)
 }
 
 function extractTaskStatus(content) {
   const match = content.match(/^>\s*状态[:：]\s*(.+)$/m)
   if (!match) return '待启动'
   const statusText = stripMarkdown(match[1])
-  if (statusText.includes('已完成')) return '已完成'
+  if (/^(?:✅\s*)?已完成(?:\s*\||\s*$)/.test(statusText)) return '已完成'
   if (['执行中', '进行中'].some(token => statusText.includes(token))) return '执行中'
   if (['待启动', '待处理', '待办', '待分配'].some(token => statusText.includes(token))) return '待启动'
   return statusText
@@ -190,11 +190,29 @@ function buildTaskQueue(db, agents = []) {
   syncTasksFromFiles(db)
 
   const activeClaimMap = new Map()
+  const runtimeTasks = []
   for (const agent of agents) {
     const taskText = String(agent.task || '')
     const matches = taskText.match(/task[-#]?\d{1,8}(?:-[a-z0-9-]+)?/ig) || []
     for (const match of matches) {
       activeClaimMap.set(match.toLowerCase(), agent.alias || agent.memberId)
+    }
+
+     if (
+      agent.type === 'active' &&
+      taskText &&
+      taskText !== '待分配任务' &&
+      matches.length === 0
+    ) {
+      runtimeTasks.push({
+        id: `运行中-${agent.memberId}`,
+        taskId: '',
+        title: taskText,
+        status: '执行中',
+        owner: agent.alias || agent.memberId,
+        priority: '运行中',
+        _sortRank: 0
+      })
     }
   }
 
@@ -217,14 +235,23 @@ function buildTaskQueue(db, agents = []) {
     ? rows.filter(task => Number(task.completed) === 0)
     : rows
 
-  return displayRows.map((task, index) => ({
+  const structuredTasks = displayRows.map((task, index) => ({
     id: `任务-${String(index + 1).padStart(2, '0')}`,
     taskId: task.taskId,
     title: task.title || task.taskId,
     status: task.completed ? '已完成' : (task.status || '待启动'),
     owner: activeClaimMap.get(task.taskId) || task.assignee || '待分配',
-    priority: task.priority || '未标注'
+    priority: task.priority || '未标注',
+    _sortRank: Number(task.completed) === 0 ? 0 : 2
   }))
+
+  return [...structuredTasks, ...runtimeTasks]
+    .sort((a, b) => a._sortRank - b._sortRank)
+    .slice(0, 12)
+    .map(({ _sortRank, ...task }, index) => ({
+      ...task,
+      id: `任务-${String(index + 1).padStart(2, '0')}`
+    }))
 }
 
 function statusToType(status) {
