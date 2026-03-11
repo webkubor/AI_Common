@@ -301,6 +301,26 @@ function pickSuccessor(agents, excludedMemberId = '') {
     .sort((a, b) => parseDate(b.heartbeatAt || b.updatedAt) - parseDate(a.heartbeatAt || a.updatedAt))[0] || null
 }
 
+function refreshCaptainPresentation(agent) {
+  agent.isCaptain = 1
+  agent.type = 'active'
+  agent.status = '[ 队长锁 ] 活跃'
+  agent.memberId = buildPrimeMemberId(agent)
+  agent.nodeId = agent.memberId
+  agent.updatedAt = nowLocal()
+}
+
+function refreshWorkerPresentation(agent, agents, excludedIds = new Set()) {
+  agent.isCaptain = 0
+  if (agent.type !== 'offline') {
+    agent.type = 'active'
+    agent.status = '[ 执行中 ] 活跃'
+  }
+  agent.memberId = chooseWorkerMemberId(agent, agents, excludedIds)
+  agent.nodeId = agent.memberId
+  agent.updatedAt = nowLocal()
+}
+
 function getCurrentAgents() {
   const agents = loadAgentsFromDb()
   return agents.slice().sort(compareAgentOrder)
@@ -567,24 +587,36 @@ export function cleanupAiTeamState({ thresholdHours = 2, dryRun = false, operato
       continue
     }
 
-    agent.isCaptain = 0
     if (agent.type !== 'queued') {
       agent.type = 'active'
-      agent.status = '[ 执行中 ] 活跃'
+      agent.status = agent.isCaptain ? '[ 队长锁 ] 活跃' : '[ 执行中 ] 活跃'
     }
     survivors.push(agent)
   }
 
   let successor = null
   if (survivors.length > 0) {
-    successor = pickSuccessor(survivors)
-    if (successor) {
-      successor.isCaptain = 1
-      successor.type = 'active'
-      successor.status = '[ 队长锁 ] 活跃'
-      successor.memberId = buildPrimeMemberId(successor)
-      successor.nodeId = successor.memberId
-      successor.updatedAt = nowLocal()
+    const aliveCaptain = survivors.find(agent => agent.isCaptain)
+
+    if (aliveCaptain) {
+      for (const agent of survivors) {
+        if (agent.identityKey === aliveCaptain.identityKey) {
+          refreshCaptainPresentation(agent)
+          continue
+        }
+        refreshWorkerPresentation(agent, survivors, new Set([aliveCaptain.memberId]))
+      }
+    } else {
+      successor = pickSuccessor(survivors)
+      if (successor) {
+        for (const agent of survivors) {
+          if (agent.identityKey === successor.identityKey) {
+            refreshCaptainPresentation(agent)
+            continue
+          }
+          refreshWorkerPresentation(agent, survivors, new Set([successor.memberId]))
+        }
+      }
     }
   }
 
