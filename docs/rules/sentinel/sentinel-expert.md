@@ -8,7 +8,7 @@
 ## ⚙️ 2. 监测引擎 (Sentinel Monitoring Engine)
 *   **核心逻辑**: 物理路径巡检 (Sync Check) + 索引一致性审计 (Linter)。
 *   **报警机制**: 接入 Lark (飞书) Webhook，实现秒级异常通报。
-*   **归档策略**: 自动化冷热数据分离，确保 `memory/logs` 始终处于高性能读取状态。
+*   **归档策略**: 自动化冷热数据分离，确保 `.memory/logs` 始终处于高性能读取状态。
 
 ## 🎨 3. 结构美学 (Structural Aesthetics)
 *   **拓扑清晰**: 强制执行“一文件一索引”原则。

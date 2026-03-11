@@ -30,7 +30,6 @@ function moveFiles() {
   console.log('🚀 开始整理文档结构\n');
 
   const archives = {
-    logs: [],
     assets: [],
     temp: []
   };
@@ -44,11 +43,6 @@ function moveFiles() {
     const category = parts[0] || 'root';
 
     let shouldArchive = false;
-
-    if (category === 'memory' && parts.includes('journal')) {
-      shouldArchive = true;
-      archives.logs.push({ from: file, to: `docs/archive/logs/${path.basename(file)}` });
-    }
 
     if (category === 'persona' && parts.includes('refs') && file.endsWith('.png')) {
       shouldArchive = true;
@@ -68,12 +62,6 @@ function moveFiles() {
 
   console.log('📋 建议移动文件:\n');
 
-  console.log('📂 日志文件 → archive/logs/');
-  archives.logs.forEach(item => {
-    console.log(`  • ${path.basename(item.from)} → ${path.basename(item.to)}`);
-  });
-  console.log('');
-
   console.log('🖼️ 图片资源 → public/images/persona/');
   archives.assets.forEach(item => {
     console.log(`  • ${path.basename(item.from)} → ${path.basename(item.to)}`);
@@ -86,7 +74,7 @@ function moveFiles() {
   });
   console.log('');
 
-  const totalMoves = archives.logs.length + archives.assets.length + archives.temp.length;
+  const totalMoves = archives.assets.length + archives.temp.length;
 
   if (totalMoves === 0) {
     console.log('✅ 所有文件结构已优化，无需移动');
@@ -95,10 +83,6 @@ function moveFiles() {
 
     console.log('执行命令示例:');
     console.log('```bash');
-    archives.logs.forEach(item => {
-      console.log(`mkdir -p docs/archive/logs`);
-      console.log(`mv ${path.basename(item.from)} docs/archive/logs/`);
-    });
     archives.assets.forEach(item => {
       console.log(`mkdir -p docs/public/images/persona`);
       console.log(`mv ${path.basename(item.from)} docs/public/images/persona/`);

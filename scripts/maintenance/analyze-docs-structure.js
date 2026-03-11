@@ -108,13 +108,13 @@ function analyzeStructure() {
 
   console.log('🚨 建议处理:\n');
 
-  console.log('1. 日志文件应归档:');
+  console.log('1. 带日期的历史文档建议归档:');
   const logFiles = Object.values(directoryStructure)
     .filter(item => item.type === 'log')
     .flatMap(item => item.files);
 
   logFiles.forEach(file => {
-    console.log(`   → ${file} → archive/logs/`);
+    console.log(`   → ${file} → archive/root-legacy/`);
   });
   console.log('');
 

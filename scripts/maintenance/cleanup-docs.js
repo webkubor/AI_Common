@@ -12,7 +12,6 @@ const rootDir = path.join(__dirname, '..');
 
 function createArchiveDirectories() {
   const archiveDirs = [
-    'archive/logs',
     'archive/assets',
     'archive/temp',
     'archive/others'
@@ -33,30 +32,8 @@ function createArchiveDirectories() {
 }
 
 function moveLogFiles() {
-  console.log('📤 移动日志文件...\n');
-
-  const logDir = path.join(DOCS_DIR, 'memory', 'journal');
-  const targetDir = path.join(DOCS_DIR, 'archive', 'logs');
-
-  const files = fs.readdirSync(logDir);
-  let movedCount = 0;
-
-  for (const file of files) {
-    if (file.endsWith('.md')) {
-      const source = path.join(logDir, file);
-      const target = path.join(targetDir, file);
-
-      if (!fs.existsSync(target)) {
-        fs.renameSync(source, target);
-        console.log(`  ✅ ${file} → archive/logs/`);
-        movedCount++;
-      }
-    }
-  }
-
-  if (movedCount === 0) {
-    console.log('  ℹ️ 无需移动日志文件');
-  }
+  console.log('📤 检查历史日志迁移状态...\n');
+  console.log('  ℹ️ 运行日志现统一写入 .memory/logs/，docs/memory/journal 已退役');
   console.log('');
 }
 
@@ -120,7 +97,6 @@ function createArchiveIndex() {
   console.log('📄 创建归档索引...\n');
 
   const archiveDirs = [
-    'logs',
     'assets',
     'temp',
     'others'
@@ -133,12 +109,6 @@ function createArchiveIndex() {
       if (files.length > 0) {
         console.log(`  📁 archive/${type}/ (${files.length} 个文件)`);
 
-        if (type === 'logs') {
-          const logNames = files.filter(f => f.endsWith('.md'));
-          if (logNames.length > 0) {
-            console.log(`     日志: ${logNames.join(', ')}`);
-          }
-        }
       }
     }
   }
@@ -160,7 +130,7 @@ function runCleanup() {
 
   console.log('📝 后续建议:');
   console.log('  1. 运行: git add docs/archive docs/public/images/persona');
-  console.log('  2. 运行: git commit -m "docs: 整理外部大脑结构 - 归档日志与资源"');
+  console.log('  2. 运行: git commit -m "docs: 整理外部大脑结构 - 清理旧路径与资源"');
   console.log('  3. 检查: .memory/ 下是否存在历史冗余目录，按需归档');
   console.log('  4. 可选: 删除旧的 index.md 与 retrospective_archive.md\n');
   console.log('✨ 外部大脑现在更加清晰有序！');

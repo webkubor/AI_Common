@@ -28,6 +28,7 @@ $CODEX_HOME/.memory/
 | 运行日志 | `$CODEX_HOME/.memory/logs/` | 仅记录操作轨迹，不写密钥 |
 | 舰队协作状态 | `$CODEX_HOME/.memory/fleet/` | 多 Agent 协同运行态 |
 | 用户技术知识/复盘/分享素材 | `~/Documents/memory/{knowledge,shares,publish}/` | 属于用户资产，不写入 `.memory` |
+| 与 CortexOS / 大脑系统无关的个人资料、个人脚本、个人素材、个人项目备忘 | `~/Documents/memory/` | 只要属于用户个人资产且不服务于大脑运行，一律放用户提供的记忆文件夹 |
 | 项目索引/协作计划索引 | `$CODEX_HOME/.memory/{projects,plans}/` | 由小烛维护，作为控制层入口 |
 | 用户高敏凭证 | `~/Documents/memory/secrets/` | 永不进入 Git 仓库 |
 
@@ -55,9 +56,16 @@ $CODEX_HOME/.memory/
 ## 5. 防污染规则
 
 - 禁止把用户长期知识写进 `.memory`。
+- 禁止把与 CortexOS 运行无关的个人内容写进 `.memory`。
 - 禁止把助手运行日志写进 `~/Documents/memory/`。
 - 禁止在 `.memory` 根目录散落临时碎片文件。
 - 任何密钥一律只进 `~/Documents/memory/secrets/`。
+
+### 5.1 新增硬规则（个人内容归用户记忆）
+
+- 只要内容**不直接服务于 CortexOS 运行、AI Team 协作、项目索引、日志、提示策略、健康检查**，就不属于 `.memory`。
+- 凡是**和用户个人有关**的内容，例如个人脚本、个人资料、个人项目素材、个人备忘、个人分享草稿，统一写入用户提供的记忆文件夹：`~/Documents/memory/`。
+- `.memory` 只保留 CortexOS 控制层、运行态、协作态、助手私有策略，不承接个人资产正文。
 
 ## 6. 全舰队记忆访问规则（2026-03-05 新增）
 

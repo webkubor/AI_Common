@@ -35,9 +35,7 @@ DEFAULT_SCOPE = {
         "/chroma_db/",
         "/.git/",
         "/.venv/",
-        "/.memory/logs/",
-        "/memory/journal/",
-        "/archive/logs/"
+        "/.memory/logs/"
     ],
     "exclude_file_patterns": [
         "*.log",

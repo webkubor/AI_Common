@@ -213,7 +213,7 @@ function analyzeStructure() {
 }
 
 function getSuggestedDestination(file) {
-  if (file.includes('journal') || file.includes('2026-')) return 'archive/logs/';
+  if (file.includes('journal') || file.includes('2026-')) return 'archive/root-legacy/';
   if (file.includes('temp') || file.includes('draft')) return 'archive/temp/';
   if (file.includes('ops/skill-sync')) return 'archive/cleanup/';
   if (file.includes('example') || file.includes('demo')) return 'archive/examples/';

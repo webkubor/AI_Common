@@ -77,6 +77,10 @@ pnpm run fleet:handover -- --to-workspace "<路径>" --to-agent "Claude"
 **通过 obsidian MCP 读取王爷知识库：**
 所有 Agent 的 obsidian MCP 均已指向 `~/Documents/memory/`，可直接语义搜索王爷的知识、项目、复盘内容。
 
+**个人内容归属硬规则：**
+- 凡是和 CortexOS / AI Team / 大脑运行无关，但和用户个人有关的内容，统一进入用户提供的记忆文件夹 `~/Documents/memory/`。
+- `.memory/` 只保留运行日志、项目索引、协作指挥中心、助手私有策略与控制层数据。
+
 ### 核心路由
 
 | 场景 | 路径 | 用途 |
