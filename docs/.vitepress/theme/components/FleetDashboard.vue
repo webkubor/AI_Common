@@ -639,8 +639,9 @@ async function makeCaptain(member) {
 
                 <div class="node-footer">
                   <div class="node-meta">
-                    <span class="meta-item">📍 {{ member.workspace.split('/').pop() }}</span>
-                    <span class="meta-item">⏱ {{ member.since }}</span>
+                    <span class="meta-item meta-item--workspace">{{ member.workspace.split('/').pop() }}</span>
+                    <span class="meta-divider"></span>
+                    <span class="meta-item meta-item--since">{{ member.since }}</span>
                   </div>
                 </div>
               </div>
@@ -1122,9 +1123,11 @@ async function makeCaptain(member) {
 .aether-stage {
   display: flex;
   flex: 1;
+  min-height: 0;
   padding: 24px 24px 160px 24px;
   gap: 24px;
   z-index: 10;
+  overflow: hidden;
 }
 
 /* 🧊 任务清单 - 玻璃态 */
@@ -1133,6 +1136,8 @@ async function makeCaptain(member) {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  flex-shrink: 0;
+  min-height: 0;
 }
 
 .flow-header {
@@ -1175,6 +1180,31 @@ async function makeCaptain(member) {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 8px;
+}
+
+.flow-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.flow-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.flow-container::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(245, 200, 123, 0.14);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.flow-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 200, 123, 0.28);
+  background-clip: padding-box;
 }
 
 .mission-glass-card {
@@ -2019,11 +2049,35 @@ async function makeCaptain(member) {
 
 .node-meta {
   display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(10px);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.46);
   font-family: ui-monospace;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.07em;
+}
+
+.meta-item {
+  white-space: nowrap;
+}
+
+.meta-item--workspace {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta-divider {
+  width: 1px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .captain-crown {
@@ -2112,10 +2166,12 @@ async function makeCaptain(member) {
 @media (max-width: 1024px) {
   .aether-stage {
     flex-direction: column;
+    overflow: auto;
   }
 
   .mission-flow {
     width: 100%;
+    max-height: 320px;
   }
 }
 
