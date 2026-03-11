@@ -16,6 +16,7 @@ const completingTaskId = ref("");
 const hoveredMission = ref(null);
 const missionTooltipStyle = ref({});
 const taskCreatorTargetMember = ref(null);
+const showSettingsPanel = ref(false);
 
 function showMissionTooltip(event, task) {
   hoveredMission.value = task;
@@ -94,6 +95,58 @@ const displayVersion = computed(() => {
   const raw = String(data.value.version || "").trim();
   const match = raw.match(/v\d+(?:\.\d+){0,2}(?:-[a-z0-9.]+)?/i);
   return match?.[0] || "v0";
+});
+const healthChecks = computed(() => {
+  const checks = [];
+  const generatedAt = String(data.value.generatedAt || '').trim();
+  const generatedAtMs = generatedAt ? Date.parse(generatedAt) : Number.NaN;
+  const snapshotFresh = Number.isFinite(generatedAtMs) ? Date.now() - generatedAtMs < 60 * 1000 : false;
+  const isLocalDocs = typeof window !== 'undefined'
+    ? ['127.0.0.1', 'localhost'].includes(window.location.hostname)
+    : true;
+  const hasSqlite = String(data.value.source || '').toLowerCase().includes('sqlite');
+
+  checks.push({
+    key: 'bridge',
+    label: 'Bridge 通道',
+    status: realtimeStatus.value === '在线' ? 'online' : 'offline',
+    reason: realtimeStatus.value === '在线' ? 'SSE 已连接，本地控制桥可正常推送状态。' : 'SSE 已断开，实时状态推送不可用。'
+  });
+  checks.push({
+    key: 'sqlite',
+    label: 'SQLite 主库',
+    status: hasSqlite ? 'online' : 'offline',
+    reason: hasSqlite ? '当前页面主数据源为 SQLite。' : '当前返回源不是 SQLite，主链路异常。'
+  });
+  checks.push({
+    key: 'snapshot',
+    label: '状态快照',
+    status: snapshotFresh ? 'online' : 'offline',
+    reason: generatedAt ? `最近状态生成时间：${generatedAt}` : '未收到状态生成时间。'
+  });
+  checks.push({
+    key: 'task-pool',
+    label: '任务池',
+    status: Array.isArray(data.value.missions) ? 'online' : 'offline',
+    reason: `当前任务池已加载 ${data.value.missions.length} 条任务。`
+  });
+  checks.push({
+    key: 'docs',
+    label: '本地文档站',
+    status: isLocalDocs ? 'online' : 'offline',
+    reason: isLocalDocs ? '当前页面运行在本地文档站。' : '当前不是本地地址，AI Team 不应线上暴露。'
+  });
+
+  for (const [key, value] of Object.entries(data.value.environment?.tools || {})) {
+    checks.push({
+      key: `tool-${key}`,
+      label: key.toUpperCase(),
+      status: value?.status === 'online' ? 'online' : 'offline',
+      reason: value?.reason || '未提供状态说明。'
+    });
+  }
+
+  return checks;
 });
 
 let requestId = 0;
@@ -404,6 +457,14 @@ function closeTaskCreator() {
   };
 }
 
+function toggleSettingsPanel() {
+  showSettingsPanel.value = !showSettingsPanel.value;
+}
+
+function closeSettingsPanel() {
+  showSettingsPanel.value = false;
+}
+
 async function submitTask() {
   if (!createTaskForm.value.title.trim()) {
     error.value = "任务标题不能为空";
@@ -543,6 +604,12 @@ async function makeCaptain(member) {
           <span class="q-colon">:</span>
           <span class="q-time q-second">{{ currentTime.getSeconds().toString().padStart(2, '0') }}</span>
         </div>
+        <button class="hud-settings-trigger" @click="toggleSettingsPanel" title="设置与状态">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 3.75a2.25 2.25 0 0 1 2.23 1.94l.08.56a1.8 1.8 0 0 0 1.37 1.46l.55.14a2.25 2.25 0 0 1 1.49 3.2l-.27.5a1.8 1.8 0 0 0 .2 1.99l.36.43a2.25 2.25 0 0 1-1.59 3.72l-.56.04a1.8 1.8 0 0 0-1.66 1.12l-.22.52a2.25 2.25 0 0 1-4.16 0l-.22-.52a1.8 1.8 0 0 0-1.66-1.12l-.56-.04a2.25 2.25 0 0 1-1.59-3.72l.36-.43a1.8 1.8 0 0 0 .2-1.99l-.27-.5a2.25 2.25 0 0 1 1.49-3.2l.55-.14a1.8 1.8 0 0 0 1.37-1.46l.08-.56A2.25 2.25 0 0 1 12 3.75Z" />
+            <circle cx="12" cy="12" r="2.7" />
+          </svg>
+        </button>
       </div>
     </header>
 
@@ -646,6 +713,49 @@ async function makeCaptain(member) {
 
       <!-- 5. 可视化工具链健康状态栏 (CLI Health Footer) -->
       <CliHealthFooter :environment="data.environment" :realtime-status="realtimeStatus" :version="data.version" />
+
+      <div v-if="showSettingsPanel" class="settings-backdrop" @click.self="closeSettingsPanel">
+        <aside class="settings-panel">
+          <div class="settings-panel-header">
+            <div>
+              <div class="settings-kicker">控制入口</div>
+              <h3>状态与导航</h3>
+            </div>
+            <button class="settings-close" @click="closeSettingsPanel" title="关闭">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="settings-actions">
+            <button class="settings-action is-current" type="button">
+              <span class="settings-action-title">查看状态</span>
+              <span class="settings-action-desc">打开本地链路检测视图</span>
+            </button>
+            <a class="settings-action" href="/CortexOS/">
+              <span class="settings-action-title">返回文档</span>
+              <span class="settings-action-desc">回到 CortexOS 文档主页</span>
+            </a>
+          </div>
+
+          <div class="settings-health-grid">
+            <article
+              v-for="item in healthChecks"
+              :key="item.key"
+              class="settings-health-card"
+              :class="item.status"
+            >
+              <div class="settings-health-top">
+                <span class="settings-health-dot"></span>
+                <span class="settings-health-name">{{ item.label }}</span>
+                <span class="settings-health-state">{{ item.status === 'online' ? '正常' : '异常' }}</span>
+              </div>
+              <p class="settings-health-reason">{{ item.reason }}</p>
+            </article>
+          </div>
+        </aside>
+      </div>
 
       <div v-if="showTaskCreator" class="task-creator-backdrop" @click.self="closeTaskCreator">
         <div class="task-creator-panel">
@@ -903,6 +1013,31 @@ async function makeCaptain(member) {
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
+}
+
+.hud-settings-trigger {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(245, 200, 123, 0.88);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.hud-settings-trigger:hover {
+  transform: translateY(-1px);
+  border-color: rgba(245, 200, 123, 0.24);
+  background: rgba(245, 200, 123, 0.08);
+}
+
+.hud-settings-trigger svg {
+  width: 18px;
+  height: 18px;
 }
 
 .hud-source-pill {
@@ -1233,6 +1368,163 @@ async function makeCaptain(member) {
   color: #9a9a9a;
   font-size: 12px;
   line-height: 1.7;
+}
+
+.settings-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(5, 7, 10, 0.38);
+  backdrop-filter: blur(10px);
+}
+
+.settings-panel {
+  width: min(420px, calc(100vw - 24px));
+  height: 100%;
+  padding: 24px 22px 28px;
+  border-left: 1px solid rgba(245, 200, 123, 0.14);
+  background: linear-gradient(180deg, rgba(13, 16, 22, 0.98), rgba(7, 9, 13, 0.98));
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.46);
+  overflow-y: auto;
+}
+
+.settings-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.settings-kicker {
+  margin-bottom: 6px;
+  color: rgba(245, 200, 123, 0.74);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+.settings-panel-header h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 22px;
+}
+
+.settings-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.72);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.settings-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.settings-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.settings-action {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #f8fafc;
+  text-decoration: none;
+}
+
+.settings-action.is-current {
+  border-color: rgba(94, 224, 161, 0.2);
+  background: rgba(94, 224, 161, 0.08);
+}
+
+.settings-action-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.settings-action-desc {
+  color: rgba(226, 232, 240, 0.58);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.settings-health-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.settings-health-card {
+  padding: 14px 15px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.settings-health-card.online {
+  border-color: rgba(94, 224, 161, 0.16);
+}
+
+.settings-health-card.offline {
+  border-color: rgba(239, 68, 68, 0.18);
+}
+
+.settings-health-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.settings-health-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #f59e0b;
+}
+
+.settings-health-card.online .settings-health-dot {
+  background: #22c55e;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.55);
+}
+
+.settings-health-card.offline .settings-health-dot {
+  background: #ef4444;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+}
+
+.settings-health-name {
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.settings-health-state {
+  margin-left: auto;
+  color: rgba(226, 232, 240, 0.64);
+  font-size: 11px;
+}
+
+.settings-health-reason {
+  margin: 0;
+  color: rgba(226, 232, 240, 0.6);
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 .task-creator-backdrop {
@@ -1597,6 +1889,14 @@ async function makeCaptain(member) {
   .hud-right {
     justify-content: flex-start;
     flex-wrap: wrap;
+  }
+
+  .settings-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-panel {
+    width: min(100vw, 100%);
   }
 }
 
