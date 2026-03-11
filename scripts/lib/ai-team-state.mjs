@@ -1,4 +1,12 @@
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import { ensureAiTeamDb } from './ai-team-db.mjs'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const projectRoot = path.join(__dirname, '../../')
+const tasksDir = path.join(projectRoot, '.memory/tasks')
 
 function stripMarkdown(value) {
   return String(value ?? '')
@@ -47,10 +55,176 @@ function nowLocal() {
   return `${year}-${month}-${day} ${hour}:${minute}`
 }
 
+function nowIso() {
+  return new Date().toISOString()
+}
+
 function parseDate(value) {
   const text = String(value || '').trim()
   if (!text || !text.includes('-')) return new Date(0)
   return new Date(text.replace(/-/g, '/'))
+}
+
+function priorityRank(priority) {
+  const text = String(priority || '').toLowerCase()
+  if (['high', '紧急', '高', '🔴'].some(token => text.includes(token))) return 0
+  if (['medium', '重要', '中', '🟡'].some(token => text.includes(token))) return 1
+  if (['low', '低', '🟢'].some(token => text.includes(token))) return 2
+  return 3
+}
+
+function iterTaskFiles() {
+  if (!fs.existsSync(tasksDir)) return []
+  return fs.readdirSync(tasksDir, { withFileTypes: true })
+    .filter(entry => entry.isFile() && entry.name.toLowerCase().endsWith('.md'))
+    .map(entry => path.join(tasksDir, entry.name))
+}
+
+function taskIsCompleted(content) {
+  return /^>\s*状态[:：].*(?:✅\s*)?已完成/m.test(content)
+}
+
+function extractTaskStatus(content) {
+  const match = content.match(/^>\s*状态[:：]\s*(.+)$/m)
+  if (!match) return '待启动'
+  const statusText = stripMarkdown(match[1])
+  if (statusText.includes('已完成')) return '已完成'
+  if (['执行中', '进行中'].some(token => statusText.includes(token))) return '执行中'
+  if (['待启动', '待处理', '待办', '待分配'].some(token => statusText.includes(token))) return '待启动'
+  return statusText
+}
+
+function extractTaskPriority(content) {
+  const inlineMatch = content.match(/^\s*>\s*执行人[:：].*?\|\s*优先级[:：]\s*([^|\n]+)/m)
+  if (inlineMatch) return stripMarkdown(inlineMatch[1])
+  const blockMatch = content.match(/^##\s*优先级\s*$\n([^\n]+)/m)
+  if (blockMatch) return stripMarkdown(blockMatch[1])
+  return '未标注'
+}
+
+function extractTaskTitle(content, fallback = '') {
+  const match = content.match(/^#\s+(.+)$/m)
+  return stripMarkdown(match?.[1] || fallback)
+}
+
+function extractTaskAssignee(content) {
+  const match = content.match(/^\s*>\s*执行人[:：]\s*(.+)$/m)
+  return stripMarkdown((match?.[1] || '').split('|', 1)[0]).trim()
+}
+
+function syncTasksFromFiles(db) {
+  const taskFiles = iterTaskFiles()
+  const upsertTask = db.prepare(`
+    INSERT INTO tasks (
+      task_id,
+      title,
+      assignee,
+      status,
+      priority,
+      priority_rank,
+      completed,
+      source_file,
+      updated_at,
+      synced_at
+    ) VALUES (
+      @taskId,
+      @title,
+      @assignee,
+      @status,
+      @priority,
+      @priorityRank,
+      @completed,
+      @sourceFile,
+      @updatedAt,
+      @syncedAt
+    )
+    ON CONFLICT(task_id) DO UPDATE SET
+      title = excluded.title,
+      assignee = excluded.assignee,
+      status = excluded.status,
+      priority = excluded.priority,
+      priority_rank = excluded.priority_rank,
+      completed = excluded.completed,
+      source_file = excluded.source_file,
+      updated_at = excluded.updated_at,
+      synced_at = excluded.synced_at
+  `)
+  const deleteMissingTasks = db.prepare('DELETE FROM tasks WHERE task_id NOT IN (SELECT value FROM json_each(?))')
+  const clearTasks = db.prepare('DELETE FROM tasks')
+
+  const rows = taskFiles.map(filePath => {
+    const raw = fs.readFileSync(filePath, 'utf8')
+    const stat = fs.statSync(filePath)
+    const taskId = path.basename(filePath, '.md').toLowerCase()
+    const priority = extractTaskPriority(raw)
+    return {
+      taskId,
+      title: extractTaskTitle(raw, taskId),
+      assignee: extractTaskAssignee(raw),
+      status: extractTaskStatus(raw),
+      priority,
+      priorityRank: priorityRank(priority),
+      completed: taskIsCompleted(raw) ? 1 : 0,
+      sourceFile: path.relative(projectRoot, filePath),
+      updatedAt: stat.mtime.toISOString(),
+      syncedAt: nowIso()
+    }
+  })
+
+  const syncTransaction = db.transaction(() => {
+    for (const row of rows) {
+      upsertTask.run(row)
+    }
+    if (rows.length > 0) {
+      deleteMissingTasks.run(JSON.stringify(rows.map(row => row.taskId)))
+    } else {
+      clearTasks.run()
+    }
+  })
+
+  syncTransaction()
+  return rows
+}
+
+function buildTaskQueue(db, agents = []) {
+  syncTasksFromFiles(db)
+
+  const activeClaimMap = new Map()
+  for (const agent of agents) {
+    const taskText = String(agent.task || '')
+    const matches = taskText.match(/task[-#]?\d{1,8}(?:-[a-z0-9-]+)?/ig) || []
+    for (const match of matches) {
+      activeClaimMap.set(match.toLowerCase(), agent.alias || agent.memberId)
+    }
+  }
+
+  const rows = db.prepare(`
+    SELECT
+      task_id AS taskId,
+      title,
+      assignee,
+      status,
+      priority,
+      priority_rank AS priorityRank,
+      completed,
+      updated_at AS updatedAt
+    FROM tasks
+    ORDER BY completed ASC, priority_rank ASC, updated_at DESC, task_id ASC
+    LIMIT 20
+  `).all()
+
+  const displayRows = rows.some(task => Number(task.completed) === 0)
+    ? rows.filter(task => Number(task.completed) === 0)
+    : rows
+
+  return displayRows.map((task, index) => ({
+    id: `任务-${String(index + 1).padStart(2, '0')}`,
+    taskId: task.taskId,
+    title: task.title || task.taskId,
+    status: task.completed ? '已完成' : (task.status || '待启动'),
+    owner: activeClaimMap.get(task.taskId) || task.assignee || '待分配',
+    priority: task.priority || '未标注'
+  }))
 }
 
 function statusToType(status) {
@@ -690,6 +864,7 @@ export function cleanupAiTeamState({ thresholdHours = 2, dryRun = false, operato
 export function getAiTeamState() {
   const agents = getCurrentAgents()
   const db = ensureAiTeamDb()
+  const missions = buildTaskQueue(db, agents)
   const captain = agents.find(agent => agent.isCaptain) || null
   const recentCaptainEvents = db.prepare(`
     SELECT
@@ -726,6 +901,7 @@ export function getAiTeamState() {
     queued: agents.filter(agent => agent.type === 'queued').length,
     captain: captain ? captain.memberId : null,
     agents,
+    missions,
     recentCaptainEvents,
     recentOperations
   }

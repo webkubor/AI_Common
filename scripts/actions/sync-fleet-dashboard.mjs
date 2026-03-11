@@ -124,7 +124,8 @@ export function buildFleetDashboardPayload(state = getAiTeamState()) {
     active: state.active,
     offline: state.offline,
     queued: state.queued,
-    members: rows
+    members: rows,
+    missions: Array.isArray(state.missions) ? state.missions : []
   }
 }
 

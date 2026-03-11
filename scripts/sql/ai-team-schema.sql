@@ -57,6 +57,21 @@ CREATE TABLE IF NOT EXISTS operation_logs (
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS tasks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  task_id TEXT NOT NULL UNIQUE,
+  title TEXT,
+  assignee TEXT,
+  status TEXT,
+  priority TEXT,
+  priority_rank INTEGER NOT NULL DEFAULT 3,
+  completed INTEGER NOT NULL DEFAULT 0,
+  source_file TEXT,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  synced_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE INDEX IF NOT EXISTS idx_messages_conversation_id ON messages (conversation_id);
 CREATE INDEX IF NOT EXISTS idx_captain_events_created_at ON captain_events (created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_operation_logs_created_at ON operation_logs (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_tasks_priority_status ON tasks (completed, priority_rank, updated_at DESC);

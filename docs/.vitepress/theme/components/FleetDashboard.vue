@@ -29,6 +29,25 @@ const data = ref({
   ]
 });
 
+const commandInput = ref("");
+
+async function submitCommand() {
+  if (!commandInput.value.trim()) return;
+  
+  // Optimistic UI Update for Task Queue
+  const newTask = {
+    id: `任务-${String(data.value.missions.length + 1).padStart(2, "0")}`,
+    title: commandInput.value.trim(),
+    status: "待处理",
+    owner: "待分配"
+  };
+  data.value.missions.unshift(newTask);
+  
+  // Here in the future we will wire this up to the real CortexOS API to create a task
+  console.log("Command Engaged:", commandInput.value);
+  commandInput.value = "";
+}
+
 // 顶级官方 Logo 路径与元数据 (Local Assets Version)
 const agentModels = {
   gemini: {
@@ -66,6 +85,8 @@ function missionStatusClass(status) {
   const text = String(status || "").trim();
   if (text === "执行中") return "working";
   if (text === "待处理") return "pending";
+  if (text === "待启动") return "pending";
+  if (text === "已完成") return "done";
   return "unknown";
 }
 
@@ -135,15 +156,22 @@ function normalizeBridgeState(state) {
     isCaptain: Boolean(member.isCaptain)
   }));
 
-  const missions = members
-    .filter((member) => member.task)
-    .slice(0, 6)
-    .map((member, index) => ({
-      id: `任务-${String(index + 1).padStart(2, "0")}`,
-      title: member.task,
-      status: getMissionStatus(member),
-      owner: member.alias || member.member
-    }));
+  const missions = Array.isArray(state?.missions) && state.missions.length > 0
+    ? state.missions.slice(0, 6).map((task, index) => ({
+      id: task.id || `任务-${String(index + 1).padStart(2, "0")}`,
+      title: task.title || task.taskId || `任务-${String(index + 1).padStart(2, "0")}`,
+      status: task.status || '待启动',
+      owner: task.owner || task.assignee || '待分配'
+    }))
+    : members
+      .filter((member) => member.task)
+      .slice(0, 6)
+      .map((member, index) => ({
+        id: `任务-${String(index + 1).padStart(2, "0")}`,
+        title: member.task,
+        status: getMissionStatus(member),
+        owner: member.alias || member.member
+      }));
 
   return {
     generatedAt: state?.generatedAt || "",
@@ -394,6 +422,25 @@ async function makeCaptain(member) {
             </div>
           </div>
         </aside>
+
+        <!-- 3.5 主令输入枢纽 (Command Input Hub) -->
+        <div class="command-hub-overlay">
+          <div class="command-input-container">
+            <div class="input-glow"></div>
+            <div class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </div>
+            <input type="text" class="aether-command-input" placeholder="输入最高指令，分配给 AI 舰队..." v-model="commandInput" @keyup.enter="submitCommand" />
+            <button class="command-submit-btn" @click="submitCommand">
+              <span>ENGAGE</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
 
         <!-- 4. Agent 矩阵 (The Glass Matrix) -->
         <main class="neural-matrix">
@@ -815,7 +862,7 @@ async function makeCaptain(member) {
 .flow-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .mission-glass-card {
@@ -823,8 +870,8 @@ async function makeCaptain(member) {
   backdrop-filter: var(--glass-blur);
   border: 1px solid rgba(255, 255, 255, 0.04);
   box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.6);
-  padding: 16px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
   position: relative;
   overflow: hidden;
   animation: slideIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -852,11 +899,11 @@ async function makeCaptain(member) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .m-id {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 800;
   color: #666;
   letter-spacing: 0.1em;
@@ -865,10 +912,10 @@ async function makeCaptain(member) {
 .m-status-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 11px;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -888,6 +935,12 @@ async function makeCaptain(member) {
   color: #ddd;
 }
 
+.m-status-badge.done {
+  background: rgba(107, 214, 163, 0.12);
+  border-color: rgba(107, 214, 163, 0.28);
+  color: #8ce0b7;
+}
+
 .status-dot {
   width: 6px;
   height: 6px;
@@ -897,18 +950,143 @@ async function makeCaptain(member) {
 }
 
 .m-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #fff;
-  margin: 0 0 10px 0;
-  line-height: 1.4;
+  margin: 0 0 6px 0;
+  line-height: 1.3;
   letter-spacing: 0.02em;
 }
 
 .m-owner {
-  font-size: 10px;
+  font-size: 9px;
   color: #666;
   font-family: ui-monospace;
+}
+
+/* ⚡️ 主令输入枢纽 (Command Input Hub) */
+.command-hub-overlay {
+  position: fixed;
+  bottom: 80px; /* 浮于 footer 之上 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  width: 90%;
+  max-width: 800px;
+  pointer-events: none; /* 让外层不阻挡点击，子元素自身开启 */
+}
+
+.command-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(10, 12, 16, 0.75);
+  backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(245, 200, 123, 0.2);
+  border-radius: 20px;
+  padding: 8px 12px 8px 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  pointer-events: auto; /* 恢复子元素交互 */
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.command-input-container:focus-within {
+  background: rgba(15, 18, 24, 0.85);
+  border-color: rgba(245, 200, 123, 0.5);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(245, 200, 123, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.input-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: 21px;
+  background: linear-gradient(90deg, rgba(245, 200, 123, 0), rgba(245, 200, 123, 0.3), rgba(245, 200, 123, 0));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.command-input-container:focus-within .input-glow {
+  opacity: 1;
+  animation: slide-glow 3s linear infinite;
+}
+
+@keyframes slide-glow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.input-icon {
+  color: var(--c-aureate-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  filter: drop-shadow(0 0 8px rgba(245, 200, 123, 0.4));
+}
+
+.input-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.aether-command-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+  font-family: "Geist", "Inter", sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  padding: 12px 0;
+}
+
+.aether-command-input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
+
+.aether-command-input:focus::placeholder {
+  color: rgba(255, 255, 255, 0.1);
+}
+
+.command-submit-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--c-aureate-base), var(--c-aureate-dim));
+  color: #090A0E;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(245, 200, 123, 0.2);
+}
+
+.command-submit-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(245, 200, 123, 0.4);
+  background: linear-gradient(135deg, var(--c-aureate-glow), var(--c-aureate-base));
+}
+
+.command-submit-btn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 2px 8px rgba(245, 200, 123, 0.2);
+}
+
+.command-submit-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.5px;
 }
 
 /* 💎 Agent 矩阵 - 液态玻璃节点 */
