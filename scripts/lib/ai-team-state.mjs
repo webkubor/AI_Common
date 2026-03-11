@@ -1,12 +1,4 @@
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
 import { ensureAiTeamDb } from './ai-team-db.mjs'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const projectRoot = path.join(__dirname, '../../')
-const tasksDir = path.join(projectRoot, '.memory/tasks')
 
 function stripMarkdown(value) {
   return String(value ?? '')
@@ -72,49 +64,59 @@ function priorityRank(priority) {
   if (['low', '低', '🟢'].some(token => text.includes(token))) return 2
   return 3
 }
+function buildTaskQueue(db) {
+  const rows = db.prepare(`
+    SELECT
+      task_id AS taskId,
+      title,
+      assignee,
+      status,
+      priority,
+      priority_rank AS priorityRank,
+      completed,
+      updated_at AS updatedAt
+    FROM tasks
+    ORDER BY completed ASC, priority_rank ASC, updated_at DESC, task_id ASC
+    LIMIT 20
+  `).all()
 
-function iterTaskFiles() {
-  if (!fs.existsSync(tasksDir)) return []
-  return fs.readdirSync(tasksDir, { withFileTypes: true })
-    .filter(entry => entry.isFile() && entry.name.toLowerCase().endsWith('.md'))
-    .map(entry => path.join(tasksDir, entry.name))
+  const displayRows = rows.some(task => Number(task.completed) === 0)
+    ? rows.filter(task => Number(task.completed) === 0)
+    : rows
+
+  return displayRows.map((task, index) => ({
+    id: `任务-${String(index + 1).padStart(2, '0')}`,
+    taskId: task.taskId,
+    title: task.title || task.taskId,
+    status: task.completed ? '已完成' : (task.status || '待启动'),
+    owner: task.assignee || '待分配',
+    priority: task.priority || '未标注'
+  }))
 }
 
-function taskIsCompleted(content) {
-  return /^>\s*状态[:：]\s*(?:✅\s*)?已完成(?:\s*\||\s*$)/m.test(content)
+function normalizeTaskRecord(task, index = 0) {
+  const status = stripMarkdown(task.status || '待启动')
+  const completed = status === '已完成' ? 1 : 0
+  const priority = stripMarkdown(task.priority || '未标注')
+  return {
+    taskId: stripMarkdown(task.taskId || task.id || `task-${Date.now()}-${index + 1}`),
+    title: stripMarkdown(task.title || task.taskId || `任务-${index + 1}`),
+    assignee: stripMarkdown(task.owner || task.assignee || '待分配'),
+    status,
+    priority,
+    priorityRank: priorityRank(priority),
+    completed,
+    sourceFile: '',
+    updatedAt: nowIso(),
+    syncedAt: nowIso()
+  }
 }
 
-function extractTaskStatus(content) {
-  const match = content.match(/^>\s*状态[:：]\s*(.+)$/m)
-  if (!match) return '待启动'
-  const statusText = stripMarkdown(match[1])
-  if (/^(?:✅\s*)?已完成(?:\s*\||\s*$)/.test(statusText)) return '已完成'
-  if (['执行中', '进行中'].some(token => statusText.includes(token))) return '执行中'
-  if (['待启动', '待处理', '待办', '待分配'].some(token => statusText.includes(token))) return '待启动'
-  return statusText
-}
-
-function extractTaskPriority(content) {
-  const inlineMatch = content.match(/^\s*>\s*执行人[:：].*?\|\s*优先级[:：]\s*([^|\n]+)/m)
-  if (inlineMatch) return stripMarkdown(inlineMatch[1])
-  const blockMatch = content.match(/^##\s*优先级\s*$\n([^\n]+)/m)
-  if (blockMatch) return stripMarkdown(blockMatch[1])
-  return '未标注'
-}
-
-function extractTaskTitle(content, fallback = '') {
-  const match = content.match(/^#\s+(.+)$/m)
-  return stripMarkdown(match?.[1] || fallback)
-}
-
-function extractTaskAssignee(content) {
-  const match = content.match(/^\s*>\s*执行人[:：]\s*(.+)$/m)
-  return stripMarkdown((match?.[1] || '').split('|', 1)[0]).trim()
-}
-
-function syncTasksFromFiles(db) {
-  const taskFiles = iterTaskFiles()
-  const upsertTask = db.prepare(`
+export function replaceAiTeamTasks(tasks = [], { operator = 'system', reason = 'tasks:replace' } = {}) {
+  const db = ensureAiTeamDb()
+  const normalized = tasks.map((task, index) => normalizeTaskRecord(task, index))
+  const clearTasks = db.prepare('DELETE FROM tasks')
+  const insertTask = db.prepare(`
     INSERT INTO tasks (
       task_id,
       title,
@@ -138,120 +140,37 @@ function syncTasksFromFiles(db) {
       @updatedAt,
       @syncedAt
     )
-    ON CONFLICT(task_id) DO UPDATE SET
-      title = excluded.title,
-      assignee = excluded.assignee,
-      status = excluded.status,
-      priority = excluded.priority,
-      priority_rank = excluded.priority_rank,
-      completed = excluded.completed,
-      source_file = excluded.source_file,
-      updated_at = excluded.updated_at,
-      synced_at = excluded.synced_at
   `)
-  const deleteMissingTasks = db.prepare('DELETE FROM tasks WHERE task_id NOT IN (SELECT value FROM json_each(?))')
-  const clearTasks = db.prepare('DELETE FROM tasks')
 
-  const rows = taskFiles.map(filePath => {
-    const raw = fs.readFileSync(filePath, 'utf8')
-    const stat = fs.statSync(filePath)
-    const taskId = path.basename(filePath, '.md').toLowerCase()
-    const priority = extractTaskPriority(raw)
-    return {
-      taskId,
-      title: extractTaskTitle(raw, taskId),
-      assignee: extractTaskAssignee(raw),
-      status: extractTaskStatus(raw),
-      priority,
-      priorityRank: priorityRank(priority),
-      completed: taskIsCompleted(raw) ? 1 : 0,
-      sourceFile: path.relative(projectRoot, filePath),
-      updatedAt: stat.mtime.toISOString(),
-      syncedAt: nowIso()
-    }
-  })
-
-  const syncTransaction = db.transaction(() => {
-    for (const row of rows) {
-      upsertTask.run(row)
-    }
-    if (rows.length > 0) {
-      deleteMissingTasks.run(JSON.stringify(rows.map(row => row.taskId)))
-    } else {
-      clearTasks.run()
-    }
-  })
-
-  syncTransaction()
-  return rows
-}
-
-function buildTaskQueue(db, agents = []) {
-  syncTasksFromFiles(db)
-
-  const activeClaimMap = new Map()
-  const runtimeTasks = []
-  for (const agent of agents) {
-    const taskText = String(agent.task || '')
-    const matches = taskText.match(/task[-#]?\d{1,8}(?:-[a-z0-9-]+)?/ig) || []
-    for (const match of matches) {
-      activeClaimMap.set(match.toLowerCase(), agent.alias || agent.memberId)
+  const transaction = db.transaction(() => {
+    clearTasks.run()
+    for (const task of normalized) {
+      insertTask.run(task)
     }
 
-     if (
-      agent.type === 'active' &&
-      taskText &&
-      taskText !== '待分配任务' &&
-      matches.length === 0
-    ) {
-      runtimeTasks.push({
-        id: `运行中-${agent.memberId}`,
-        taskId: '',
-        title: taskText,
-        status: '执行中',
-        owner: agent.alias || agent.memberId,
-        priority: '运行中',
-        _sortRank: 0
+    db.prepare(`
+      INSERT INTO operation_logs (action, target_type, target_id, payload_json)
+      VALUES (?, ?, ?, ?)
+    `).run(
+      'replace-tasks',
+      'tasks',
+      null,
+      JSON.stringify({
+        operator,
+        reason,
+        total: normalized.length,
+        tasks: normalized.map(task => ({
+          taskId: task.taskId,
+          title: task.title,
+          status: task.status
+        }))
       })
-    }
-  }
+    )
+  })
 
-  const rows = db.prepare(`
-    SELECT
-      task_id AS taskId,
-      title,
-      assignee,
-      status,
-      priority,
-      priority_rank AS priorityRank,
-      completed,
-      updated_at AS updatedAt
-    FROM tasks
-    ORDER BY completed ASC, priority_rank ASC, updated_at DESC, task_id ASC
-    LIMIT 20
-  `).all()
-
-  const displayRows = rows.some(task => Number(task.completed) === 0)
-    ? rows.filter(task => Number(task.completed) === 0)
-    : rows
-
-  const structuredTasks = displayRows.map((task, index) => ({
-    id: `任务-${String(index + 1).padStart(2, '0')}`,
-    taskId: task.taskId,
-    title: task.title || task.taskId,
-    status: task.completed ? '已完成' : (task.status || '待启动'),
-    owner: activeClaimMap.get(task.taskId) || task.assignee || '待分配',
-    priority: task.priority || '未标注',
-    _sortRank: Number(task.completed) === 0 ? 0 : 2
-  }))
-
-  return [...structuredTasks, ...runtimeTasks]
-    .sort((a, b) => a._sortRank - b._sortRank)
-    .slice(0, 12)
-    .map(({ _sortRank, ...task }, index) => ({
-      ...task,
-      id: `任务-${String(index + 1).padStart(2, '0')}`
-    }))
+  transaction()
+  db.close()
+  return normalized
 }
 
 function statusToType(status) {

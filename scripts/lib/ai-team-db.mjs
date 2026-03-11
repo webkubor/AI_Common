@@ -27,6 +27,22 @@ const agentColumns = {
   updated_at: 'TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP'
 }
 
+const taskColumns = {
+  task_id: 'TEXT NOT NULL UNIQUE',
+  title: 'TEXT',
+  assignee: 'TEXT',
+  assignee_member_id: 'TEXT',
+  assignee_agent: 'TEXT',
+  assignee_role: 'TEXT',
+  status: 'TEXT',
+  priority: 'TEXT',
+  priority_rank: 'INTEGER NOT NULL DEFAULT 3',
+  completed: 'INTEGER NOT NULL DEFAULT 0',
+  source_file: 'TEXT',
+  updated_at: 'TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP',
+  synced_at: 'TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP'
+}
+
 function getTableColumns(db, tableName) {
   return db.prepare(`PRAGMA table_info(${tableName})`).all()
 }
@@ -106,6 +122,7 @@ export function ensureAiTeamDb() {
   const db = new Database(dbFile)
   db.exec(schema)
   ensureTableColumns(db, 'agents', agentColumns)
+  ensureTableColumns(db, 'tasks', taskColumns)
   reconcileAgentIdentityRows(db)
 
   return db
