@@ -1999,12 +1999,12 @@ async function makeCaptain(member) {
   border: 1px solid rgba(255, 255, 255, 0.04);
   box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.1), 0 12px 40px rgba(0, 0, 0, 0.5);
   border-radius: 24px;
-  padding: 32px;
+  padding: 24px;
   transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   overflow: hidden;
   animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   animation-delay: var(--delay);
-  min-height: 548px;
+  min-height: 500px;
   display: flex;
   flex-direction: column;
 }
@@ -2039,7 +2039,7 @@ async function makeCaptain(member) {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
   position: relative;
 }
 
@@ -2106,15 +2106,15 @@ async function makeCaptain(member) {
 .agent-identity {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   min-width: 0;
   flex: 1;
 }
 
 .agent-logo-wrapper {
-  flex: 0 0 64px;
-  width: 64px;
-  height: 64px;
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
   aspect-ratio: 1 / 1;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.8));
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -2131,8 +2131,8 @@ async function makeCaptain(member) {
 
 .agent-logo-wrapper svg,
 .agent-logo-wrapper img {
-  width: 42px;
-  height: 42px;
+  width: 36px;
+  height: 36px;
   display: block;
   object-fit: contain;
   object-position: center;
@@ -2189,7 +2189,7 @@ async function makeCaptain(member) {
 }
 
 .agent-name {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
   margin: 0;
   color: #ffffff;
@@ -2202,7 +2202,7 @@ async function makeCaptain(member) {
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .role-badge {
@@ -2322,13 +2322,14 @@ async function makeCaptain(member) {
   background: rgba(0, 0, 0, 0.24);
   border: 1px solid rgba(255, 255, 255, 0.035);
   box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.38);
-  padding: 14px 16px;
+  padding: 12px 14px;
   border-radius: 14px;
-  margin-bottom: 20px;
-  min-height: 150px;
+  margin-bottom: 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
 }
 
 .task-history-head {
@@ -2364,7 +2365,8 @@ async function makeCaptain(member) {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 156px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -2379,7 +2381,7 @@ async function makeCaptain(member) {
 }
 
 .task-history-item {
-  padding: 10px 12px;
+  padding: 9px 10px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.028);
   border: 1px solid rgba(255, 255, 255, 0.04);
@@ -2478,7 +2480,8 @@ async function makeCaptain(member) {
 }
 
 .task-history-empty {
-  min-height: 108px;
+  flex: 1;
+  min-height: 0;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -2492,7 +2495,7 @@ async function makeCaptain(member) {
 .node-footer {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   margin-top: auto;
 }
 
@@ -2562,12 +2565,12 @@ async function makeCaptain(member) {
   gap: 10px;
   width: fit-content;
   max-width: 100%;
-  padding: 8px 12px;
+  padding: 7px 11px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(255, 255, 255, 0.025);
   backdrop-filter: blur(10px);
-  font-size: 10px;
+  font-size: 9px;
   color: rgba(255, 255, 255, 0.46);
   font-family: ui-monospace;
   letter-spacing: 0.07em;

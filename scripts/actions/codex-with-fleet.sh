@@ -97,12 +97,17 @@ fi
 
 MACHINE_NUMBER="$(echo "$CLAIM_JSON" | sed -n 's/.*"machineNumber":[[:space:]]*\([0-9][0-9]*\).*/\1/p' | head -n1)"
 NODE_ID="$(echo "$CLAIM_JSON" | sed -n 's/.*"nodeId":[[:space:]]*"\([^"]*\)".*/\1/p' | head -n1)"
+ACTIVE_TASK_ID="$(echo "$CLAIM_JSON" | sed -n 's/.*"activeTaskId":[[:space:]]*"\([^"]*\)".*/\1/p' | head -n1)"
 MACHINE_NUMBER="${MACHINE_NUMBER:-unknown}"
 NODE_ID="${NODE_ID:-Codex-unknown}"
 QUEUE_PREFIX="[AI-TEAM][${NODE_ID}][#${MACHINE_NUMBER}]"
+ACTIVE_TASK_ID="${ACTIVE_TASK_ID:-}"
 
 echo "✅ 已入队: ${QUEUE_PREFIX} workspace=${WORKSPACE} role=${ROLE} task=${TASK}"
 echo "📍 入场前缀: ${QUEUE_PREFIX}"
+if [[ -n "$ACTIVE_TASK_ID" ]]; then
+  echo "🧾 当前任务ID: ${ACTIVE_TASK_ID}"
+fi
 
 if [[ "$USE_START" == "1" ]]; then
   START_BLOCK='$start
@@ -127,7 +132,7 @@ ${START_BLOCK}
    cd "$ROOT_DIR" && pnpm run fleet:handover -- --to-node "XXX"
 9. 语言协议：默认且全程使用中文回复；仅在代码、命令、路径、专有名词场景保留英文。
 10. 每次任务完成后，必须调用 MCP Tool：
-   task_handoff_check(task_id="<task-id>", agent="Codex", summary="<一句话结果>")
+   task_handoff_check(task_id="${ACTIVE_TASK_ID:-<task-id>}", agent="Codex", summary="<一句话结果>")
    用于标记任务完成并检查是否有未认领任务。
 EOF
 )"

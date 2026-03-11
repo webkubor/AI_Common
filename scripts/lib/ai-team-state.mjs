@@ -96,6 +96,69 @@ function parseLiveTaskRecord(agent) {
   }
 }
 
+function findExistingOpenTask(db, { taskId = '', title = '', memberId = '', agentName = '', workspace = '', assignee = '' }) {
+  const normalizedTaskId = stripMarkdown(taskId)
+  if (normalizedTaskId) {
+    return db.prepare(`
+      SELECT
+        task_id AS taskId,
+        title,
+        assignee,
+        assignee_member_id AS assigneeMemberId,
+        assignee_agent AS assigneeAgent,
+        assignee_role AS assigneeRole,
+        workspace,
+        published_at AS publishedAt,
+        status,
+        priority,
+        completed,
+        source_file AS sourceFile
+      FROM tasks
+      WHERE lower(task_id) = lower(?)
+      LIMIT 1
+    `).get(normalizedTaskId) || null
+  }
+
+  const normalizedTitle = stripMarkdown(title)
+  if (!normalizedTitle) return null
+
+  return db.prepare(`
+    SELECT
+      task_id AS taskId,
+      title,
+      assignee,
+      assignee_member_id AS assigneeMemberId,
+      assignee_agent AS assigneeAgent,
+      assignee_role AS assigneeRole,
+      workspace,
+      published_at AS publishedAt,
+      status,
+      priority,
+      completed,
+      source_file AS sourceFile
+    FROM tasks
+    WHERE completed = 0
+      AND lower(title) = lower(?)
+      AND (
+        lower(assignee_member_id) = lower(?)
+        OR (
+          (assignee_member_id IS NULL OR assignee_member_id = '')
+          AND lower(assignee_agent) = lower(?)
+          AND lower(workspace) = lower(?)
+          AND lower(assignee) = lower(?)
+        )
+      )
+    ORDER BY updated_at DESC, id DESC
+    LIMIT 1
+  `).get(
+    normalizedTitle,
+    stripMarkdown(memberId),
+    stripMarkdown(agentName),
+    stripMarkdown(workspace),
+    stripMarkdown(assignee)
+  ) || null
+}
+
 function buildMemberRecentTasks(db, agent, limit = 6) {
   const rows = db.prepare(`
     SELECT
@@ -228,6 +291,27 @@ function insertTaskRecord(db, normalized, { operator = 'system', reason = 'tasks
       @updatedAt,
       @syncedAt
     )
+    ON CONFLICT(task_id) DO UPDATE SET
+      title = excluded.title,
+      assignee = excluded.assignee,
+      assignee_member_id = excluded.assignee_member_id,
+      assignee_agent = excluded.assignee_agent,
+      assignee_role = excluded.assignee_role,
+      workspace = excluded.workspace,
+      published_at = CASE
+        WHEN tasks.published_at IS NULL OR tasks.published_at = '' THEN excluded.published_at
+        ELSE tasks.published_at
+      END,
+      status = excluded.status,
+      priority = excluded.priority,
+      priority_rank = excluded.priority_rank,
+      completed = excluded.completed,
+      source_file = CASE
+        WHEN tasks.source_file IS NULL OR tasks.source_file = '' THEN excluded.source_file
+        ELSE tasks.source_file
+      END,
+      updated_at = excluded.updated_at,
+      synced_at = excluded.synced_at
   `).run(normalized)
 
   db.prepare(`
@@ -246,6 +330,55 @@ function insertTaskRecord(db, normalized, { operator = 'system', reason = 'tasks
       assigneeMemberId: normalized.assigneeMemberId || null
     })
   )
+}
+
+function bindLiveTaskToFormalRecord(db, agent) {
+  if (!agent || agent.type === 'offline') return null
+
+  const liveTask = parseLiveTaskRecord(agent)
+  if (!liveTask || !stripMarkdown(liveTask.title)) return null
+
+  const existing = findExistingOpenTask(db, {
+    taskId: liveTask.taskId,
+    title: liveTask.title,
+    memberId: agent.memberId,
+    agentName: agent.agentName,
+    workspace: agent.workspace,
+    assignee: agent.alias || agent.memberId
+  })
+
+  const resolvedTaskId = stripMarkdown(liveTask.taskId || existing?.taskId || generateTaskId())
+  const resolvedTitle = stripMarkdown(existing?.title || liveTask.title)
+  const publishedAt = stripMarkdown(existing?.publishedAt || nowLocal())
+  const priority = stripMarkdown(existing?.priority || '未标注')
+
+  insertTaskRecord(db, {
+    taskId: resolvedTaskId,
+    title: resolvedTitle,
+    assignee: stripMarkdown(agent.alias || agent.memberId),
+    assigneeMemberId: stripMarkdown(agent.memberId),
+    assigneeAgent: stripMarkdown(agent.agentName),
+    assigneeRole: stripMarkdown(agent.role),
+    workspace: stripMarkdown(agent.workspace),
+    publishedAt,
+    status: '执行中',
+    priority,
+    priorityRank: priorityRank(priority),
+    completed: 0,
+    sourceFile: stripMarkdown(existing?.sourceFile || ''),
+    updatedAt: nowIso(),
+    syncedAt: nowIso()
+  }, {
+    operator: stripMarkdown(agent.agentName || 'system'),
+    reason: 'tasks:sync-live-agent-task',
+    action: 'sync-live-task'
+  })
+
+  agent.task = `${resolvedTaskId}｜${resolvedTitle}`
+  return {
+    taskId: resolvedTaskId,
+    title: resolvedTitle
+  }
 }
 
 export function replaceAiTeamTasks(tasks = [], { operator = 'system', reason = 'tasks:replace' } = {}) {
@@ -779,6 +912,12 @@ function syncTaskClaimsFromAgents(db, agents) {
   }
 }
 
+function syncTaskRecordsFromAgents(db, agents) {
+  for (const agent of agents) {
+    bindLiveTaskToFormalRecord(db, agent)
+  }
+}
+
 function reconcileTaskAssignments(db, agents) {
   const tasks = db.prepare(`
     SELECT
@@ -909,6 +1048,7 @@ function loadAgentsFromDb() {
 function persistAiTeamAgents(agents, { action = 'sync', operator = 'system', payload = null, reason = '', persistLog = true } = {}) {
   const normalizedAgents = agents.map(normalizeStoredAgent)
   const db = ensureAiTeamDb()
+  syncTaskRecordsFromAgents(db, normalizedAgents)
 
   const previousCaptain = db.prepare(`
     SELECT member_id

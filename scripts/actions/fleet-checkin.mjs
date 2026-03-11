@@ -90,6 +90,7 @@ function main() {
     workspace: args.workspace,
     heartbeatAt: result.heartbeatAt,
     nodeId: result.nodeId,
+    activeTaskId: result.agents?.find(item => item.memberId === result.nodeId)?.task?.split('｜')[0] || '',
     projectRegistry: projectRegistry ? {
       name: projectRegistry.project.name,
       rootPath: projectRegistry.project.rootPath,

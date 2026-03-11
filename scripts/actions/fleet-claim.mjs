@@ -87,6 +87,7 @@ function main() {
     role: args.role,
     workspace: args.workspace,
     task: args.task,
+    activeTaskId: result.agents?.find(item => item.memberId === result.nodeId)?.task?.split('｜')[0] || '',
     warnings: result.warnings,
     projectRegistry: projectRegistry ? {
       name: projectRegistry.project.name,
