@@ -228,7 +228,7 @@ const server = http.createServer(async (req, res) => {
     const { action, memberId } = data
 
     if (action === 'create-task') {
-      const { title, workspace, priority = '未标注' } = data
+      const { title, workspace, priority = '中' } = data
       if (!title || !String(title).trim()) {
         writeJson(res, 400, { error: 'title is required' }, origin)
         return
@@ -262,7 +262,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (action === 'create-member-task') {
-      const { title, memberId, workspace = '', priority = '未标注' } = data
+      const { title, memberId, workspace = '', priority = '中' } = data
       if (!title || !String(title).trim()) {
         writeJson(res, 400, { error: 'title is required' }, origin)
         return

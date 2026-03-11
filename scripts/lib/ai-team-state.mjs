@@ -69,7 +69,7 @@ function buildTaskQueue(db) {
     title: task.title || task.taskId,
     status: task.completed ? '已完成' : (task.status || '待启动'),
     owner: task.assignee || '待分配',
-    priority: task.priority || '未标注',
+    priority: task.priority || '中',
     assigneeMemberId: task.assigneeMemberId || '',
     assigneeAgent: task.assigneeAgent || '',
     assigneeRole: task.assigneeRole || '',
@@ -189,7 +189,7 @@ function buildMemberRecentTasks(db, agent, limit = 6) {
     taskId: task.taskId,
     title: task.title || task.taskId,
     status: Number(task.completed) === 1 ? '已完成' : (task.status || '待启动'),
-    priority: task.priority || '未标注',
+    priority: task.priority || '中',
     publishedAt: task.publishedAt || '',
     updatedAt: task.updatedAt || '',
     isLive: false
@@ -228,7 +228,7 @@ function buildRecentTaskMap(db, agents) {
 function normalizeTaskRecord(task, index = 0) {
   const status = stripMarkdown(task.status || '待启动')
   const completed = status === '已完成' ? 1 : 0
-  const priority = stripMarkdown(task.priority || '未标注')
+  const priority = stripMarkdown(task.priority || '中')
   const explicitTaskId = stripMarkdown(task.taskId || task.id || '')
   return {
     taskId: explicitTaskId || `task-${Date.now()}-${index + 1}`,
@@ -341,7 +341,7 @@ function bindLiveTaskToFormalRecord(db, agent) {
   const resolvedTaskId = stripMarkdown(liveTask.taskId || existing?.taskId || generateTaskId())
   const resolvedTitle = stripMarkdown(existing?.title || liveTask.title)
   const publishedAt = stripMarkdown(existing?.publishedAt || nowLocal())
-  const priority = stripMarkdown(existing?.priority || '未标注')
+  const priority = stripMarkdown(existing?.priority || '中')
 
   insertTaskRecord(db, {
     taskId: resolvedTaskId,

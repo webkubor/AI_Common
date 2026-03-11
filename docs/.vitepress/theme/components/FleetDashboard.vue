@@ -294,7 +294,7 @@ function normalizeBridgeState(state) {
         taskId: task.taskId || "",
         title: task.title || task.taskId || "未命名任务",
         status: task.status || "待启动",
-        priority: task.priority || "未标注",
+        priority: task.priority || "中",
         publishedAt: task.publishedAt || "",
         updatedAt: task.updatedAt || "",
         isLive: Boolean(task.isLive)
@@ -727,9 +727,11 @@ async function makeCaptain(member) {
                 <div class="m-top">
                   <div class="m-top-left">
                     <span class="m-id">{{ task.id }}</span>
-                    <span class="m-priority-badge" :class="priorityClass(task.priority)">
-                      {{ normalizePriorityLabel(task.priority) }}
-                    </span>
+                    <span
+                      class="m-priority-orb"
+                      :class="priorityClass(task.priority)"
+                      :title="'优先级 ' + normalizePriorityLabel(task.priority)"
+                    ></span>
                   </div>
                   <div class="m-top-actions">
                     <button
@@ -793,20 +795,20 @@ async function makeCaptain(member) {
                       <span v-else class="emoji-icon">{{ getModelMeta(member).icon }}</span>
                     </div>
                     <div class="agent-info">
-                      <h3 class="agent-name">{{ member.alias || member.member.split('(')[0] }}</h3>
+                      <div class="agent-name-row">
+                        <h3 class="agent-name">{{ member.alias || member.member.split('(')[0] }}</h3>
+                        <!-- 引擎徽章 (Mini) -->
+                        <div class="engine-badge-mini" :class="getModelMeta(member).class" :title="getModelMeta(member).label">
+                          <span class="eb-icon" v-if="getModelMeta(member).icon.includes('<')"
+                            v-html="getModelMeta(member).icon"></span>
+                          <span class="eb-icon" v-else>{{ getModelMeta(member).icon }}</span>
+                        </div>
+                      </div>
                       <div class="agent-badges">
                         <!-- 职位徽章 -->
                         <span v-if="member.isCaptain" class="role-badge captain">👑 舰队统帅</span>
                         <span v-else class="role-badge state">{{ getMemberStateTag(member) }}</span>
-                        <span v-if="getMemberRoleLabel(member)" class="role-badge duty">🎯 {{ getMemberRoleLabel(member) }}</span>
-
-                        <!-- 引擎徽章 -->
-                        <div class="engine-badge" :class="getModelMeta(member).class">
-                          <span class="eb-icon" v-if="getModelMeta(member).icon.includes('<')"
-                            v-html="getModelMeta(member).icon"></span>
-                          <span class="eb-icon" v-else>{{ getModelMeta(member).icon }}</span>
-                          <span class="eb-label">{{ getModelMeta(member).label }}</span>
-                        </div>
+                        <span v-if="getMemberRoleLabel(member)" class="role-badge duty">{{ getMemberRoleLabel(member) }}</span>
                       </div>
                     </div>
                   </div>
@@ -861,9 +863,11 @@ async function makeCaptain(member) {
                       </div>
                       <p class="task-history-name" :title="taskItem.title">{{ taskItem.title }}</p>
                       <div class="task-history-meta">
-                        <span class="task-history-priority" :class="priorityClass(taskItem.priority)">
-                          {{ normalizePriorityLabel(taskItem.priority) }}
-                        </span>
+                        <span
+                          class="task-history-priority-orb"
+                          :class="priorityClass(taskItem.priority)"
+                          :title="'优先级 ' + normalizePriorityLabel(taskItem.priority)"
+                        ></span>
                       </div>
                     </article>
                   </div>
@@ -997,7 +1001,7 @@ async function makeCaptain(member) {
               <transition name="dropdown">
                 <div class="custom-options-panel slim-panel" v-if="isPrioritySelectOpen">
                   <div class="custom-option center-item"
-                    v-for="p in ['未标注', '高', '中', '低']"
+                    v-for="p in ['高', '中', '低']"
                     :key="p"
                     :class="{ 'is-selected': createTaskForm.priority === p }"
                     @click="createTaskForm.priority = p; isPrioritySelectOpen = false"
@@ -1573,42 +1577,37 @@ async function makeCaptain(member) {
   letter-spacing: 0.1em;
 }
 
-.m-priority-badge,
-.task-history-priority {
+.m-priority-orb,
+.task-history-priority-orb {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 22px;
-  padding: 0 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 999px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.72);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
 }
 
-.m-priority-badge.high,
-.task-history-priority.high {
-  color: #fecaca;
-  background: rgba(239, 68, 68, 0.14);
-  border-color: rgba(248, 113, 113, 0.22);
+.m-priority-orb.high,
+.task-history-priority-orb.high {
+  background: #f87171;
+  box-shadow: 0 0 10px rgba(248, 113, 113, 0.42);
 }
 
-.m-priority-badge.medium,
-.task-history-priority.medium {
-  color: #fde68a;
-  background: rgba(245, 158, 11, 0.14);
-  border-color: rgba(251, 191, 36, 0.22);
+.m-priority-orb.medium,
+.task-history-priority-orb.medium,
+.m-priority-orb.plain,
+.task-history-priority-orb.plain {
+  background: #fbbf24;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.38);
 }
 
-.m-priority-badge.low,
-.task-history-priority.low {
-  color: #bbf7d0;
-  background: rgba(34, 197, 94, 0.12);
-  border-color: rgba(74, 222, 128, 0.22);
+.m-priority-orb.low,
+.task-history-priority-orb.low {
+  background: #4ade80;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.34);
 }
 
 .m-status-badge {
@@ -2198,20 +2197,20 @@ async function makeCaptain(member) {
 .agent-identity {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   min-width: 0;
   flex: 1;
 }
 
 .agent-logo-wrapper {
-  flex: 0 0 56px;
-  width: 56px;
-  height: 56px;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
   aspect-ratio: 1 / 1;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.8));
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-top: 1px solid rgba(245, 200, 123, 0.4);
-  border-radius: 18px;
+  border-radius: 14px;
   box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.8), 0 4px 12px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
@@ -2223,8 +2222,8 @@ async function makeCaptain(member) {
 
 .agent-logo-wrapper svg,
 .agent-logo-wrapper img {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   display: block;
   object-fit: contain;
   object-position: center;
@@ -2233,7 +2232,7 @@ async function makeCaptain(member) {
 .agent-logo-wrapper.mod-codex svg,
 .agent-logo-wrapper.mod-codex img,
 .agent-logo-wrapper.mod-codex svg,
-.engine-badge.mod-codex svg,
+.engine-badge-mini.mod-codex svg,
 .mod-codex svg {
   color: white !important;
   fill: white !important;
@@ -2280,8 +2279,14 @@ async function makeCaptain(member) {
   flex: 1;
 }
 
+.agent-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .agent-name {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 600;
   margin: 0;
   color: #ffffff;
@@ -2298,10 +2303,10 @@ async function makeCaptain(member) {
 }
 
 .role-badge {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
   letter-spacing: 0.1em;
   display: flex;
   align-items: center;
@@ -2328,22 +2333,21 @@ async function makeCaptain(member) {
   color: #a7f0ca;
 }
 
-.engine-badge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 4px;
+.engine-badge-mini {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-family: ui-monospace, sans-serif;
+  justify-content: center;
   border: 1px solid transparent;
-  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: help;
 }
 
 .eb-icon {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2358,33 +2362,33 @@ async function makeCaptain(member) {
 }
 
 .eb-icon.emoji {
-  font-size: 12px;
+  font-size: 10px;
 }
 
-.engine-badge.mod-gemini {
+.engine-badge-mini.mod-gemini {
   background: rgba(66, 133, 244, 0.15);
   border-color: rgba(66, 133, 244, 0.3);
   color: #8ab4f8;
 }
 
-.engine-badge.mod-claude {
+.engine-badge-mini.mod-claude {
   background: rgba(217, 119, 87, 0.15);
   border-color: rgba(217, 119, 87, 0.3);
   color: #ffb89e;
 }
 
-.engine-badge.mod-codex {
+.engine-badge-mini.mod-codex {
   background: rgba(30, 215, 96, 0.15);
   border-color: rgba(30, 215, 96, 0.3);
   color: #8affc1;
 }
 
-.engine-badge.mod-codex img,
-.engine-badge.mod-codex svg {
+.engine-badge-mini.mod-codex img,
+.engine-badge-mini.mod-codex svg {
   filter: brightness(0) invert(1);
 }
 
-.engine-badge.mod-lobster {
+.engine-badge-mini.mod-lobster {
   background: rgba(255, 50, 50, 0.15);
   border-color: rgba(255, 50, 50, 0.4);
   color: #ff6b6b;
@@ -2397,7 +2401,7 @@ async function makeCaptain(member) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
+  font-size: 24px;
   line-height: 1;
 }
 
