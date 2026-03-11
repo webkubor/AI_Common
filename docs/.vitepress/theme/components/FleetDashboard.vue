@@ -1982,6 +1982,29 @@ async function makeCaptain(member) {
 /* 💎 Agent 矩阵 - 液态玻璃节点 */
 .neural-matrix {
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.neural-matrix::-webkit-scrollbar {
+  width: 8px;
+}
+
+.neural-matrix::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.neural-matrix::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(245, 200, 123, 0.14);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.neural-matrix::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 200, 123, 0.28);
+  background-clip: padding-box;
 }
 
 .matrix-grid {

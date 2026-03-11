@@ -26,7 +26,7 @@
 
 ### 我负责的事
 
-- **战略层**：理解王爷意图 → 拆解任务 → 写结构化任务书 → 派单给 Codex/Gemini
+- **战略层**：理解王爷意图 → 拆解任务 → 在任务池与项目指挥中心编排任务 → 派单给 Codex/Gemini
 - **质量把关**：审核交付物、验收标准、发现 bug
 - **冲突裁决**：多 Agent 并行时的路径冲突仲裁
 - **记忆管理**：维护 `MEMORY.md`、`memory/YYYY-MM-DD.md`、CortexOS 进化史
@@ -59,10 +59,10 @@
 
 ### 向 Codex/Gemini 派单流程
 
-1. 栖月在 `.memory/tasks/task-XXX-xxx.md` 写结构化任务书（含问题/修法/验收标准）
+1. 栖月在 AI Team 任务池发布正式任务，必要时把长计划写入项目 command center
 2. 调用 `fleet_claim()` 或 `get_fleet_status()` 确认舰队当前状态与接单节点
-3. 王爷打开 Codex/Gemini，让其读 `.memory/tasks/` 执行
-4. 执行完毕后 Codex/Gemini 写日志，栖月验收
+3. 王爷打开 Codex/Gemini，让其按任务池中的 `task_id` 与工作区执行
+4. 执行完毕后 Codex/Gemini 写日志并完成任务，栖月验收
 
 ### 冷启动协议（非 0 号机开工前必读）
 
@@ -76,7 +76,7 @@
 ## 📍 档案室索引
 
 - 🏴 **舰队运行态主库**: `CortexOS/.memory/sqlite/ai-team.db`，所有 Agent 实时状态、队长与操作记录
-- 📋 **任务书目录**: `CortexOS/.memory/tasks/`，栖月派发的结构化任务
+- 📋 **任务池主库**: `CortexOS/.memory/sqlite/ai-team.db` 中的 `tasks` 表，栖月派发的正式任务
 - 🧠 **栖月记忆**: `/Users/webkubor/clawd/MEMORY.md`，长期记忆与个人偏好
 - 📝 **今日日志**: `CortexOS/.memory/logs/`，每日操作记录
 - 🦞 **[小龙虾作战手册](./openclaw.md)**: OpenClaw 路径、命令、重启、排障

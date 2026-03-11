@@ -69,41 +69,6 @@ def _task_id_pattern() -> re.Pattern[str]:
     return re.compile(r"(?:task[-#]?\d{1,14}(?:-[a-z0-9-]+)?|\d{4}-\d{2}-\d{2}-[a-z0-9-]+)", re.IGNORECASE)
 
 
-def _task_file_name_pattern() -> re.Pattern[str]:
-    # 文件名层面的兜底匹配（大小写不敏感）
-    return re.compile(r"^task-(?:\d{3}-[a-z0-9-]+|\d{8}-\d{3})\.md$", re.IGNORECASE)
-
-
-def _iter_task_files(tasks_dir: Path) -> list[Path]:
-    if not tasks_dir.exists():
-        return []
-    seen: set[Path] = set()
-    files: list[Path] = []
-    pattern = _task_file_name_pattern()
-    for file_path in sorted(tasks_dir.glob("*.md")):
-        if pattern.match(file_path.name):
-            resolved = file_path.resolve()
-            if resolved not in seen:
-                seen.add(resolved)
-                files.append(file_path)
-    return files
-
-
-def _extract_task_code(task_ref: str) -> str:
-    raw = (task_ref or "").strip().lower().removesuffix(".md")
-    if not raw:
-        return ""
-    if raw.isdigit():
-        return raw.zfill(3)
-    m = re.search(r"task[#-]?(\d{1,3})", raw, flags=re.IGNORECASE)
-    if m:
-        return m.group(1).zfill(3)
-    m = re.search(r"-(\d{3})$", raw)
-    if m:
-        return m.group(1)
-    return ""
-
-
 def _priority_rank(priority: str) -> int:
     text = (priority or "").lower()
     if any(token in text for token in ["high", "紧急", "高", "🔴"]):
@@ -622,13 +587,6 @@ def get_context_brief() -> str:
     return summary
 
 
-# ─────────────────────────────────────────────
-# Tool 15: 任务完工与待认领检查 (NEW)
-# ─────────────────────────────────────────────
-def _tasks_dir() -> Path:
-    return ASSISTANT_MEMORY_HOME / "tasks"
-
-
 def _extract_active_claimed_task_ids() -> set[str]:
     task_ids: set[str] = set()
     try:
@@ -641,163 +599,40 @@ def _extract_active_claimed_task_ids() -> set[str]:
         return set()
     return task_ids
 
-
-def _resolve_task_file(task_id: str) -> Path | None:
-    tasks_dir = _tasks_dir()
-    if not tasks_dir.exists():
-        return None
-    normalized = (task_id or "").strip().lower()
-    if not normalized:
-        return None
-    normalized = normalized.removesuffix(".md")
-    task_code = _extract_task_code(normalized)
-
-    for file_path in _iter_task_files(tasks_dir):
-        stem = file_path.stem.lower()
-        if normalized == stem:
-            return file_path
-        if normalized.isdigit() and stem.startswith(f"task-{normalized.zfill(3)}-"):
-            return file_path
-        if task_code and (stem.startswith(f"task-{task_code}-") or stem.endswith(f"-{task_code}")):
-            return file_path
-        if normalized in stem:
-            return file_path
-    return None
-
-
-def _task_is_completed(content: str) -> bool:
-    return bool(re.search(r"^>\s*状态[:：].*(?:✅\s*)?已完成", content, flags=re.MULTILINE))
-
-
-def _extract_task_status(content: str) -> str:
-    status_match = re.search(r"^>\s*状态[:：]\s*(.+)$", content, flags=re.MULTILINE)
-    if not status_match:
-        return "未知"
-    status_text = _strip_md(status_match.group(1))
-    if "已完成" in status_text:
-        return "已完成"
-    if any(token in status_text for token in ["执行中", "进行中"]):
-        return "执行中"
-    if any(token in status_text for token in ["待启动", "待处理", "待办", "待分配"]):
-        return "待启动"
-    return status_text
-
-
-def _extract_task_priority(content: str) -> str:
-    # 优先读取带“优先级”字段的头信息
-    inline_match = re.search(r"^\s*>\s*执行人[:：].*?\|\s*优先级[:：]\s*([^|\n]+)", content, flags=re.MULTILINE)
-    if inline_match:
-        return _strip_md(inline_match.group(1))
-    block_match = re.search(r"^##\s*优先级\s*$\n([^\n]+)", content, flags=re.MULTILINE)
-    if block_match:
-        return _strip_md(block_match.group(1))
-    return "未标注"
-
-
-def _upsert_task_completed(task_file: Path, agent: str, summary: str) -> dict:
-    raw = task_file.read_text(encoding="utf-8")
-    if _task_is_completed(raw):
-        return {"task_id": task_file.stem, "changed": False, "already_done": True}
-
-    now_local = datetime.now().strftime("%Y-%m-%d %H:%M")
-    status_line = f"> 状态: ✅ 已完成 | 完成人: {agent} | 完成时间: {now_local}"
-    updated = raw
-
-    if re.search(r"^>\s*状态[:：].*$", updated, flags=re.MULTILINE):
-        updated = re.sub(r"^>\s*状态[:：].*$", status_line, updated, count=1, flags=re.MULTILINE)
-    elif re.search(r"^>\s*执行人[:：].*$", updated, flags=re.MULTILINE):
-        updated = re.sub(r"^(>\s*执行人[:：].*$)", rf"\1\n{status_line}", updated, count=1, flags=re.MULTILINE)
-    else:
-        updated = f"{status_line}\n{updated}"
-
-    section_title = "## ✅ 完成记录"
-    summary_text = (summary or "").strip() or "已完成并通过验收。"
-    record_block = (
-        f"\n\n{section_title}\n"
-        f"- 完成人: {agent}\n"
-        f"- 完成时间: {now_local}\n"
-        f"- 结果: {summary_text}\n"
-    )
-    if section_title in updated:
-        updated += f"\n- [{now_local}] {agent}: {summary_text}\n"
-    else:
-        updated = updated.rstrip() + record_block
-
-    task_file.write_text(updated.rstrip() + "\n", encoding="utf-8")
-    return {"task_id": task_file.stem, "changed": True, "already_done": False}
-
-
 def _collect_task_queue() -> list[dict]:
-    if AI_TEAM_DB.exists():
-        try:
-            with sqlite3.connect(AI_TEAM_DB) as conn:
-                conn.row_factory = sqlite3.Row
-                rows = conn.execute(
-                    """
-                    SELECT
-                      task_id,
-                      title,
-                      assignee,
-                      completed,
-                      status,
-                      priority,
-                      priority_rank
-                    FROM tasks
-                    ORDER BY completed ASC, priority_rank ASC, updated_at DESC, task_id ASC
-                    """
-                ).fetchall()
-            return [
-                {
-                    "task_id": str(row["task_id"]).lower(),
-                    "title": row["title"] or "",
-                    "assignee": row["assignee"] or "",
-                    "completed": bool(row["completed"]),
-                    "status": row["status"] or ("已完成" if row["completed"] else "待启动"),
-                    "priority": row["priority"] or "未标注",
-                    "priority_rank": int(row["priority_rank"] or 3),
-                }
-                for row in rows
-            ]
-        except Exception:
-            pass
-
-    tasks_dir = _tasks_dir()
-    if not tasks_dir.exists():
+    if not AI_TEAM_DB.exists():
         return []
-
-    queue: list[dict] = []
-    for file_path in _iter_task_files(tasks_dir):
-        try:
-            content = file_path.read_text(encoding="utf-8")
-        except Exception:
-            continue
-
-        title = ""
-        assignee = ""
-        title_match = re.search(r"^#\s+(.+)$", content, flags=re.MULTILINE)
-        if title_match:
-            title = _strip_md(title_match.group(1))
-        assignee_match = re.search(r"^\s*>\s*执行人[:：]\s*(.+)$", content, flags=re.MULTILINE)
-        if assignee_match:
-            assignee = _strip_md(assignee_match.group(1)).split("|", 1)[0].strip()
-
-        priority = _extract_task_priority(content)
-        status = _extract_task_status(content)
-
-        queue.append(
+    try:
+        with sqlite3.connect(AI_TEAM_DB) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                """
+                SELECT
+                  task_id,
+                  title,
+                  assignee,
+                  completed,
+                  status,
+                  priority,
+                  priority_rank
+                FROM tasks
+                ORDER BY completed ASC, priority_rank ASC, updated_at DESC, task_id ASC
+                """
+            ).fetchall()
+        return [
             {
-                "task_id": file_path.stem.lower(),
-                "title": title,
-                "assignee": assignee,
-                "completed": _task_is_completed(content),
-                "status": status,
-                "priority": priority,
-                "priority_rank": _priority_rank(priority),
+                "task_id": str(row["task_id"]).lower(),
+                "title": row["title"] or "",
+                "assignee": row["assignee"] or "",
+                "completed": bool(row["completed"]),
+                "status": row["status"] or ("已完成" if row["completed"] else "待启动"),
+                "priority": row["priority"] or "未标注",
+                "priority_rank": int(row["priority_rank"] or 3),
             }
-        )
-    # 调度视图：未完成优先，其次高优先级优先
-    queue.sort(key=lambda item: (item["completed"], item["priority_rank"], item["task_id"]))
-    return queue
+            for row in rows
+        ]
+    except Exception:
+        return []
 
 
 @mcp.tool()
@@ -812,25 +647,14 @@ def task_handoff_check(task_id: str = "", agent: str = "Codex", summary: str = "
     normalized_agent = (agent or "Codex").strip() or "Codex"
 
     if task_id.strip():
-        task_file = _resolve_task_file(task_id)
         db_result = _complete_ai_team_db_task(task_id, normalized_agent, summary)
-
-        if task_file:
-            result = _upsert_task_completed(task_file, normalized_agent, summary)
-            if result.get("already_done"):
-                messages.append(f"任务已是完成状态: {result['task_id']}")
-            else:
-                messages.append(f"已标记完成: {result['task_id']}")
-        elif db_result.get("found"):
-            messages.append(f"未找到任务书文件，已按数据库任务收工: {db_result['task_id']}")
-        else:
-            messages.append(f"未找到任务文件: {task_id}")
-
         if db_result.get("found"):
             if db_result.get("already_done"):
                 messages.append(f"数据库任务已是完成状态: {db_result['task_id']}")
             else:
                 messages.append(f"数据库任务已标记完成: {db_result['task_id']}")
+        else:
+            messages.append(f"未找到数据库任务: {task_id}")
 
     queue = _collect_task_queue()
     claimed_ids = _extract_active_claimed_task_ids()
