@@ -8,6 +8,15 @@ const loading = ref(true);
 const error = ref("");
 const currentTime = ref(new Date());
 const realtimeStatus = ref("连接中");
+const showTaskCreator = ref(false);
+const loadingWorkspaces = ref(false);
+const creatingTask = ref(false);
+const workspaceOptions = ref([]);
+const createTaskForm = ref({
+  title: "",
+  workspace: "",
+  priority: "未标注"
+});
 let timeInterval = null;
 let reconnectTimer = null;
 let eventSource = null;
@@ -21,32 +30,8 @@ const data = ref({
   environment: {},
   version: 'v5.7.1-local',
   members: [],
-  missions: [
-    { id: "任务-01", title: "外脑反馈链路校准", status: "执行中", owner: "Codex-主机" },
-    { id: "任务-02", title: "审美协议巡检", status: "执行中", owner: "Gemini-执行节点" },
-    { id: "任务-03", title: "记忆索引压缩优化", status: "待处理", owner: "待分配" },
-    { id: "任务-04", title: "跨 Agent 同步持久化", status: "执行中", owner: "Claude-战略节点" }
-  ]
+  missions: []
 });
-
-const commandInput = ref("");
-
-async function submitCommand() {
-  if (!commandInput.value.trim()) return;
-  
-  // Optimistic UI Update for Task Queue
-  const newTask = {
-    id: `任务-${String(data.value.missions.length + 1).padStart(2, "0")}`,
-    title: commandInput.value.trim(),
-    status: "待处理",
-    owner: "待分配"
-  };
-  data.value.missions.unshift(newTask);
-  
-  // Here in the future we will wire this up to the real CortexOS API to create a task
-  console.log("Command Engaged:", commandInput.value);
-  commandInput.value = "";
-}
 
 // 顶级官方 Logo 路径与元数据 (Local Assets Version)
 const agentModels = {
@@ -93,11 +78,16 @@ function missionStatusClass(status) {
 const currentMembers = computed(() =>
   data.value.members.filter((m) => m.type === "active" || m.type === "queued" || m.type === "offline")
 );
+const currentWorkspaceName = computed(() => {
+  const current = workspaceOptions.value.find((item) => item.workspace === createTaskForm.value.workspace);
+  return current?.name || "";
+});
 
 let requestId = 0;
 const actionEndpoint = 'http://127.0.0.1:18790/api/fleet/action';
 const stateEndpoint = 'http://127.0.0.1:18790/api/fleet/state';
 const eventsEndpoint = 'http://127.0.0.1:18790/api/fleet/events';
+const workspacesEndpoint = 'http://127.0.0.1:18790/api/fleet/workspaces';
 const RECONNECT_DELAY = 3000;
 
 function memberStatusToType(status, fallback = "active") {
@@ -156,7 +146,7 @@ function normalizeBridgeState(state) {
     isCaptain: Boolean(member.isCaptain)
   }));
 
-  const missions = Array.isArray(state?.missions) && state.missions.length > 0
+  const missions = Array.isArray(state?.missions)
     ? state.missions.slice(0, 6).map((task, index) => ({
       id: task.id || `任务-${String(index + 1).padStart(2, "0")}`,
       title: task.title || task.taskId || `任务-${String(index + 1).padStart(2, "0")}`,
@@ -167,19 +157,7 @@ function normalizeBridgeState(state) {
       workspace: task.workspace || '',
       publishedAt: task.publishedAt || ''
     }))
-    : members
-      .filter((member) => member.task)
-      .slice(0, 6)
-      .map((member, index) => ({
-        id: `任务-${String(index + 1).padStart(2, "0")}`,
-        title: member.task,
-        status: getMissionStatus(member),
-        owner: member.alias || member.member,
-        assigneeAgent: member.agent || '',
-        assigneeRole: member.role || '',
-        workspace: member.workspace || '',
-        publishedAt: ''
-      }));
+    : [];
 
   return {
     generatedAt: state?.generatedAt || "",
@@ -315,6 +293,82 @@ function applyBridgeState(state) {
   };
 }
 
+async function loadWorkspaces() {
+  loadingWorkspaces.value = true;
+  try {
+    const response = await fetch(workspacesEndpoint, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error("激活工作区拉取失败");
+    }
+    const payload = await response.json().catch(() => ({}));
+    workspaceOptions.value = Array.isArray(payload.workspaces) ? payload.workspaces : [];
+    if (!createTaskForm.value.workspace && workspaceOptions.value.length > 0) {
+      createTaskForm.value.workspace = workspaceOptions.value[0].workspace || workspaceOptions.value[0].rootPath || "";
+    }
+  } catch (e) {
+    error.value = e.message || "激活工作区拉取失败";
+  } finally {
+    loadingWorkspaces.value = false;
+  }
+}
+
+async function openTaskCreator() {
+  showTaskCreator.value = true;
+  error.value = "";
+  if (workspaceOptions.value.length === 0) {
+    await loadWorkspaces();
+  }
+}
+
+function closeTaskCreator() {
+  showTaskCreator.value = false;
+  createTaskForm.value = {
+    title: "",
+    workspace: workspaceOptions.value[0]?.workspace || "",
+    priority: "未标注"
+  };
+}
+
+async function submitTask() {
+  if (!createTaskForm.value.title.trim()) {
+    error.value = "任务标题不能为空";
+    return;
+  }
+  if (!createTaskForm.value.workspace.trim()) {
+    error.value = "请选择工作区";
+    return;
+  }
+
+  creatingTask.value = true;
+  error.value = "";
+  try {
+    const response = await fetch(actionEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "create-task",
+        title: createTaskForm.value.title.trim(),
+        workspace: createTaskForm.value.workspace.trim(),
+        priority: createTaskForm.value.priority
+      })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(payload.error || "任务发布失败");
+    }
+    if (payload.state) {
+      applyBridgeState(payload.state);
+    } else {
+      await loadData();
+    }
+    closeTaskCreator();
+  } catch (e) {
+    error.value = e.message || "任务发布失败";
+  } finally {
+    creatingTask.value = false;
+  }
+}
+
 async function removeMember(member) {
   const previousMembers = data.value.members.map((item) => ({ ...item }));
 
@@ -413,7 +467,14 @@ async function makeCaptain(member) {
       <div class="aether-stage">
         <!-- 3. 作战清单 (Mission Flow) -->
         <aside class="mission-flow">
-          <div class="flow-header">任务队列</div>
+          <div class="flow-header">
+            <span>任务队列</span>
+            <button class="task-create-trigger" @click="openTaskCreator" title="发布任务">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </button>
+          </div>
           <div class="flow-container">
             <div v-for="(task, idx) in data.missions" :key="task.id" class="mission-glass-card"
               :style="{ '--delay': idx * 0.1 + 's' }">
@@ -435,27 +496,12 @@ async function makeCaptain(member) {
               <div v-if="task.workspace" class="m-published-at">工作路径 {{ task.workspace }}</div>
               <div v-if="task.publishedAt" class="m-published-at">发布时间 {{ task.publishedAt }}</div>
             </div>
+            <div v-if="data.missions.length === 0" class="mission-empty-state">
+              <div>当前任务池为空</div>
+              <div>点击左上角 + 发布任务</div>
+            </div>
           </div>
         </aside>
-
-        <!-- 3.5 主令输入枢纽 (Command Input Hub) -->
-        <div class="command-hub-overlay">
-          <div class="command-input-container">
-            <div class="input-glow"></div>
-            <div class="input-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-            </div>
-            <input type="text" class="aether-command-input" placeholder="输入最高指令，分配给 AI 舰队..." v-model="commandInput" @keyup.enter="submitCommand" />
-            <button class="command-submit-btn" @click="submitCommand">
-              <span>ENGAGE</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        </div>
 
         <!-- 4. Agent 矩阵 (The Glass Matrix) -->
         <main class="neural-matrix">
@@ -569,6 +615,70 @@ async function makeCaptain(member) {
           </div>
         </div>
       </footer>
+
+      <div v-if="showTaskCreator" class="task-creator-backdrop" @click.self="closeTaskCreator">
+        <div class="task-creator-panel">
+          <div class="task-creator-header">
+            <div>
+              <div class="task-creator-kicker">任务发布</div>
+              <h3>发布到真实任务池</h3>
+            </div>
+            <button class="task-creator-close" @click="closeTaskCreator" title="关闭">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <label class="task-field">
+            <span class="task-field-label">任务标题</span>
+            <input
+              v-model="createTaskForm.title"
+              type="text"
+              class="task-field-input"
+              placeholder="输入任务标题"
+              @keyup.enter="submitTask"
+            />
+          </label>
+
+          <label class="task-field">
+            <span class="task-field-label">工作区</span>
+            <select v-model="createTaskForm.workspace" class="task-field-input task-field-select">
+              <option value="" disabled>{{ loadingWorkspaces ? '正在加载激活工作区...' : '请选择工作区' }}</option>
+              <option
+                v-for="workspace in workspaceOptions"
+                :key="workspace.workspace || workspace.rootPath"
+                :value="workspace.workspace || workspace.rootPath"
+              >
+                {{ workspace.name }} ｜ {{ workspace.workspace || workspace.rootPath }}
+              </option>
+            </select>
+            <span class="task-field-hint">只有已激活工作区才能发布任务</span>
+          </label>
+
+          <label class="task-field">
+            <span class="task-field-label">优先级</span>
+            <select v-model="createTaskForm.priority" class="task-field-input task-field-select">
+              <option value="未标注">未标注</option>
+              <option value="高">高</option>
+              <option value="中">中</option>
+              <option value="低">低</option>
+            </select>
+          </label>
+
+          <div v-if="createTaskForm.workspace" class="task-workspace-preview">
+            <span class="task-workspace-name">{{ currentWorkspaceName || '已选工作区' }}</span>
+            <span class="task-workspace-path">{{ createTaskForm.workspace }}</span>
+          </div>
+
+          <div class="task-creator-actions">
+            <button class="task-secondary-btn" @click="closeTaskCreator">取消</button>
+            <button class="task-primary-btn" @click="submitTask" :disabled="creatingTask || loadingWorkspaces">
+              {{ creatingTask ? '发布中...' : '发布任务' }}
+            </button>
+          </div>
+        </div>
+      </div>
     </template>
 
     <!-- 加载动画 -->
@@ -867,11 +977,39 @@ async function makeCaptain(member) {
 }
 
 .flow-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 12px;
   font-weight: 600;
   color: #888;
   letter-spacing: 0.1em;
   padding-left: 8px;
+}
+
+.task-create-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(245, 200, 123, 0.22);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--c-aureate-base);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.task-create-trigger:hover {
+  border-color: rgba(245, 200, 123, 0.45);
+  background: rgba(245, 200, 123, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.task-create-trigger svg {
+  width: 16px;
+  height: 16px;
 }
 
 .flow-container {
