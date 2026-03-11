@@ -11,6 +11,7 @@ const realtimeStatus = ref("连接中");
 const showTaskCreator = ref(false);
 const loadingWorkspaces = ref(false);
 const creatingTask = ref(false);
+const deletingTaskId = ref("");
 const workspaceOptions = ref([]);
 const createTaskForm = ref({
   title: "",
@@ -102,6 +103,10 @@ function missionStatusClass(status) {
   if (text === "待启动") return "pending";
   if (text === "已完成") return "done";
   return "unknown";
+}
+
+function canDeleteMission(task) {
+  return String(task?.status || "").trim() === "待启动" && Boolean(String(task?.taskId || "").trim());
 }
 
 function isIdleTask(task) {
@@ -215,6 +220,7 @@ function normalizeBridgeState(state) {
   const missions = Array.isArray(state?.missions)
     ? state.missions.slice(0, 6).map((task, index) => ({
       id: task.id || `任务-${String(index + 1).padStart(2, "0")}`,
+      taskId: task.taskId || '',
       title: task.title || task.taskId || `任务-${String(index + 1).padStart(2, "0")}`,
       status: task.status || '待启动',
       owner: task.owner || task.assignee || '待分配',
@@ -435,6 +441,39 @@ async function submitTask() {
   }
 }
 
+async function removeTask(task) {
+  if (!canDeleteMission(task)) return;
+
+  const previousMissions = data.value.missions.map((item) => ({ ...item }));
+  deletingTaskId.value = task.taskId;
+  data.value.missions = data.value.missions.filter((item) => item.taskId !== task.taskId);
+
+  try {
+    const response = await fetch(actionEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "delete-task",
+        taskId: task.taskId
+      })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(payload.error || "删除任务失败");
+    }
+    if (payload.state) {
+      applyBridgeState(payload.state);
+    } else {
+      await loadData();
+    }
+  } catch (e) {
+    data.value.missions = previousMissions;
+    error.value = e.message || "删除任务失败";
+  } finally {
+    deletingTaskId.value = "";
+  }
+}
+
 async function removeMember(member) {
   const previousMembers = data.value.members.map((item) => ({ ...item }));
 
@@ -551,9 +590,25 @@ async function makeCaptain(member) {
               <div class="card-edge"></div>
               <div class="m-top">
                 <span class="m-id">{{ task.id }}</span>
-                <div class="m-status-badge" :class="missionStatusClass(task.status)">
-                  <span class="status-dot"></span>
-                  {{ task.status }}
+                <div class="m-top-actions">
+                  <button
+                    v-if="canDeleteMission(task)"
+                    class="mission-delete-btn"
+                    :disabled="deletingTaskId === task.taskId"
+                    @click="removeTask(task)"
+                    title="删除待启动任务"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 6h18" />
+                      <path d="M8 6V4h8v2" />
+                      <path d="M19 6l-1 14H6L5 6" />
+                      <path d="M10 11v6M14 11v6" />
+                    </svg>
+                  </button>
+                  <div class="m-status-badge" :class="missionStatusClass(task.status)">
+                    <span class="status-dot"></span>
+                    {{ task.status }}
+                  </div>
                 </div>
               </div>
               <p class="m-title hover-expand">{{ task.title }}</p>
@@ -1244,6 +1299,12 @@ async function makeCaptain(member) {
   margin-bottom: 6px;
 }
 
+.m-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .m-id {
   font-size: 11px;
   font-weight: 800;
@@ -1281,6 +1342,37 @@ async function makeCaptain(member) {
   background: rgba(107, 214, 163, 0.12);
   border-color: rgba(107, 214, 163, 0.28);
   color: #8ce0b7;
+}
+
+.mission-delete-btn {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+  color: rgba(255, 255, 255, 0.38);
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.mission-delete-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  color: #ff8e8e;
+  border-color: rgba(255, 102, 102, 0.28);
+  background: rgba(255, 102, 102, 0.08);
+}
+
+.mission-delete-btn:disabled {
+  opacity: 0.45;
+  cursor: wait;
+}
+
+.mission-delete-btn svg {
+  width: 13px;
+  height: 13px;
 }
 
 .status-dot {
@@ -1840,7 +1932,7 @@ async function makeCaptain(member) {
 }
 
 .agent-name {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   margin: 0;
   color: #ffffff;
@@ -1851,7 +1943,8 @@ async function makeCaptain(member) {
 .agent-badges {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
   margin-top: 8px;
 }
 
@@ -1963,22 +2056,26 @@ async function makeCaptain(member) {
 }
 
 .task-reveal-box {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.5);
-  padding: 20px;
-  border-radius: 16px;
-  margin-bottom: 32px;
-  min-height: 80px;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.38);
+  padding: 16px 18px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  min-height: 68px;
 }
 
 .task-text {
-  font-size: 13px;
-  line-height: 1.6;
-  color: #b0b0b0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.68);
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.02em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .node-footer {

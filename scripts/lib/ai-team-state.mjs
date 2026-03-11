@@ -281,6 +281,56 @@ export function createAiTeamTask(task, { operator = 'system', reason = 'tasks:cr
   return normalized
 }
 
+export function deleteAiTeamTask(taskId, { operator = 'system', reason = 'tasks:delete' } = {}) {
+  const normalizedTaskId = stripMarkdown(taskId)
+  if (!normalizedTaskId) {
+    throw new Error('taskId 不能为空')
+  }
+
+  const db = ensureAiTeamDb()
+  const existing = db.prepare(`
+    SELECT
+      task_id AS taskId,
+      title,
+      status,
+      completed,
+      workspace
+    FROM tasks
+    WHERE lower(task_id) = lower(?)
+    LIMIT 1
+  `).get(normalizedTaskId)
+
+  if (!existing) {
+    db.close()
+    throw new Error(`未找到任务: ${normalizedTaskId}`)
+  }
+
+  if (Number(existing.completed) === 1 || stripMarkdown(existing.status) !== '待启动') {
+    db.close()
+    throw new Error('仅允许删除待启动任务')
+  }
+
+  db.prepare('DELETE FROM tasks WHERE lower(task_id) = lower(?)').run(normalizedTaskId)
+  db.prepare(`
+    INSERT INTO operation_logs (action, target_type, target_id, payload_json)
+    VALUES (?, ?, ?, ?)
+  `).run(
+    'delete-task',
+    'tasks',
+    existing.taskId,
+    JSON.stringify({
+      operator,
+      reason,
+      taskId: existing.taskId,
+      title: existing.title,
+      workspace: existing.workspace
+    })
+  )
+
+  db.close()
+  return existing
+}
+
 function isIdleTaskText(task) {
   const text = stripMarkdown(task)
   if (!text) return true

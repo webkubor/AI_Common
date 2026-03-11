@@ -6,7 +6,7 @@ import path from 'path'
 import { spawn } from 'child_process'
 import { fileURLToPath } from 'url'
 import { ensureAiTeamDb } from '../lib/ai-team-db.mjs'
-import { createAndDispatchAiTeamTask, getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline } from '../lib/ai-team-state.mjs'
+import { createAndDispatchAiTeamTask, deleteAiTeamTask, getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline } from '../lib/ai-team-state.mjs'
 import { buildFleetDashboardPayload } from '../actions/sync-fleet-dashboard.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -254,6 +254,23 @@ const server = http.createServer(async (req, res) => {
       await syncFleetDashboard()
       const { state } = refreshStateCache({ forceBroadcast: true, event: 'state' })
       writeJson(res, 200, { success: true, ...result, state }, origin)
+      return
+    }
+
+    if (action === 'delete-task') {
+      const { taskId } = data
+      if (!taskId || !String(taskId).trim()) {
+        writeJson(res, 400, { error: 'taskId is required' }, origin)
+        return
+      }
+
+      const result = deleteAiTeamTask(String(taskId).trim(), {
+        operator: 'bridge',
+        reason: 'fleet-control-bridge:delete-task'
+      })
+      await syncFleetDashboard()
+      const { state } = refreshStateCache({ forceBroadcast: true, event: 'state' })
+      writeJson(res, 200, { success: true, deleted: result, state }, origin)
       return
     }
 
