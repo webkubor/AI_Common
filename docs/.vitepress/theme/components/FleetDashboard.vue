@@ -51,19 +51,40 @@ const agentModels = {
     class: "mod-codex"
   },
   lobster: {
-    icon: `<img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/lobehub-color.svg" class="model-icon-img"
-  alt="OpenClaw" />`,
-    label: "智能体引擎",
+    icon: "🦞",
+    label: "龙虾",
     class: "mod-lobster"
   }
 };
 
-function getModelMeta(name) {
-  const lower = String(name || "").toLowerCase();
-  if (lower.includes('gemini')) return agentModels.gemini;
-  if (lower.includes('claude')) return agentModels.claude;
-  if (lower.includes('codex')) return agentModels.codex;
-  return agentModels.lobster;
+function resolveAgentEngine(member) {
+  const source = typeof member === "string"
+    ? { agent: member }
+    : (member || {});
+  const agent = String(source.agent || source.agentName || "").toLowerCase();
+  const alias = String(source.alias || "").toLowerCase();
+  const workspace = String(source.workspace || "").toLowerCase();
+  const memberId = String(source.member || source.memberId || "").toLowerCase();
+
+  if (
+    workspace.includes("/clawd") ||
+    workspace.endsWith("clawd") ||
+    workspace.includes(".openclaw") ||
+    alias.includes("栖月") ||
+    memberId.includes("lobster") ||
+    agent.includes("openclaw") ||
+    agent.includes("lobster")
+  ) {
+    return "lobster";
+  }
+  if (agent.includes("gemini")) return "gemini";
+  if (agent.includes("claude")) return "claude";
+  if (agent.includes("codex")) return "codex";
+  return "lobster";
+}
+
+function getModelMeta(member) {
+  return agentModels[resolveAgentEngine(member)] || agentModels.lobster;
 }
 
 function missionStatusClass(status) {
@@ -520,10 +541,10 @@ async function makeCaptain(member) {
               <div class="node-content">
                 <div class="node-header">
                   <div class="agent-identity">
-                    <div class="agent-logo-wrapper" :class="getModelMeta(member.agent).class">
-                      <span class="alw-icon" v-if="getModelMeta(member.agent).icon.includes('<')"
-                        v-html="getModelMeta(member.agent).icon"></span>
-                      <span v-else class="emoji-icon">{{ getModelMeta(member.agent).icon }}</span>
+                    <div class="agent-logo-wrapper" :class="getModelMeta(member).class">
+                      <span class="alw-icon" v-if="getModelMeta(member).icon.includes('<')"
+                        v-html="getModelMeta(member).icon"></span>
+                      <span v-else class="emoji-icon">{{ getModelMeta(member).icon }}</span>
                     </div>
                     <div class="agent-info">
                       <h3 class="agent-name">{{ member.alias || member.member.split('(')[0] }}</h3>
@@ -531,13 +552,14 @@ async function makeCaptain(member) {
                         <!-- 职位徽章 -->
                         <span v-if="member.isCaptain" class="role-badge captain">👑 舰队统帅</span>
                         <span v-else class="role-badge member">🛡️ 执行节点</span>
+                        <span v-if="member.role" class="role-badge duty">🎯 {{ member.role }}</span>
 
                         <!-- 引擎徽章 -->
-                        <div class="engine-badge" :class="getModelMeta(member.agent).class">
-                          <span class="eb-icon" v-if="getModelMeta(member.agent).icon.includes('<')"
-                            v-html="getModelMeta(member.agent).icon"></span>
-                          <span class="eb-icon" v-else>{{ getModelMeta(member.agent).icon }}</span>
-                          <span class="eb-label">{{ getModelMeta(member.agent).label }}</span>
+                        <div class="engine-badge" :class="getModelMeta(member).class">
+                          <span class="eb-icon" v-if="getModelMeta(member).icon.includes('<')"
+                            v-html="getModelMeta(member).icon"></span>
+                          <span class="eb-icon" v-else>{{ getModelMeta(member).icon }}</span>
+                          <span class="eb-label">{{ getModelMeta(member).label }}</span>
                         </div>
                       </div>
                     </div>
