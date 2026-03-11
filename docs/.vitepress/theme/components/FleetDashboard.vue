@@ -487,10 +487,13 @@ async function makeCaptain(member) {
                 </div>
               </div>
               <p class="m-title text-ellipsis" :title="task.title">{{ task.title }}</p>
-              <div class="m-owner text-ellipsis">
-                <span :title="task.owner">{{ task.owner }}</span>
-                <span v-if="task.assigneeAgent || task.assigneeRole" class="m-owner-meta" :title="[task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ')">
+              <div class="m-owner">
+                <span class="text-ellipsis owner-name" :title="task.owner">{{ task.owner }}</span>
+                <span v-if="(task.assigneeAgent || task.assigneeRole) && (task.assigneeAgent !== task.owner)" class="m-owner-meta text-ellipsis" :title="[task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ')">
                   {{ [task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ') }}
+                </span>
+                <span v-else-if="task.assigneeRole" class="m-owner-meta text-ellipsis" :title="task.assigneeRole">
+                  {{ task.assigneeRole }}
                 </span>
               </div>
               <div v-if="task.workspace" class="m-published-at text-ellipsis" :title="'工作路径 ' + task.workspace">工作路径 {{ task.workspace }}</div>
@@ -1117,11 +1120,24 @@ async function makeCaptain(member) {
   font-family: ui-monospace;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 6px;
+  width: 100%;
 }
 
-.m-owner-meta,
+.owner-name {
+  flex-shrink: 0;
+  max-width: 50%;
+}
+
+.m-owner-meta {
+  font-size: 9px;
+  color: #6a6a6a;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 8px;
+  flex: 1;
+}
+
 .m-published-at {
   font-size: 9px;
   color: #6a6a6a;
@@ -1133,7 +1149,6 @@ async function makeCaptain(member) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 100%;
   display: block;
 }
 
