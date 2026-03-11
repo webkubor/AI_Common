@@ -382,14 +382,15 @@ async function loadWorkspaces() {
 }
 
 async function openTaskCreator(member = null) {
-  taskCreatorTargetMember.value = member;
+  const normalizedMember = member && typeof member === 'object' && 'member' in member ? member : null;
+  taskCreatorTargetMember.value = normalizedMember;
   showTaskCreator.value = true;
   error.value = "";
   if (workspaceOptions.value.length === 0) {
     await loadWorkspaces();
   }
-  if (member?.workspace) {
-    createTaskForm.value.workspace = member.workspace;
+  if (normalizedMember?.workspace) {
+    createTaskForm.value.workspace = normalizedMember.workspace;
   }
 }
 
@@ -551,7 +552,7 @@ async function makeCaptain(member) {
         <aside class="mission-flow">
           <div class="flow-header">
             <span>任务池</span>
-            <button class="task-create-trigger" @click="openTaskCreator" title="发布任务">
+            <button class="task-create-trigger" @click="openTaskCreator()" title="发布任务">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 5v14M5 12h14" />
               </svg>
