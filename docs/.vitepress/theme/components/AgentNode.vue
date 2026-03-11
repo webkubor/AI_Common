@@ -120,8 +120,7 @@ function canCompleteMemberTask(task) {
 </script>
 
 <template>
-  <div class="agent-glass-node"
-    :class="{ 'is-working': isWorking(member), 'is-captain': member.isCaptain }"
+  <div class="agent-glass-node" :class="{ 'is-working': isWorking(member), 'is-captain': member.isCaptain }"
     :style="{ '--delay': (idx + 3) * 0.1 + 's' }">
 
     <!-- 液体玻璃反光层 -->
@@ -161,9 +160,11 @@ function canCompleteMemberTask(task) {
                 <path d="M12 5v14M5 12h14" />
               </svg>
             </button>
-            <button class="action-btn make-captain" v-if="!member.isCaptain" @click="emit('make-captain', member)" title="调配为队长">
+            <button class="action-btn make-captain" v-if="!member.isCaptain" @click="emit('make-captain', member)"
+              title="调配为队长">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
             </button>
             <button class="action-btn kick-out" @click="emit('kick-out', member)" title="移出矩阵">
@@ -188,13 +189,9 @@ function canCompleteMemberTask(task) {
                 <span class="task-history-status" :class="taskHistoryStatusClass(taskItem)">
                   {{ getTaskHistoryStatusLabel(taskItem) }}
                 </span>
-                <button
-                  v-if="canCompleteMemberTask(taskItem)"
-                  class="task-complete-btn"
-                  :disabled="completingTaskId === taskItem.taskId"
-                  @click="emit('complete-task', member, taskItem)"
-                  title="标记为完成"
-                >
+                <button v-if="canCompleteMemberTask(taskItem)" class="task-complete-btn"
+                  :disabled="completingTaskId === taskItem.taskId" @click="emit('complete-task', member, taskItem)"
+                  title="标记为完成">
                   ✓ 结案
                 </button>
               </div>
@@ -210,10 +207,12 @@ function canCompleteMemberTask(task) {
         <div class="load-bar-wrapper">
           <div class="load-labels">
             <span class="ll-left">神经网络载荷 ⚡️</span>
-            <span class="ll-right">{{ member.progress > 0 ? (member.progress > 100 ? 100 : member.progress) : 0 }}%</span>
+            <span class="ll-right">{{ member.progress > 0 ? (member.progress > 100 ? 100 : member.progress) : 0
+              }}%</span>
           </div>
           <div class="load-track">
-            <div class="load-fill" :class="{ 'active': isWorking(member) }" :style="{ width: (member.progress > 100 ? 100 : Math.max(0, member.progress)) + '%' }"></div>
+            <div class="load-fill" :class="{ 'active': isWorking(member) }"
+              :style="{ width: (member.progress > 100 ? 100 : Math.max(0, member.progress)) + '%' }"></div>
           </div>
         </div>
         <div class="node-meta">
@@ -312,7 +311,10 @@ function canCompleteMemberTask(task) {
   backdrop-filter: blur(10px);
 }
 
-.action-btn svg { width: 14px; height: 14px; }
+.action-btn svg {
+  width: 14px;
+  height: 14px;
+}
 
 .action-btn.make-captain:hover {
   background: rgba(245, 200, 123, 0.1);
@@ -393,8 +395,17 @@ function canCompleteMemberTask(task) {
 }
 
 @keyframes logo-breathe {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.1); opacity: 1; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
 }
 
 .node-content {
@@ -491,7 +502,9 @@ function canCompleteMemberTask(task) {
   object-fit: contain;
 }
 
-.eb-icon.emoji { font-size: 10px; }
+.eb-icon.emoji {
+  font-size: 10px;
+}
 
 .engine-badge-mini.mod-gemini {
   background: rgba(66, 133, 244, 0.15);
@@ -512,7 +525,9 @@ function canCompleteMemberTask(task) {
 }
 
 .engine-badge-mini.mod-codex img,
-.engine-badge-mini.mod-codex svg { filter: brightness(0) invert(1); }
+.engine-badge-mini.mod-codex svg {
+  filter: brightness(0) invert(1);
+}
 
 .engine-badge-mini.mod-lobster {
   background: rgba(255, 50, 50, 0.15);
@@ -585,7 +600,10 @@ function canCompleteMemberTask(task) {
   padding-right: 4px;
 }
 
-.task-history-scroll::-webkit-scrollbar { width: 4px; }
+.task-history-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
 .task-history-scroll::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.12);
   border-radius: 999px;
@@ -628,12 +646,31 @@ function canCompleteMemberTask(task) {
 }
 
 .task-history-status.live,
-.task-history-status.working { color: #f5c87b; background: rgba(245, 200, 123, 0.12); }
-.task-history-status.pending { color: rgba(255, 255, 255, 0.72); background: rgba(255, 255, 255, 0.08); }
-.task-history-status.done { color: #74d49b; background: rgba(116, 212, 155, 0.12); }
-.task-history-status.unknown { color: rgba(255, 255, 255, 0.58); background: rgba(255, 255, 255, 0.05); }
+.task-history-status.working {
+  color: #f5c87b;
+  background: rgba(245, 200, 123, 0.12);
+}
 
-.task-history-time { flex-shrink: 0; font-size: 10px; color: rgba(255, 255, 255, 0.36); }
+.task-history-status.pending {
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.task-history-status.done {
+  color: #74d49b;
+  background: rgba(116, 212, 155, 0.12);
+}
+
+.task-history-status.unknown {
+  color: rgba(255, 255, 255, 0.58);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.task-history-time {
+  flex-shrink: 0;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.36);
+}
 
 .task-complete-btn {
   height: 22px;
@@ -653,7 +690,11 @@ function canCompleteMemberTask(task) {
   border-color: rgba(125, 229, 173, 0.4);
   background: rgba(125, 229, 173, 0.14);
 }
-.task-complete-btn:disabled { opacity: 0.5; cursor: wait; }
+
+.task-complete-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
 
 .task-history-name {
   font-size: 12px;
@@ -680,46 +721,140 @@ function canCompleteMemberTask(task) {
   border: 1px dashed rgba(255, 255, 255, 0.06);
 }
 
-.node-footer { display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
+.node-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-.load-bar-wrapper { display: flex; flex-direction: column; gap: 12px; }
+.load-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-.load-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: #888; letter-spacing: 0.05em; }
+.load-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+  letter-spacing: 0.05em;
+}
 
-.load-track { height: 4px; background: rgba(255, 255, 255, 0.05); border-radius: 100px; overflow: hidden; }
+.load-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 100px;
+  overflow: hidden;
+}
 
-.load-fill { height: 100%; background: #333; transition: width 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.load-fill {
+  height: 100%;
+  background: #333;
+  transition: width 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
 
-.load-fill.active { background: var(--c-aureate-glow, #f8d79a); box-shadow: 0 0 12px rgba(245, 200, 123, 0.5); position: relative; }
+.load-fill.active {
+  background: var(--c-aureate-glow, #f8d79a);
+  box-shadow: 0 0 12px rgba(245, 200, 123, 0.5);
+  position: relative;
+}
+
 .load-fill.active::after {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
   animation: pulse-slide 2s linear infinite;
 }
 
-@keyframes pulse-slide { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes pulse-slide {
+  from {
+    transform: translateX(-100%);
+  }
 
-.is-captain .load-fill { background: var(--c-aureate-glow, #f8d79a); box-shadow: 0 0 20px rgba(245, 200, 123, 0.8); }
-
-.node-meta {
-  display: flex; align-items: center; gap: 10px; width: fit-content; max-width: 100%; padding: 7px 11px;
-  border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(10px); font-size: 9px; color: rgba(255, 255, 255, 0.46); font-family: ui-monospace; letter-spacing: 0.07em;
+  to {
+    transform: translateX(100%);
+  }
 }
 
-.meta-item { white-space: nowrap; }
-.meta-item--workspace { max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
-.meta-divider { width: 1px; height: 10px; background: rgba(255, 255, 255, 0.08); }
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.is-captain .load-fill {
+  background: var(--c-aureate-glow, #f8d79a);
+  box-shadow: 0 0 20px rgba(245, 200, 123, 0.8);
+}
+
+.node-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 7px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(10px);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.46);
+  font-family: ui-monospace;
+  letter-spacing: 0.07em;
+}
+
+.meta-item {
+  white-space: nowrap;
+}
+
+.meta-item--workspace {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta-divider {
+  width: 1px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
 
 .captain-crown {
-  position: absolute; top: 0; right: 0; background: linear-gradient(135deg, var(--c-aureate-glow, #f8d79a), var(--c-aureate-dim, #d4a35c));
-  color: #000; padding: 6px 16px; font-size: 11px; font-weight: 800; letter-spacing: 0.1em;
-  border-bottom-left-radius: 16px; box-shadow: 0 4px 12px rgba(245, 200, 123, 0.2);
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: linear-gradient(135deg, var(--c-aureate-glow, #f8d79a), var(--c-aureate-dim, #d4a35c));
+  color: #000;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  border-bottom-left-radius: 16px;
+  box-shadow: 0 4px 12px rgba(245, 200, 123, 0.2);
 }
 
 @media (max-width: 1024px) {
-  .agent-glass-node { min-height: auto; }
-  .task-reveal-box { flex-basis: 208px; height: 208px; min-height: 208px; }
+  .agent-glass-node {
+    min-height: auto;
+  }
+
+  .task-reveal-box {
+    flex-basis: 208px;
+    height: 208px;
+    min-height: 208px;
+  }
 }
 </style>
