@@ -3,6 +3,7 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS agents (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  identity_key TEXT,
   member_id TEXT NOT NULL UNIQUE,
   node_id TEXT,
   agent_name TEXT NOT NULL,

@@ -60,14 +60,14 @@
 ### 向 Codex/Gemini 派单流程
 
 1. 栖月在 `.memory/tasks/task-XXX-xxx.md` 写结构化任务书（含问题/修法/验收标准）
-2. 更新 `fleet_status.md` 挂牌登记任务
+2. 调用 `fleet_claim()` 或 `get_fleet_status()` 确认舰队当前状态与接单节点
 3. 王爷打开 Codex/Gemini，让其读 `.memory/tasks/` 执行
 4. 执行完毕后 Codex/Gemini 写日志，栖月验收
 
 ### 冷启动协议（非 0 号机开工前必读）
 
 1. 调用 `get_context_brief()` 获取当前状态快照（省 token）
-2. 查看 `fleet_status.md` 的【大脑战略建议】区
+2. 调用 `get_fleet_status()` 查看当前队长、节点任务和工作路径
 3. 确认栖月在线可联系（通过 OpenClaw 对话）
 4. 重大决策须等栖月批准
 
@@ -75,7 +75,7 @@
 
 ## 📍 档案室索引
 
-- 🏴 **舰队编排板**: `CortexOS/.memory/fleet/fleet_status.md`，所有 Agent 实时状态与任务
+- 🏴 **舰队运行态主库**: `CortexOS/.memory/sqlite/ai-team.db`，所有 Agent 实时状态、队长与操作记录
 - 📋 **任务书目录**: `CortexOS/.memory/tasks/`，栖月派发的结构化任务
 - 🧠 **栖月记忆**: `/Users/webkubor/clawd/MEMORY.md`，长期记忆与个人偏好
 - 📝 **今日日志**: `CortexOS/.memory/logs/`，每日操作记录

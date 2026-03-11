@@ -1,9 +1,8 @@
 # 🚦 舰队态势板（运行态）
 
-舰队实时状态不再存放在 `docs/memory`，统一存放到助手私有目录：
+舰队实时状态不再存放在 `docs/memory`，运行态主源统一落到 SQLite：
 
-- `.memory/fleet/fleet_status.md`
-- `.memory/fleet/fleet_meta.json`
+- `.memory/sqlite/ai-team.db`
 
 独立可视化大面板入口：
 
@@ -25,4 +24,5 @@ pnpm run fleet:sync-dashboard
 说明：
 
 - 文档站看板数据来自 `docs/public/data/ai_team_status.json`。
-- 该 JSON 由 `pnpm run fleet:sync-dashboard` 从 `.memory/fleet/fleet_status.md` 生成。
+- 该 JSON 由 `pnpm run fleet:sync-dashboard` 从 `.memory/sqlite/ai-team.db` 投影生成。
+- 队长切换、节点心跳、离线清理都直接写数据库，不再依赖 `fleet_status.md / fleet_meta.json`。

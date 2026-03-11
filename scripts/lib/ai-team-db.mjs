@@ -11,6 +11,7 @@ const dbFile = path.join(dbDir, 'ai-team.db')
 const schemaFile = path.join(projectRoot, 'scripts/sql/ai-team-schema.sql')
 
 const agentColumns = {
+  identity_key: 'TEXT',
   member_id: 'TEXT NOT NULL UNIQUE',
   node_id: 'TEXT',
   agent_name: 'TEXT NOT NULL',
@@ -38,6 +39,66 @@ function ensureTableColumns(db, tableName, expectedColumns) {
   }
 }
 
+function stripValue(value) {
+  return String(value ?? '').trim()
+}
+
+function buildIdentityKey(row) {
+  const agentName = stripValue(row.agent_name || row.agentName || 'Unknown')
+  const alias = stripValue(row.alias || agentName)
+  const workspace = stripValue(row.workspace || '')
+  return `${agentName}::${alias}::${workspace}`
+}
+
+function reconcileAgentIdentityRows(db) {
+  const rows = db.prepare(`
+    SELECT
+      id,
+      identity_key,
+      member_id,
+      agent_name,
+      alias,
+      workspace,
+      is_captain,
+      updated_at
+    FROM agents
+    ORDER BY is_captain DESC, updated_at DESC, id DESC
+  `).all()
+
+  const seen = new Set()
+  const updateIdentityKey = db.prepare('UPDATE agents SET identity_key = ? WHERE id = ?')
+  const deleteAgent = db.prepare('DELETE FROM agents WHERE id = ?')
+
+  for (const row of rows) {
+    const identityKey = buildIdentityKey(row)
+    if (seen.has(identityKey)) {
+      deleteAgent.run(row.id)
+      continue
+    }
+    seen.add(identityKey)
+    if (row.identity_key !== identityKey) {
+      updateIdentityKey.run(identityKey, row.id)
+    }
+  }
+
+  const captains = db.prepare(`
+    SELECT id
+    FROM agents
+    WHERE is_captain = 1
+    ORDER BY updated_at DESC, id DESC
+  `).all()
+
+  if (captains.length > 1) {
+    const [, ...others] = captains
+    const demoteCaptain = db.prepare('UPDATE agents SET is_captain = 0 WHERE id = ?')
+    for (const row of others) {
+      demoteCaptain.run(row.id)
+    }
+  }
+
+  db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_agents_identity_key ON agents(identity_key)')
+}
+
 export function ensureAiTeamDb() {
   fs.mkdirSync(dbDir, { recursive: true })
 
@@ -45,6 +106,7 @@ export function ensureAiTeamDb() {
   const db = new Database(dbFile)
   db.exec(schema)
   ensureTableColumns(db, 'agents', agentColumns)
+  reconcileAgentIdentityRows(db)
 
   return db
 }

@@ -79,6 +79,13 @@ function buildPrimeMemberId(agent) {
   return `${agent.alias}-Prime (0号机/${agent.agentName})`
 }
 
+function buildIdentityKey(agent) {
+  const agentName = stripMarkdown(agent.agentName || 'Unknown')
+  const alias = stripMarkdown(agent.alias || agentName)
+  const workspace = stripMarkdown(agent.workspace)
+  return `${agentName}::${alias}::${workspace}`
+}
+
 function isPrimeMemberId(memberId) {
   const text = stripMarkdown(memberId).toLowerCase()
   return text.includes('-prime') || text.includes('0号机')
@@ -109,6 +116,7 @@ function chooseWorkerMemberId(agent, agents, excludedIds = new Set()) {
 
 function normalizeStoredAgent(agent) {
   const normalized = {
+    identityKey: stripMarkdown(agent.identityKey || ''),
     memberId: stripMarkdown(agent.memberId || agent.nodeId),
     nodeId: stripMarkdown(agent.nodeId || agent.memberId),
     agentName: normalizeAgent(agent.agentName),
@@ -121,6 +129,10 @@ function normalizeStoredAgent(agent) {
     status: stripMarkdown(agent.status || '[ 执行中 ] 活跃'),
     heartbeatAt: stripMarkdown(agent.heartbeatAt || agent.updatedAt || nowLocal()),
     updatedAt: stripMarkdown(agent.updatedAt || agent.heartbeatAt || nowLocal())
+  }
+
+  if (!normalized.identityKey) {
+    normalized.identityKey = buildIdentityKey(normalized)
   }
 
   if (normalized.isCaptain) {
@@ -137,6 +149,7 @@ function loadAgentsFromDb() {
   const db = ensureAiTeamDb()
   const agents = db.prepare(`
     SELECT
+      identity_key AS identityKey,
       member_id AS memberId,
       node_id AS nodeId,
       agent_name AS agentName,
@@ -172,6 +185,7 @@ function persistAiTeamAgents(agents, { action = 'sync', operator = 'system', pay
     const upsertAgent = db.prepare(`
       INSERT INTO agents (
         member_id,
+        identity_key,
         node_id,
         agent_name,
         alias,
@@ -185,6 +199,7 @@ function persistAiTeamAgents(agents, { action = 'sync', operator = 'system', pay
         updated_at
       ) VALUES (
         @memberId,
+        @identityKey,
         @nodeId,
         @agentName,
         @alias,
@@ -197,8 +212,9 @@ function persistAiTeamAgents(agents, { action = 'sync', operator = 'system', pay
         @heartbeatAt,
         @updatedAt
       )
-      ON CONFLICT(member_id) DO UPDATE SET
+      ON CONFLICT(identity_key) DO UPDATE SET
         node_id = excluded.node_id,
+        member_id = excluded.member_id,
         agent_name = excluded.agent_name,
         alias = excluded.alias,
         role = excluded.role,
@@ -212,13 +228,13 @@ function persistAiTeamAgents(agents, { action = 'sync', operator = 'system', pay
     `)
 
     for (const agent of rows) {
-      seen.push(agent.memberId)
+      seen.push(agent.identityKey)
       upsertAgent.run(agent)
     }
 
     if (seen.length > 0) {
       const placeholders = seen.map(() => '?').join(', ')
-      db.prepare(`DELETE FROM agents WHERE member_id NOT IN (${placeholders})`).run(...seen)
+      db.prepare(`DELETE FROM agents WHERE identity_key NOT IN (${placeholders})`).run(...seen)
     } else {
       db.prepare('DELETE FROM agents').run()
     }
@@ -311,6 +327,7 @@ export function claimAiTeamMember({ workspace, task, agent, alias, role, status 
   if (!target) {
     target = {
       memberId: `${normalizedAlias}-1 (${normalizedAgent})`,
+      identityKey: '',
       nodeId: '',
       agentName: normalizedAgent,
       alias: normalizedAlias,
@@ -331,6 +348,7 @@ export function claimAiTeamMember({ workspace, task, agent, alias, role, status 
   target.role = normalizedRole
   target.workspace = normalizedWorkspace
   target.task = normalizedTask
+  target.identityKey = buildIdentityKey(target)
   target.heartbeatAt = heartbeatAt
   target.updatedAt = heartbeatAt
 
@@ -409,6 +427,7 @@ export function checkinAiTeamMember({ workspace, agent, role, task, status = '[ 
 
   target.role = normalizedRole
   target.task = normalizedTask
+  target.identityKey = buildIdentityKey(target)
   target.heartbeatAt = heartbeatAt
   target.updatedAt = heartbeatAt
   if (!target.isCaptain) {

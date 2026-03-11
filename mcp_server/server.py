@@ -510,35 +510,13 @@ def get_context_brief() -> str:
     推荐先调用本工具，再按需调用 read_router()。
     """
     captain = ""
-    strategy = ""
     tasks_preview = "无"
-
-    if FLEET_STATUS.exists():
-        try:
-            content = FLEET_STATUS.read_text(encoding="utf-8")
-            lines = content.splitlines()
-
-            for raw in lines:
-                if "👑" in raw and "|" in raw:
-                    parts = [p.strip() for p in raw.split("|")]
-                    if len(parts) > 1:
-                        captain = _strip_md(parts[1]).strip("*")
-                        break
-
-            in_suggestion = False
-            for raw in lines:
-                line = raw.strip()
-                if line.startswith("### 📌 当班建议"):
-                    in_suggestion = True
-                    continue
-                if in_suggestion and line.startswith("### ") and "当班建议" not in line:
-                    break
-                if in_suggestion and line.startswith("- **"):
-                    strategy = _strip_md(line).strip("*")
-                    break
-        except Exception:
-            captain = ""
-            strategy = ""
+    try:
+        state_raw = get_fleet_status()
+        state = json.loads(state_raw)
+        captain = str(state.get("captain") or "").strip()
+    except Exception:
+        captain = ""
 
     try:
         queue = _collect_task_queue()
@@ -553,11 +531,9 @@ def get_context_brief() -> str:
     parts = []
     if captain:
         parts.append(f"队长:{captain}")
-    if strategy:
-        parts.append(f"战略:{strategy}")
     parts.append(f"待办:{tasks_preview}")
 
-    if not captain and not strategy and tasks_preview in {"无", "未知"}:
+    if not captain and tasks_preview in {"无", "未知"}:
         return "状态摘要不可用，请调用 read_router() 获取完整上下文。"
 
     summary = " | ".join(parts)
@@ -575,23 +551,11 @@ def _tasks_dir() -> Path:
 
 def _extract_active_claimed_task_ids() -> set[str]:
     task_ids: set[str] = set()
-    if not FLEET_STATUS.exists():
-        return task_ids
     try:
-        lines = FLEET_STATUS.read_text(encoding="utf-8").splitlines()
-        header_idx = next((i for i, line in enumerate(lines) if "| 节点 ID (模型/别名) |" in line), -1)
-        if header_idx == -1:
-            return task_ids
-
-        row_idx = header_idx + 2
-        while row_idx < len(lines):
-            raw = lines[row_idx].strip()
-            if not raw.startswith("|"):
-                break
-            if "示例节点" not in raw:
-                for matched in _task_id_pattern().findall(raw):
-                    task_ids.add(matched.lower())
-            row_idx += 1
+        state = json.loads(get_fleet_status())
+        for agent in state.get("agents", []):
+            for matched in _task_id_pattern().findall(str(agent.get("task", ""))):
+                task_ids.add(matched.lower())
     except Exception:
         return set()
     return task_ids
