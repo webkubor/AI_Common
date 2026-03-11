@@ -5,6 +5,12 @@ import fs from 'fs'
 import path from 'path'
 import { spawn } from 'child_process'
 import { fileURLToPath } from 'url'
+import {
+  FLEET_BRIDGE_HOST,
+  FLEET_BRIDGE_PORT,
+  FLEET_SSE_PING_INTERVAL_MS,
+  FLEET_STATE_POLL_INTERVAL_MS
+} from '../config/ai-team.config.mjs'
 import { ensureAiTeamDb } from '../lib/ai-team-db.mjs'
 import { assignAiTeamTaskToMember, completeAiTeamTask, createAndDispatchAiTeamTask, deleteAiTeamTask, getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline } from '../lib/ai-team-state.mjs'
 import { buildFleetDashboardPayload } from '../actions/sync-fleet-dashboard.mjs'
@@ -13,10 +19,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const projectRoot = path.join(__dirname, '../../')
 const registryFile = path.join(projectRoot, '.memory/projects/registry.json')
-const port = Number(process.env.FLEET_CONTROL_PORT || 18790)
-const host = process.env.FLEET_CONTROL_HOST || '127.0.0.1'
-const STATE_POLL_INTERVAL = 2000
-const SSE_PING_INTERVAL = 15000
+const port = FLEET_BRIDGE_PORT
+const host = FLEET_BRIDGE_HOST
 const sseClients = new Map()
 let nextClientId = 1
 let lastStateSignature = ''
@@ -126,7 +130,7 @@ function attachSseClient(req, res, origin) {
   const clientId = nextClientId++
   const pingTimer = setInterval(() => {
     res.write(': ping\n\n')
-  }, SSE_PING_INTERVAL)
+  }, FLEET_SSE_PING_INTERVAL_MS)
 
   sseClients.set(clientId, { res, pingTimer })
   writeSse(res, 'ready', { ok: true, clientId })
@@ -376,7 +380,7 @@ setInterval(() => {
   } catch (error) {
     console.error(`fleet-control-bridge state watcher failed: ${error?.message || error}`)
   }
-}, STATE_POLL_INTERVAL)
+}, FLEET_STATE_POLL_INTERVAL_MS)
 
 server.listen(port, host, () => {
   console.log(`fleet-control-bridge listening on http://${host}:${port}`)

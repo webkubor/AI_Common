@@ -3,46 +3,14 @@
 import { syncProjectRegistry } from './project-registry.mjs'
 import { syncFleetDashboard } from './sync-fleet-dashboard.mjs'
 import { claimAiTeamMember } from '../lib/ai-team-state.mjs'
-
-function sanitizeCell(value) {
-  return String(value ?? '').replace(/\|/g, '｜').trim()
-}
-
-function normalizeAgent(value) {
-  const raw = String(value ?? '').trim()
-  if (!raw) return 'Unknown'
-  const lower = raw.toLowerCase()
-  if (lower.includes('gemini')) return 'Gemini'
-  if (lower.includes('codex')) return 'Codex'
-  if (lower.includes('claude')) return 'Claude'
-  if (lower.includes('lobster')) return 'Lobster'
-  if (lower.includes('opencode')) return 'OpenCode'
-  return raw
-}
-
-function inferRoleFromTask(task) {
-  const text = String(task || '').toLowerCase()
-  if (!text) return '未分配'
-  if (/(前端|frontend|react|vue|页面|样式|css|ui|ux|h5|web)/i.test(text)) return '前端'
-  if (/(后端|backend|api|服务|接口|数据库|db|sql|redis|中间件|server)/i.test(text)) return '后端'
-  return '未分配'
-}
-
-function normalizeRole(value) {
-  const raw = String(value ?? '').trim()
-  if (!raw) return '未分配'
-  const lower = raw.toLowerCase()
-  if (/(前端|frontend|front-end|fe)/i.test(lower)) return '前端'
-  if (/(后端|backend|back-end|be)/i.test(lower)) return '后端'
-  return raw
-}
+import { inferRoleFromTask, normalizeAgent, normalizeRole, sanitizeCell } from '../lib/agent-utils.mjs'
 
 function parseArgs(argv) {
   const args = {
     workspace: process.cwd(),
     task: '待分配任务',
-    agent: 'Gemini',
-    alias: 'Candy',
+    agent: '',
+    alias: '',
     role: '',
     status: '[ 执行中 ] 活跃',
     dryRun: false
@@ -62,15 +30,16 @@ function parseArgs(argv) {
 
   args.task = sanitizeCell(args.task)
   args.status = sanitizeCell(args.status)
-  args.agent = normalizeAgent(sanitizeCell(args.agent))
-  args.alias = sanitizeCell(args.alias)
+  const rawAgent = sanitizeCell(args.agent)
+  args.agent = rawAgent ? normalizeAgent(rawAgent) : ''
+  args.alias = sanitizeCell(args.alias || rawAgent)
   args.role = normalizeRole(sanitizeCell(args.role || inferRoleFromTask(args.task)))
   return args
 }
 
 function printHelp() {
   console.log('用法:')
-  console.log('  node scripts/actions/fleet-claim.mjs --workspace <path> --task <任务描述> [--agent Gemini] [--alias Candy] [--role 前端|后端]')
+  console.log('  node scripts/actions/fleet-claim.mjs --workspace <path> --task <任务描述> --agent <Gemini|Codex|Claude> [--alias 名称] [--role 前端|后端]')
 }
 
 function main() {
@@ -78,6 +47,10 @@ function main() {
   if (args.help) {
     printHelp()
     return
+  }
+
+  if (!args.agent) {
+    throw new Error('fleet:claim 必须显式传入 --agent')
   }
 
   if (args.dryRun) {

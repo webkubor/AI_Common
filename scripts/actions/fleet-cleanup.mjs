@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
 import { cleanupAiTeamState } from '../lib/ai-team-state.mjs'
+import { HEARTBEAT_TIMEOUT_HOURS } from '../config/ai-team.config.mjs'
 import { syncFleetDashboard } from './sync-fleet-dashboard.mjs'
-
-const CLEANUP_THRESHOLD_HOURS = 2
 
 function parseArgs(argv) {
   return {
@@ -14,7 +13,7 @@ function parseArgs(argv) {
 function main() {
   const args = parseArgs(process.argv.slice(2))
   const result = cleanupAiTeamState({
-    thresholdHours: CLEANUP_THRESHOLD_HOURS,
+    thresholdHours: HEARTBEAT_TIMEOUT_HOURS,
     dryRun: args.dryRun,
     operator: 'system',
     reason: 'fleet:cleanup'

@@ -3,6 +3,10 @@
 import { spawn } from 'child_process'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import {
+  FLEET_BRIDGE_PORT,
+  FLEET_BRIDGE_RESTART_DELAY_MS
+} from '../config/ai-team.config.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -12,9 +16,8 @@ const [mode = 'dev', ...restArgs] = process.argv.slice(2)
 const vitepressArgs = [mode, 'docs', ...restArgs]
 const bridgeEnv = {
   ...process.env,
-  FLEET_CONTROL_PORT: process.env.FLEET_CONTROL_PORT || '18790'
+  FLEET_CONTROL_PORT: String(FLEET_BRIDGE_PORT)
 }
-const BRIDGE_RESTART_DELAY = 1200
 let bridge = null
 let bridgeRestartTimer = null
 let shuttingDown = false
@@ -35,10 +38,10 @@ function spawnBridge() {
 
   bridge.on('exit', (code, signal) => {
     if (shuttingDown) return
-    console.warn(`fleet-control-bridge 已退出 (code=${code ?? 'null'}, signal=${signal ?? 'null'})，${BRIDGE_RESTART_DELAY}ms 后自动重启`)
+    console.warn(`fleet-control-bridge 已退出 (code=${code ?? 'null'}, signal=${signal ?? 'null'})，${FLEET_BRIDGE_RESTART_DELAY_MS}ms 后自动重启`)
     bridgeRestartTimer = setTimeout(() => {
       spawnBridge()
-    }, BRIDGE_RESTART_DELAY)
+    }, FLEET_BRIDGE_RESTART_DELAY_MS)
   })
 
   bridge.on('error', (error) => {

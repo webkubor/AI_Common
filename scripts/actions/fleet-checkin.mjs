@@ -4,31 +4,7 @@ import path from 'path'
 import { syncProjectRegistry } from './project-registry.mjs'
 import { syncFleetDashboard } from './sync-fleet-dashboard.mjs'
 import { checkinAiTeamMember } from '../lib/ai-team-state.mjs'
-
-function sanitize(value) {
-  return String(value ?? '').replace(/\|/g, '｜').trim()
-}
-
-function normalizeAgent(value) {
-  const raw = String(value ?? '').trim()
-  if (!raw) return 'Unknown'
-  const lower = raw.toLowerCase()
-  if (lower.includes('gemini')) return 'Gemini'
-  if (lower.includes('codex')) return 'Codex'
-  if (lower.includes('claude')) return 'Claude'
-  if (lower.includes('lobster')) return 'Lobster'
-  if (lower.includes('opencode')) return 'OpenCode'
-  return raw
-}
-
-function normalizeRole(value) {
-  const raw = String(value ?? '').trim()
-  if (!raw) return '未分配'
-  const lower = raw.toLowerCase()
-  if (/(前端|frontend|front-end|fe)/i.test(lower)) return '前端'
-  if (/(后端|backend|back-end|be)/i.test(lower)) return '后端'
-  return raw
-}
+import { normalizeAgent, normalizeRole, sanitizeCell as sanitize } from '../lib/agent-utils.mjs'
 
 function nowLocal() {
   const now = new Date()
