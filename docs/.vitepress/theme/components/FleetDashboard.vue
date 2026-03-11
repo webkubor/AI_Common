@@ -96,6 +96,38 @@ function missionStatusClass(status) {
   return "unknown";
 }
 
+function isIdleTask(task) {
+  const text = String(task || "").trim().replace(/\s+/g, "");
+  return [
+    "",
+    "待分配任务",
+    "待分配",
+    "待命状态",
+    "待命",
+    "空闲",
+    "无任务",
+    "心跳打卡"
+  ].includes(text);
+}
+
+function getMemberStateTag(member) {
+  if (isIdleTask(member?.task)) return "待命";
+  const text = String(member?.status || "").trim();
+  if (text.includes("已离线")) return "已离线";
+  if (text.includes("等待") || text.includes("待处理") || text.includes("待命")) return "待命";
+  if (text.includes("执行中") || text.includes("队长锁")) return "执行中";
+  return text || "在线";
+}
+
+function getMemberRoleLabel(member) {
+  const raw = String(member?.role || "").trim();
+  if (!raw || raw === "未分配") return "";
+  return raw
+    .replace(/^队长[／/-]?/u, "")
+    .replace(/^舰队统帅[／/-]?/u, "")
+    .trim();
+}
+
 const currentMembers = computed(() =>
   data.value.members.filter((m) => m.type === "active" || m.type === "queued" || m.type === "offline")
 );
@@ -507,7 +539,7 @@ async function makeCaptain(member) {
                   {{ task.status }}
                 </div>
               </div>
-              <p class="m-title text-ellipsis" :title="task.title">{{ task.title }}</p>
+              <p class="m-title hover-expand">{{ task.title }}</p>
               <div class="m-owner">
                 <span class="text-ellipsis owner-name" :title="task.owner">{{ task.owner }}</span>
                 <span v-if="(task.assigneeAgent || task.assigneeRole) && (task.assigneeAgent !== task.owner)" class="m-owner-meta text-ellipsis" :title="[task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ')">
@@ -517,7 +549,7 @@ async function makeCaptain(member) {
                   {{ task.assigneeRole }}
                 </span>
               </div>
-              <div v-if="task.workspace" class="m-published-at text-ellipsis" :title="'工作路径 ' + task.workspace">工作路径 {{ task.workspace }}</div>
+              <div v-if="task.workspace" class="m-published-at hover-expand">工作路径 {{ task.workspace }}</div>
               <div v-if="task.publishedAt" class="m-published-at text-ellipsis" :title="'发布时间 ' + task.publishedAt">发布时间 {{ task.publishedAt }}</div>
             </div>
             <div v-if="data.missions.length === 0" class="mission-empty-state">
@@ -551,8 +583,8 @@ async function makeCaptain(member) {
                       <div class="agent-badges">
                         <!-- 职位徽章 -->
                         <span v-if="member.isCaptain" class="role-badge captain">👑 舰队统帅</span>
-                        <span v-else class="role-badge member">🛡️ 执行节点</span>
-                        <span v-if="member.role" class="role-badge duty">🎯 {{ member.role }}</span>
+                        <span v-else class="role-badge state">{{ getMemberStateTag(member) }}</span>
+                        <span v-if="getMemberRoleLabel(member)" class="role-badge duty">🎯 {{ getMemberRoleLabel(member) }}</span>
 
                         <!-- 引擎徽章 -->
                         <div class="engine-badge" :class="getModelMeta(member).class">
@@ -1174,6 +1206,20 @@ async function makeCaptain(member) {
   display: block;
 }
 
+.hover-expand {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-all;
+  white-space: normal;
+  transition: all 0.3s ease;
+}
+
+.mission-glass-card:hover .hover-expand {
+  -webkit-line-clamp: unset;
+}
+
 .mission-empty-state {
   padding: 18px 16px;
   border: 1px dashed rgba(245, 200, 123, 0.22);
@@ -1541,10 +1587,16 @@ async function makeCaptain(member) {
   box-shadow: 0 0 10px rgba(245, 200, 123, 0.1);
 }
 
-.role-badge.member {
+.role-badge.state {
   background: rgba(100, 150, 255, 0.1);
   border: 1px solid rgba(100, 150, 255, 0.2);
   color: #a0c0ff;
+}
+
+.role-badge.duty {
+  background: rgba(125, 229, 173, 0.1);
+  border: 1px solid rgba(125, 229, 173, 0.22);
+  color: #a7f0ca;
 }
 
 .engine-badge {
