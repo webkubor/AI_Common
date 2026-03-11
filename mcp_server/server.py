@@ -33,7 +33,6 @@ ASSISTANT_MEMORY_HOME = Path(
     )
 ).expanduser()
 MEMORY_LOGS = ASSISTANT_MEMORY_HOME / "logs"
-FLEET_STATUS = ASSISTANT_MEMORY_HOME / "fleet" / "fleet_status.md"
 ROUTER = DOCS / "router.md"
 SECRETS_DIR = Path(
     os.environ.get(
@@ -140,11 +139,16 @@ def get_fleet_status() -> str:
     """获取当前所有 AI Agent 的实时状态（JSON 格式）。
     返回进行中的任务、队长节点、工作路径信息，用于感知当前是否存在并行冲突。
     """
-    if FLEET_JSON.exists():
-        return FLEET_JSON.read_text(encoding="utf-8")
-    if FLEET_STATUS.exists():
-        return FLEET_STATUS.read_text(encoding="utf-8")
-    return json.dumps({"error": "fleet status 文件不存在，请先执行 pnpm run fleet:sync-dashboard"}, ensure_ascii=False)
+    cmd = ["pnpm", "run", "fleet:status", "--", "--json"]
+    try:
+        result = subprocess.run(cmd, cwd=str(BRAIN_ROOT), capture_output=True, text=True, timeout=30)
+        if result.returncode != 0:
+            return json.dumps({"error": result.stderr.strip() or result.stdout.strip() or "fleet:status 执行失败"}, ensure_ascii=False)
+        return result.stdout.strip()
+    except subprocess.TimeoutExpired:
+        return json.dumps({"error": "fleet:status 执行超时"}, ensure_ascii=False)
+    except Exception as e:
+        return json.dumps({"error": f"fleet:status 执行异常: {e}"}, ensure_ascii=False)
 
 
 # ─────────────────────────────────────────────

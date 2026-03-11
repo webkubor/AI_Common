@@ -4,12 +4,11 @@ import fs from 'fs'
 import path from 'path'
 import { execFileSync } from 'child_process'
 import { fileURLToPath } from 'url'
-import { ensureFleetPaths } from './fleet-paths.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const projectRoot = path.join(__dirname, '../../')
-const { assistantMemoryHome } = ensureFleetPaths(projectRoot)
+const assistantMemoryHome = path.join(projectRoot, '.memory')
 const projectsDir = path.join(assistantMemoryHome, 'projects')
 const plansDir = path.join(assistantMemoryHome, 'plans', 'projects')
 const registryFile = path.join(projectsDir, 'registry.json')

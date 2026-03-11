@@ -1,17 +1,15 @@
 #!/usr/bin/env node
 
-import fs from 'fs'
 import http from 'http'
 import path from 'path'
 import { spawn } from 'child_process'
 import { fileURLToPath } from 'url'
 import { ensureAiTeamDb } from '../lib/ai-team-db.mjs'
-import { getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline, syncAiTeamState } from '../lib/ai-team-state.mjs'
+import { getAiTeamState, makeAiTeamCaptain, markAiTeamMemberOffline } from '../lib/ai-team-state.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const projectRoot = path.join(__dirname, '../../')
-const fleetFile = path.join(projectRoot, '.memory/fleet/fleet_status.md')
 const port = Number(process.env.FLEET_CONTROL_PORT || 18790)
 const host = process.env.FLEET_CONTROL_HOST || '127.0.0.1'
 
@@ -49,30 +47,9 @@ async function syncFleetDashboard() {
   return runCommand('node', ['scripts/actions/sync-fleet-dashboard.mjs'])
 }
 
-function refreshAiTeamState() {
-  syncAiTeamState({
-    action: 'bridge-refresh',
-    operator: 'bridge',
-    reason: 'fleet-control-bridge',
-    persistLog: false
-  })
-  return getAiTeamState()
-}
-
 function bootstrapAiTeamState() {
   const db = ensureAiTeamDb()
   db.close()
-
-  try {
-    syncAiTeamState({
-      action: 'bridge-bootstrap',
-      operator: 'bridge',
-      reason: 'fleet-control-bridge',
-      persistLog: false
-    })
-  } catch (error) {
-    console.warn(`[fleet-control-bridge] 状态预热失败: ${error.message}`)
-  }
 }
 
 function readJsonBody(req) {
@@ -137,8 +114,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url === '/api/fleet/state') {
-    const state = refreshAiTeamState()
-    writeJson(res, 200, { ok: true, state }, origin)
+    writeJson(res, 200, { ok: true, state: getAiTeamState() }, origin)
     return
   }
 
@@ -148,11 +124,6 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
-    if (!fs.existsSync(fleetFile)) {
-      writeJson(res, 404, { error: 'fleet_status.md not found' }, origin)
-      return
-    }
-
     const data = await readJsonBody(req)
     const { action, memberId } = data
 
@@ -162,13 +133,13 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (action === 'kick-out') {
-      const mutation = markAiTeamMemberOffline(memberId, {
+      const result = markAiTeamMemberOffline(memberId, {
         operator: 'bridge',
         reason: 'fleet-control-bridge',
         payload: { memberId }
       })
       const syncResult = await syncFleetDashboard()
-      writeJson(res, 200, { success: true, stdout: syncResult.stdout, state: getAiTeamState(), result: mutation }, origin)
+      writeJson(res, 200, { success: true, stdout: syncResult.stdout, state: getAiTeamState(), result }, origin)
       return
     }
 
