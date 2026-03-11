@@ -9,8 +9,9 @@ CortexOS 外部大脑 MCP Server（统一版 v2.1 - 协同进化版）
 import json
 import os
 import re
+import sqlite3
 import subprocess
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from fastmcp import FastMCP
@@ -41,6 +42,7 @@ SECRETS_DIR = Path(
     )
 )
 KNOWLEDGE_DIR = Path(os.environ.get("CORTEXOS_KNOWLEDGE_HOME", str((BRAIN_ROOT.parent / "memory" / "knowledge").resolve())))
+AI_TEAM_DB = ASSISTANT_MEMORY_HOME / "sqlite" / "ai-team.db"
 
 mcp = FastMCP(name="CortexOS Brain")
 
@@ -63,8 +65,8 @@ if chromadb and embedding_functions:
 # Helpers
 # ─────────────────────────────────────────────
 def _task_id_pattern() -> re.Pattern[str]:
-    # 兼容历史命名(task-001-xxx)与新命名(TASK-20260305-005)
-    return re.compile(r"(?:task-\d{3}-[a-z0-9-]+|task-\d{8}-\d{3})", re.IGNORECASE)
+    # 兼容历史任务书、日期任务与数据库自动生成任务号
+    return re.compile(r"(?:task[-#]?\d{1,14}(?:-[a-z0-9-]+)?|\d{4}-\d{2}-\d{2}-[a-z0-9-]+)", re.IGNORECASE)
 
 
 def _task_file_name_pattern() -> re.Pattern[str]:
@@ -111,6 +113,84 @@ def _priority_rank(priority: str) -> int:
     if any(token in text for token in ["low", "低", "🟢"]):
         return 2
     return 3
+
+
+def _complete_ai_team_db_task(task_id: str, agent: str = "Codex", summary: str = "") -> dict[str, object]:
+    normalized_task_id = (task_id or "").strip()
+    if not normalized_task_id or not AI_TEAM_DB.exists():
+        return {"found": False}
+
+    now_iso = datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    now_local = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    with sqlite3.connect(AI_TEAM_DB) as conn:
+        conn.row_factory = sqlite3.Row
+        row = conn.execute(
+            """
+            SELECT task_id, title, assignee_member_id, completed, status
+            FROM tasks
+            WHERE lower(task_id) = lower(?)
+            LIMIT 1
+            """,
+            (normalized_task_id,),
+        ).fetchone()
+        if not row:
+            return {"found": False}
+
+        if int(row["completed"] or 0) != 1 and (row["status"] or "").strip() != "已完成":
+            conn.execute(
+                """
+                UPDATE tasks
+                SET status = '已完成', completed = 1, updated_at = ?, synced_at = ?
+                WHERE lower(task_id) = lower(?)
+                """,
+                (now_iso, now_iso, normalized_task_id),
+            )
+
+        assignee_member_id = (row["assignee_member_id"] or "").strip()
+        if assignee_member_id:
+            agent_row = conn.execute(
+                """
+                SELECT member_id, task
+                FROM agents
+                WHERE lower(member_id) = lower(?)
+                LIMIT 1
+                """,
+                (assignee_member_id,),
+            ).fetchone()
+            if agent_row and normalized_task_id.lower() in (agent_row["task"] or "").lower():
+                conn.execute(
+                    """
+                    UPDATE agents
+                    SET task = '待分配任务', updated_at = ?, heartbeat_at = COALESCE(NULLIF(heartbeat_at, ''), ?)
+                    WHERE lower(member_id) = lower(?)
+                    """,
+                    (now_local, now_local, assignee_member_id),
+                )
+
+        conn.execute(
+            """
+            INSERT INTO operation_logs (action, target_type, target_id, payload_json)
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                "complete-task",
+                "tasks",
+                row["task_id"],
+                json.dumps(
+                    {
+                        "operator": (agent or "Codex").strip() or "Codex",
+                        "reason": "mcp:task_handoff_check",
+                        "taskId": row["task_id"],
+                        "title": row["title"] or row["task_id"],
+                        "summary": (summary or "").strip(),
+                    },
+                    ensure_ascii=False,
+                ),
+            ),
+        )
+
+    return {"found": True, "task_id": row["task_id"], "already_done": int(row["completed"] or 0) == 1 or (row["status"] or "").strip() == "已完成"}
 
 def _strip_md(text: str) -> str:
     cleaned = re.sub(r"\*\*|`", "", text or "")
@@ -553,7 +633,8 @@ def _extract_active_claimed_task_ids() -> set[str]:
     task_ids: set[str] = set()
     try:
         state = json.loads(get_fleet_status())
-        for agent in state.get("agents", []):
+        agents = state.get("members") or state.get("agents") or []
+        for agent in agents:
             for matched in _task_id_pattern().findall(str(agent.get("task", ""))):
                 task_ids.add(matched.lower())
     except Exception:
@@ -647,6 +728,39 @@ def _upsert_task_completed(task_file: Path, agent: str, summary: str) -> dict:
 
 
 def _collect_task_queue() -> list[dict]:
+    if AI_TEAM_DB.exists():
+        try:
+            with sqlite3.connect(AI_TEAM_DB) as conn:
+                conn.row_factory = sqlite3.Row
+                rows = conn.execute(
+                    """
+                    SELECT
+                      task_id,
+                      title,
+                      assignee,
+                      completed,
+                      status,
+                      priority,
+                      priority_rank
+                    FROM tasks
+                    ORDER BY completed ASC, priority_rank ASC, updated_at DESC, task_id ASC
+                    """
+                ).fetchall()
+            return [
+                {
+                    "task_id": str(row["task_id"]).lower(),
+                    "title": row["title"] or "",
+                    "assignee": row["assignee"] or "",
+                    "completed": bool(row["completed"]),
+                    "status": row["status"] or ("已完成" if row["completed"] else "待启动"),
+                    "priority": row["priority"] or "未标注",
+                    "priority_rank": int(row["priority_rank"] or 3),
+                }
+                for row in rows
+            ]
+        except Exception:
+            pass
+
     tasks_dir = _tasks_dir()
     if not tasks_dir.exists():
         return []
@@ -707,6 +821,13 @@ def task_handoff_check(task_id: str = "", agent: str = "Codex", summary: str = "
                 messages.append(f"任务已是完成状态: {result['task_id']}")
             else:
                 messages.append(f"已标记完成: {result['task_id']}")
+
+        db_result = _complete_ai_team_db_task(task_id, normalized_agent, summary)
+        if db_result.get("found"):
+            if db_result.get("already_done"):
+                messages.append(f"数据库任务已是完成状态: {db_result['task_id']}")
+            else:
+                messages.append(f"数据库任务已标记完成: {db_result['task_id']}")
 
     queue = _collect_task_queue()
     claimed_ids = _extract_active_claimed_task_ids()
