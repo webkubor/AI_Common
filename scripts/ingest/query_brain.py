@@ -21,6 +21,7 @@ ASSISTANT_MEMORY_HOME = Path(
 ).expanduser()
 CHROMA_DATA_PATH = PROJECT_ROOT / "chroma_db"
 COLLECTION_NAME = "cortexos_docs"
+KNOWLEDGE_SUMMARY_COLLECTION_NAME = "memory_knowledge_summaries"
 SCOPE_CONFIG_PATH = Path(__file__).resolve().parent / "retrieval_scope.json"
 INDEX_PATH = ASSISTANT_MEMORY_HOME / "index" / "memory_index.json"
 POLICY_PATH = Path(__file__).resolve().parent / "injection_policy.json"
@@ -28,9 +29,9 @@ POLICY_PATH = Path(__file__).resolve().parent / "injection_policy.json"
 DEFAULT_SCOPE = {"top_k": 3}
 DEFAULT_POLICY = {
     "modes": {
-        "lite": {"tiers": ["L0", "L1"], "index_k": 4, "vector_k": 1, "token_budget": 900},
-        "balanced": {"tiers": ["L0", "L1", "L2"], "index_k": 6, "vector_k": 3, "token_budget": 1800},
-        "deep": {"tiers": ["L0", "L1", "L2", "L3"], "index_k": 10, "vector_k": 5, "token_budget": 3200}
+        "lite": {"tiers": ["L0", "L1"], "index_k": 4, "vector_k": 1, "knowledge_summary_k": 0, "knowledge_detail_per_path": 0, "token_budget": 900},
+        "balanced": {"tiers": ["L0", "L1", "L2"], "index_k": 6, "vector_k": 3, "knowledge_summary_k": 0, "knowledge_detail_per_path": 0, "token_budget": 1800},
+        "deep": {"tiers": ["L0", "L1", "L2", "L3"], "index_k": 10, "vector_k": 3, "knowledge_summary_k": 3, "knowledge_detail_per_path": 1, "token_budget": 3200}
     }
 }
 TIER_BONUS = {"L0": 4, "L1": 3, "L2": 2, "L3": 1}
@@ -122,9 +123,10 @@ def select_index_hits(query, mode_cfg, records):
     return [{"score": score, **record} for score, record in scored[:index_k]]
 
 
-def query_vector_context(user_query, n_results):
+def query_vector_context(user_query, n_results, exclude_paths=None):
     if not CHROMA_AVAILABLE:
         return []
+    exclude_paths = {str(path) for path in (exclude_paths or set())}
     try:
         ollama_ef = embedding_functions.OllamaEmbeddingFunction(
             url="http://localhost:11434/api/embeddings",
@@ -132,6 +134,37 @@ def query_vector_context(user_query, n_results):
         )
         client = chromadb.PersistentClient(path=str(CHROMA_DATA_PATH))
         collection = client.get_collection(name=COLLECTION_NAME, embedding_function=ollama_ef)
+        query_size = max(n_results, 1) + len(exclude_paths) + 2
+        results = collection.query(query_texts=[user_query], n_results=query_size)
+        docs = results.get("documents", [[]])[0]
+        metas = results.get("metadatas", [[]])[0]
+        out = []
+        for idx, doc in enumerate(docs):
+            meta = metas[idx] if idx < len(metas) else {}
+            if meta.get("path") in exclude_paths:
+                continue
+            out.append({
+                "path": meta.get("path", "unknown"),
+                "text": doc
+            })
+            if len(out) >= n_results:
+                break
+        return out
+    except Exception as error:
+        print(f"⚠️ 向量检索失败，已回退索引模式: {error}", file=sys.stderr)
+        return []
+
+
+def query_knowledge_summaries(user_query, n_results):
+    if not CHROMA_AVAILABLE or n_results <= 0:
+        return []
+    try:
+        ollama_ef = embedding_functions.OllamaEmbeddingFunction(
+            url="http://localhost:11434/api/embeddings",
+            model_name="nomic-embed-text"
+        )
+        client = chromadb.PersistentClient(path=str(CHROMA_DATA_PATH))
+        collection = client.get_collection(name=KNOWLEDGE_SUMMARY_COLLECTION_NAME, embedding_function=ollama_ef)
         results = collection.query(query_texts=[user_query], n_results=n_results)
         docs = results.get("documents", [[]])[0]
         metas = results.get("metadatas", [[]])[0]
@@ -140,11 +173,43 @@ def query_vector_context(user_query, n_results):
             meta = metas[idx] if idx < len(metas) else {}
             out.append({
                 "path": meta.get("path", "unknown"),
+                "title": meta.get("title", ""),
+                "summary": meta.get("summary", ""),
                 "text": doc
             })
         return out
     except Exception as error:
-        print(f"⚠️ 向量检索失败，已回退索引模式: {error}", file=sys.stderr)
+        print(f"⚠️ knowledge 摘要检索失败，已回退索引摘要: {error}", file=sys.stderr)
+        return []
+
+
+def query_vector_details_for_paths(user_query, paths, per_path=1):
+    if not CHROMA_AVAILABLE or not paths or per_path <= 0:
+        return []
+    try:
+        ollama_ef = embedding_functions.OllamaEmbeddingFunction(
+            url="http://localhost:11434/api/embeddings",
+            model_name="nomic-embed-text"
+        )
+        client = chromadb.PersistentClient(path=str(CHROMA_DATA_PATH))
+        collection = client.get_collection(name=COLLECTION_NAME, embedding_function=ollama_ef)
+        out = []
+        for path in paths:
+            results = collection.query(
+                query_texts=[user_query],
+                n_results=per_path,
+                where={"path": path}
+            )
+            docs = results.get("documents", [[]])[0]
+            for doc in docs:
+                out.append({
+                    "path": path,
+                    "text": doc,
+                    "kind": "knowledge_detail"
+                })
+        return out
+    except Exception as error:
+        print(f"⚠️ knowledge 正文展开失败: {error}", file=sys.stderr)
         return []
 
 
@@ -156,9 +221,10 @@ def trim_to_budget(text, remaining_tokens):
     return trimmed, estimate_tokens(trimmed)
 
 
-def build_context(query, mode, budget, index_hits, vector_hits):
+def build_context(query, mode, budget, index_hits, vector_hits, knowledge_hits=None):
     sections = []
     used_tokens = 0
+    knowledge_hits = knowledge_hits or []
 
     header = f"[Memory Injection]\nmode={mode} budget={budget} tokens\nquery={query}\n"
     header_tokens = estimate_tokens(header)
@@ -181,6 +247,18 @@ def build_context(query, mode, budget, index_hits, vector_hits):
         for item in vector_hits:
             excerpt = str(item.get("text", "")).replace("\n", " ").strip()
             excerpt = excerpt[:420]
+            lines.append(f"---\n来源: {item.get('path')}\n{excerpt}")
+        block = "\n".join(lines) + "\n"
+        block, block_tokens = trim_to_budget(block, max(0, budget - used_tokens))
+        if block:
+            sections.append(block)
+            used_tokens += block_tokens
+
+    if knowledge_hits and used_tokens < budget:
+        lines = ["\n[Knowledge Detail]"]
+        for item in knowledge_hits:
+            excerpt = str(item.get("text", "")).replace("\n", " ").strip()
+            excerpt = excerpt[:260]
             lines.append(f"---\n来源: {item.get('path')}\n{excerpt}")
         block = "\n".join(lines) + "\n"
         block, block_tokens = trim_to_budget(block, max(0, budget - used_tokens))
@@ -234,12 +312,27 @@ def main():
     index_hits = select_index_hits(args.query, mode_cfg, records)
 
     vector_hits = []
+    knowledge_summary_hits = []
+    knowledge_detail_hits = []
     if not args.index_only:
-        vector_hits = query_vector_context(args.query, vector_k)
+        knowledge_summary_k = int(mode_cfg.get("knowledge_summary_k", 0))
+        knowledge_detail_per_path = int(mode_cfg.get("knowledge_detail_per_path", 0))
+        if "L3" in mode_cfg.get("tiers", []) and knowledge_summary_k > 0:
+            knowledge_summary_hits = query_knowledge_summaries(args.query, knowledge_summary_k)
+            if not knowledge_summary_hits:
+                knowledge_summary_hits = [
+                    item for item in index_hits
+                    if item.get("path", "").startswith("../memory/knowledge/")
+                ][:knowledge_summary_k]
+            knowledge_paths = [item.get("path") for item in knowledge_summary_hits if item.get("path")]
+            knowledge_detail_hits = query_vector_details_for_paths(args.query, knowledge_paths, knowledge_detail_per_path)
+
+        excluded_paths = {item.get("path") for item in knowledge_summary_hits if item.get("path")}
+        vector_hits = query_vector_context(args.query, vector_k, exclude_paths=excluded_paths)
         index_paths = {item.get("path") for item in index_hits}
         vector_hits = [item for item in vector_hits if item.get("path") not in index_paths]
 
-    context, used_tokens = build_context(args.query, mode, budget, index_hits, vector_hits)
+    context, used_tokens = build_context(args.query, mode, budget, index_hits, vector_hits, knowledge_detail_hits)
 
     if args.json:
         payload = {
@@ -248,6 +341,8 @@ def main():
             "budget": budget,
             "used_tokens_est": used_tokens,
             "index_hits": index_hits,
+            "knowledge_summary_hits": knowledge_summary_hits,
+            "knowledge_detail_hits": knowledge_detail_hits,
             "vector_hits": vector_hits,
             "context": context
         }

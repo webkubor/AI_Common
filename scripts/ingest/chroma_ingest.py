@@ -10,6 +10,7 @@ from chromadb.utils import embedding_functions
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CHROMA_DATA_PATH = PROJECT_ROOT / "chroma_db"
 COLLECTION_NAME = "cortexos_docs"
+KNOWLEDGE_SUMMARY_COLLECTION_NAME = "memory_knowledge_summaries"
 SCOPE_CONFIG_PATH = Path(__file__).resolve().parent / "retrieval_scope.json"
 
 DEFAULT_SCOPE = {
@@ -108,6 +109,62 @@ def get_metadata_path(file_path):
         return file_path.as_posix()
 
 
+def strip_frontmatter(text):
+    if not text.startswith("---"):
+        return text
+    lines = text.splitlines()
+    if len(lines) < 3:
+        return text
+    for idx in range(1, len(lines)):
+        if lines[idx].strip() == "---":
+            return "\n".join(lines[idx + 1:])
+    return text
+
+
+def extract_title(rel_path, body):
+    for line in body.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            return stripped.lstrip("#").strip()
+    return Path(rel_path).stem.replace("_", " ")
+
+
+def extract_summary(body, max_chars=180):
+    for line in body.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("#"):
+            continue
+        if stripped.startswith(">"):
+            continue
+        return stripped[:max_chars]
+    compact = body.replace("\n", " ").strip()
+    return compact[:max_chars]
+
+
+def extract_keywords(title, body, limit=12):
+    text_chunks = [title]
+    heading_lines = []
+    for line in body.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            heading_lines.append(stripped.lstrip("#").strip())
+    text_chunks.extend(heading_lines[:10])
+    raw = " ".join(text_chunks).lower()
+    words = re.findall(r"[\u4e00-\u9fffA-Za-z0-9_-]{2,}", raw)
+    seen = set()
+    keywords = []
+    for word in words:
+        if word in seen:
+            continue
+        seen.add(word)
+        keywords.append(word)
+        if len(keywords) >= limit:
+            break
+    return keywords
+
+
 def iter_markdown_files(source_path):
     if source_path.is_file():
         if source_path.suffix.lower() == ".md":
@@ -149,12 +206,19 @@ def start_chroma_ingest():
     client = chromadb.PersistentClient(path=str(CHROMA_DATA_PATH))
     
     # 彻底清理旧集合，确保脏数据不残留
-    if COLLECTION_NAME in [c.name for c in client.list_collections()]:
-        client.delete_collection(COLLECTION_NAME)
+    existing_collections = {collection.name for collection in client.list_collections()}
+    if COLLECTION_NAME in existing_collections:
         print(f"🗑️ 已物理清理旧索引，执行深度脱敏入库...")
+        client.delete_collection(COLLECTION_NAME)
+    if KNOWLEDGE_SUMMARY_COLLECTION_NAME in existing_collections:
+        client.delete_collection(KNOWLEDGE_SUMMARY_COLLECTION_NAME)
 
     collection = client.create_collection(
         name=COLLECTION_NAME,
+        embedding_function=ollama_ef
+    )
+    knowledge_summary_collection = client.create_collection(
+        name=KNOWLEDGE_SUMMARY_COLLECTION_NAME,
         embedding_function=ollama_ef
     )
     
@@ -164,6 +228,7 @@ def start_chroma_ingest():
 
     safe_files_count = 0
     safe_chunks_count = 0
+    knowledge_summary_count = 0
     indexed_paths = set()
     for f in files:
         rel_path = get_metadata_path(f)
@@ -189,11 +254,38 @@ def start_chroma_ingest():
                     safe_files_count += 1
                     safe_chunks_count += len(chunks)
                     indexed_paths.add(rel_path)
+
+                if rel_path.startswith("../memory/knowledge/"):
+                    body = strip_frontmatter(content)
+                    title = extract_title(rel_path, body)
+                    summary = extract_summary(body, 180)
+                    keywords = extract_keywords(title, body)
+                    summary_doc = "\n".join([
+                        f"标题: {title}",
+                        f"摘要: {summary}",
+                        f"关键词: {' '.join(keywords)}"
+                    ]).strip()
+                    knowledge_summary_collection.add(
+                        documents=[summary_doc],
+                        metadatas=[{
+                            "path": rel_path,
+                            "source": "CortexOS",
+                            "kind": "knowledge_summary",
+                            "title": title,
+                            "summary": summary
+                        }],
+                        ids=[f"knowledge_summary__{doc_id_prefix}"]
+                    )
+                    knowledge_summary_count += 1
         except Exception as e:
             print(f"⚠️ 无法处理文件 {f}: {e}")
     
     print(f"✨ 深度脱敏入库完成！[Ollama: nomic-embed-text]")
-    print(f"📊 检索范围: {len(include_paths)} 个入口，安全入库文件数: {safe_files_count}，新增切片: {safe_chunks_count}，当前向量切片: {collection.count()}")
+    print(
+        f"📊 检索范围: {len(include_paths)} 个入口，安全入库文件数: {safe_files_count}，"
+        f"新增切片: {safe_chunks_count}，knowledge 摘要: {knowledge_summary_count}，"
+        f"当前向量切片: {collection.count()}"
+    )
 
 if __name__ == "__main__":
     start_chroma_ingest()
