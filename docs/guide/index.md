@@ -24,6 +24,7 @@
 如果你要改代码、配环境、做 review、装 Skill，不要先在目录里盲找，先看这 4 条：
 
 - [工程基线](/rules/engineering_baseline)：编码、Review、提交、环境约束都在这里
+- 现在也包含“函数注释标准”：导出函数、公共方法、复杂流程函数必须写清作用、参数、返回、副作用、失败行为
 - [安全边界](/rules/security_boundary)：秘钥、隐私、公开边界、红线都在这里
 - [Agent 治理](/rules/agent_governance)：授权、记忆、协作、权限默认值都在这里
 - [Skill 治理](/rules/skill_governance)：Skill 使用触发、安装前审查、风险裁决都在这里
@@ -88,6 +89,11 @@ pnpm run init:profile
 - 回复语言 / 注释语言
 - 通知时段
 - 大脑路径、用户记忆路径、秘钥路径
+
+工程规则会默认继承 [工程基线](/rules/engineering_baseline)，其中包括：
+
+- 导出函数 / 公共方法 / 复杂流程函数必须写标准函数注释
+- 函数注释不能只写空话，要写清作用、参数、返回、副作用、失败行为
 
 ### 可选层（偏好，不强制）
 
