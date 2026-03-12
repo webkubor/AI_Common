@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "22.x",
-    "pnpm": "10.x"
+    "node": ">=20",
+    "pnpm": ">=8"
   },
   "scripts": {
     "dev": "node scripts/actions/vitepress-with-fleet-bridge.mjs dev",
