@@ -29,9 +29,9 @@ POLICY_PATH = Path(__file__).resolve().parent / "injection_policy.json"
 DEFAULT_SCOPE = {"top_k": 3}
 DEFAULT_POLICY = {
     "modes": {
-        "lite": {"tiers": ["L0", "L1"], "index_k": 4, "vector_k": 1, "knowledge_summary_k": 0, "knowledge_detail_per_path": 0, "token_budget": 900},
-        "balanced": {"tiers": ["L0", "L1", "L2"], "index_k": 6, "vector_k": 3, "knowledge_summary_k": 0, "knowledge_detail_per_path": 0, "token_budget": 1800},
-        "deep": {"tiers": ["L0", "L1", "L2", "L3"], "index_k": 10, "vector_k": 3, "knowledge_summary_k": 3, "knowledge_detail_per_path": 1, "token_budget": 3200}
+        "lite": {"tiers": ["L0", "L1"], "index_k": 4, "vector_k": 1, "knowledge_summary_k": 0, "knowledge_detail_path_k": 0, "knowledge_detail_per_path": 0, "token_budget": 900},
+        "balanced": {"tiers": ["L0", "L1", "L2"], "index_k": 6, "vector_k": 3, "knowledge_summary_k": 0, "knowledge_detail_path_k": 0, "knowledge_detail_per_path": 0, "token_budget": 1800},
+        "deep": {"tiers": ["L0", "L1", "L2", "L3"], "index_k": 10, "vector_k": 3, "knowledge_summary_k": 3, "knowledge_detail_path_k": 1, "knowledge_detail_per_path": 1, "token_budget": 3200}
     }
 }
 TIER_BONUS = {"L0": 4, "L1": 3, "L2": 2, "L3": 1}
@@ -124,7 +124,7 @@ def select_index_hits(query, mode_cfg, records):
 
 
 def query_vector_context(user_query, n_results, exclude_paths=None):
-    if not CHROMA_AVAILABLE:
+    if not CHROMA_AVAILABLE or n_results <= 0:
         return []
     exclude_paths = {str(path) for path in (exclude_paths or set())}
     try:
@@ -330,6 +330,7 @@ def main():
     knowledge_detail_hits = []
     if not args.index_only:
         knowledge_summary_k = int(mode_cfg.get("knowledge_summary_k", 0))
+        knowledge_detail_path_k = int(mode_cfg.get("knowledge_detail_path_k", 0))
         knowledge_detail_per_path = int(mode_cfg.get("knowledge_detail_per_path", 0))
         if "L3" in mode_cfg.get("tiers", []) and knowledge_summary_k > 0:
             knowledge_summary_hits = query_knowledge_summaries(args.query, knowledge_summary_k)
@@ -339,9 +340,11 @@ def main():
                     if item.get("path", "").startswith("../memory/knowledge/")
                 ][:knowledge_summary_k]
             knowledge_paths = [item.get("path") for item in knowledge_summary_hits if item.get("path")]
+            if knowledge_detail_path_k > 0:
+                knowledge_paths = knowledge_paths[:knowledge_detail_path_k]
             knowledge_detail_hits = query_knowledge_details_for_paths(knowledge_paths, knowledge_detail_per_path)
             if knowledge_summary_hits:
-                vector_k = min(vector_k, 1)
+                vector_k = 0
 
         excluded_paths = {item.get("path") for item in knowledge_summary_hits if item.get("path")}
         vector_hits = query_vector_context(args.query, vector_k, exclude_paths=excluded_paths)

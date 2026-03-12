@@ -19,6 +19,7 @@
       "index_k": 4,
       "vector_k": 1,
       "knowledge_summary_k": 0,
+      "knowledge_detail_path_k": 0,
       "knowledge_detail_per_path": 0,
       "token_budget": 900
     },
@@ -27,6 +28,7 @@
       "index_k": 6,
       "vector_k": 3,
       "knowledge_summary_k": 0,
+      "knowledge_detail_path_k": 0,
       "knowledge_detail_per_path": 0,
       "token_budget": 1800
     },
@@ -35,6 +37,7 @@
       "index_k": 10,
       "vector_k": 3,
       "knowledge_summary_k": 3,
+      "knowledge_detail_path_k": 1,
       "knowledge_detail_per_path": 1,
       "token_budget": 3200
     }
