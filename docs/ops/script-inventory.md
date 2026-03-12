@@ -127,7 +127,7 @@
 | 脚本 | 作用 | 当前判断 |
 | --- | --- | --- |
 | `g.sh` | Gemini 调用包装器，遇到 quota 自动切换账号重试 | 个人效率工具，仍可用，但不属于 CortexOS 主链 |
-| `gemini_manager.sh` | 保存/切换 Gemini 多账号配置 | 个人账号管理工具，依赖 `~/Documents/memory/secrets/gemini_profiles` |
+| `gemini_manager.sh` | 保存/切换 Gemini 多账号配置 | 个人账号管理工具，依赖 `memory/secrets/gemini_profiles`；当前机器默认物理路径为 `~/Documents/memory/secrets/gemini_profiles` |
 | `log.sh` | 写 Markdown 操作日志表格 | 早期日志系统，输出到 `docs/operation-logs/`，现在不是主线日志链路 |
 | `generate_wallpaper.py` | 调 Imagen 生成测试壁纸 | 一次性/实验脚本 |
 | `move-files.js` | 早期 docs 搬运建议器 | 历史整理脚本，非日常主线 |

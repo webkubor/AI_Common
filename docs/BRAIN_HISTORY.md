@@ -134,7 +134,7 @@ v5.5.0 解决了内部效率，但舰队仍有三个短板：
 
 ## [v4.0.0] - 2026-02-28（防撞车与凭证隔离）
 - **Fleet Guard**：引入 `fleet:claim` 作为并行任务打卡闸门。
-- **凭证隔离初版**：建立高敏资产外置原则，后续收敛为 `~/Documents/memory/secrets`。
+- **凭证隔离初版**：建立高敏资产外置原则，后续收敛为逻辑路径 `memory/secrets/`，当前机器默认物理路径为 `~/Documents/memory/secrets`。
 - **通知链路**：接入 Lark + 系统通知双通道。
 - **影响**：并行冲突与凭证泄漏风险被首次系统化约束。
 
@@ -174,4 +174,4 @@ v5.5.0 解决了内部效率，但舰队仍有三个短板：
 ## 迁移注记（必须记住）
 - `docs/memory/logs/` 已废弃，日志主路径为 `.memory/logs/`。
 - 用户长期记忆主路径为 `~/Documents/memory/`（项目库不承载用户私有长期记忆）。
-- 高敏凭证主路径为 `~/Documents/memory/secrets/`（不进入 Git 仓库）。
+- 高敏凭证逻辑主路径为 `memory/secrets/`；当前机器默认物理路径为 `~/Documents/memory/secrets/`（不进入 Git 仓库）。
