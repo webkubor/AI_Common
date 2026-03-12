@@ -183,7 +183,7 @@ def query_knowledge_summaries(user_query, n_results):
         return []
 
 
-def query_vector_details_for_paths(user_query, paths, per_path=1):
+def query_knowledge_details_for_paths(paths, per_path=1):
     if not CHROMA_AVAILABLE or not paths or per_path <= 0:
         return []
     try:
@@ -195,12 +195,12 @@ def query_vector_details_for_paths(user_query, paths, per_path=1):
         collection = client.get_collection(name=COLLECTION_NAME, embedding_function=ollama_ef)
         out = []
         for path in paths:
-            results = collection.query(
-                query_texts=[user_query],
-                n_results=per_path,
-                where={"path": path}
+            results = collection.get(
+                where={"path": path},
+                limit=per_path,
+                include=["documents", "metadatas"]
             )
-            docs = results.get("documents", [[]])[0]
+            docs = results.get("documents", []) or []
             for doc in docs:
                 out.append({
                     "path": path,
@@ -221,9 +221,10 @@ def trim_to_budget(text, remaining_tokens):
     return trimmed, estimate_tokens(trimmed)
 
 
-def build_context(query, mode, budget, index_hits, vector_hits, knowledge_hits=None):
+def build_context(query, mode, budget, index_hits, vector_hits, knowledge_summary_hits=None, knowledge_hits=None):
     sections = []
     used_tokens = 0
+    knowledge_summary_hits = knowledge_summary_hits or []
     knowledge_hits = knowledge_hits or []
 
     header = f"[Memory Injection]\nmode={mode} budget={budget} tokens\nquery={query}\n"
@@ -236,6 +237,19 @@ def build_context(query, mode, budget, index_hits, vector_hits, knowledge_hits=N
         for item in index_hits:
             summary = str(item.get("summary", "")).replace("\n", " ")
             lines.append(f"- [{item.get('tier', 'L3')}] {item.get('path')} | {item.get('title')} | score={item.get('score')} | {summary}")
+        block = "\n".join(lines) + "\n"
+        block, block_tokens = trim_to_budget(block, max(0, budget - used_tokens))
+        if block:
+            sections.append(block)
+            used_tokens += block_tokens
+
+    if knowledge_summary_hits and used_tokens < budget:
+        lines = ["\n[Knowledge Summary]"]
+        for item in knowledge_summary_hits:
+            title = str(item.get("title", "")).strip() or Path(str(item.get("path", "unknown"))).stem
+            summary = str(item.get("summary") or item.get("text", "")).replace("\n", " ").strip()
+            summary = summary[:180]
+            lines.append(f"- {title} | {item.get('path')}\n  摘要: {summary}")
         block = "\n".join(lines) + "\n"
         block, block_tokens = trim_to_budget(block, max(0, budget - used_tokens))
         if block:
@@ -325,14 +339,24 @@ def main():
                     if item.get("path", "").startswith("../memory/knowledge/")
                 ][:knowledge_summary_k]
             knowledge_paths = [item.get("path") for item in knowledge_summary_hits if item.get("path")]
-            knowledge_detail_hits = query_vector_details_for_paths(args.query, knowledge_paths, knowledge_detail_per_path)
+            knowledge_detail_hits = query_knowledge_details_for_paths(knowledge_paths, knowledge_detail_per_path)
+            if knowledge_summary_hits:
+                vector_k = min(vector_k, 1)
 
         excluded_paths = {item.get("path") for item in knowledge_summary_hits if item.get("path")}
         vector_hits = query_vector_context(args.query, vector_k, exclude_paths=excluded_paths)
         index_paths = {item.get("path") for item in index_hits}
         vector_hits = [item for item in vector_hits if item.get("path") not in index_paths]
 
-    context, used_tokens = build_context(args.query, mode, budget, index_hits, vector_hits, knowledge_detail_hits)
+    context, used_tokens = build_context(
+        args.query,
+        mode,
+        budget,
+        index_hits,
+        vector_hits,
+        knowledge_summary_hits,
+        knowledge_detail_hits
+    )
 
     if args.json:
         payload = {
