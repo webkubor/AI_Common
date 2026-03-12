@@ -208,6 +208,38 @@ def _strip_md(text: str) -> str:
     return re.sub(r"\s+", " ", cleaned).strip()
 
 
+def _now_local() -> str:
+    return datetime.now().strftime("%Y-%m-%d %H:%M")
+
+
+def _build_identity_key(agent_name: str, alias: str, workspace: str) -> str:
+    return f"{_strip_md(agent_name or 'Unknown')}::{_strip_md(alias or agent_name or 'Unknown')}::{_strip_md(workspace or '')}"
+
+
+def _extract_member_index(member_id: str) -> int:
+    match = re.search(r"-(\d+) \(", _strip_md(member_id))
+    return int(match.group(1)) if match else 0
+
+
+def _is_legacy_prime_member_id(member_id: str) -> bool:
+    text = _strip_md(member_id).lower()
+    return "-prime" in text or "0号机" in text
+
+
+def _choose_stable_member_id(current: str, agent_name: str, alias: str, used_ids: set[str]) -> str:
+    current = _strip_md(current)
+    if current and not _is_legacy_prime_member_id(current) and current not in used_ids:
+        return current
+
+    base_alias = _strip_md(alias or "Agent")
+    base_agent = _strip_md(agent_name or "Unknown")
+    for index in range(1, 1000):
+        candidate = f"{base_alias}-{index} ({base_agent})"
+        if candidate not in used_ids:
+            return candidate
+    return f"{base_alias}-9999 ({base_agent})"
+
+
 def _status_to_type(status: str) -> str:
     text = str(status or "")
     if "已离线" in text:
@@ -471,6 +503,406 @@ def _build_fleet_state_payload() -> dict:
     }
 
 
+def _sync_live_task_records(conn: sqlite3.Connection, agents: list[dict]) -> None:
+    for agent in agents:
+        if agent["type"] == "offline":
+            continue
+        live_task = _parse_live_task_record(agent)
+        if not live_task or not _strip_md(live_task["title"]):
+            continue
+
+        task_id = _strip_md(live_task["taskId"])
+        title = _strip_md(live_task["title"])
+        existing = None
+        if task_id:
+            existing = conn.execute(
+                """
+                SELECT task_id AS taskId, title, published_at AS publishedAt, priority
+                FROM tasks
+                WHERE lower(task_id) = lower(?)
+                LIMIT 1
+                """,
+                (task_id,),
+            ).fetchone()
+        if not existing:
+            existing = conn.execute(
+                """
+                SELECT task_id AS taskId, title, published_at AS publishedAt, priority
+                FROM tasks
+                WHERE completed = 0
+                  AND lower(title) = lower(?)
+                  AND lower(workspace) = lower(?)
+                  AND (
+                    lower(assignee_member_id) = lower(?)
+                    OR (
+                      (assignee_member_id IS NULL OR assignee_member_id = '')
+                      AND lower(assignee_agent) = lower(?)
+                      AND lower(assignee) = lower(?)
+                    )
+                  )
+                ORDER BY updated_at DESC, id DESC
+                LIMIT 1
+                """,
+                (
+                    title,
+                    _strip_md(agent["workspace"]),
+                    _strip_md(agent["memberId"]),
+                    _strip_md(agent["agentName"]),
+                    _strip_md(agent["alias"] or agent["memberId"]),
+                ),
+            ).fetchone()
+
+        resolved_task_id = task_id or (existing["taskId"] if existing else f"task-{datetime.now().strftime('%Y%m%d%H%M')}-{os.urandom(2).hex()}")
+        resolved_title = _strip_md(existing["title"] if existing and existing["title"] else title)
+        published_at = _strip_md(existing["publishedAt"] if existing else "") or _now_local()
+        priority = _strip_md(existing["priority"] if existing else "") or "中"
+        synced_at = datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+        conn.execute(
+            """
+            INSERT INTO tasks (
+              task_id, title, assignee, assignee_member_id, assignee_agent, assignee_role,
+              workspace, published_at, status, priority, priority_rank, completed, updated_at, synced_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '执行中', ?, ?, 0, ?, ?)
+            ON CONFLICT(task_id) DO UPDATE SET
+              title = excluded.title,
+              assignee = excluded.assignee,
+              assignee_member_id = excluded.assignee_member_id,
+              assignee_agent = excluded.assignee_agent,
+              assignee_role = excluded.assignee_role,
+              workspace = excluded.workspace,
+              published_at = CASE
+                WHEN tasks.published_at IS NULL OR tasks.published_at = '' THEN excluded.published_at
+                ELSE tasks.published_at
+              END,
+              status = '执行中',
+              priority = excluded.priority,
+              priority_rank = excluded.priority_rank,
+              completed = 0,
+              updated_at = excluded.updated_at,
+              synced_at = excluded.synced_at
+            """,
+            (
+                resolved_task_id,
+                resolved_title,
+                _strip_md(agent["alias"] or agent["memberId"]),
+                _strip_md(agent["memberId"]),
+                _strip_md(agent["agentName"]),
+                _strip_md(agent["role"]),
+                _strip_md(agent["workspace"]),
+                published_at,
+                priority,
+                _priority_rank(priority),
+                synced_at,
+                synced_at,
+            ),
+        )
+
+        agent["task"] = f"{resolved_task_id}｜{resolved_title}"
+
+
+def _persist_agents(agents: list[dict], operator: str, action: str, reason: str, payload: dict | None = None) -> dict:
+    if not AI_TEAM_DB.exists():
+        raise FileNotFoundError(f"AI Team DB 不存在: {AI_TEAM_DB}")
+
+    normalized_agents: list[dict] = []
+    used_ids: set[str] = set()
+    for raw in agents:
+        agent = dict(raw)
+        agent["agentName"] = _normalize_agent(agent.get("agentName"))
+        agent["alias"] = _strip_md(agent.get("alias") or agent["agentName"])
+        agent["role"] = _normalize_role(agent.get("role") or _infer_role_from_task(agent.get("task", "")))
+        agent["workspace"] = _strip_md(agent.get("workspace"))
+        agent["task"] = _strip_md(agent.get("task") or "待分配任务")
+        agent["type"] = _strip_md(agent.get("type") or "active")
+        agent["status"] = _strip_md(agent.get("status") or "[ 执行中 ] 活跃")
+        agent["heartbeatAt"] = _strip_md(agent.get("heartbeatAt") or _now_local())
+        agent["updatedAt"] = _strip_md(agent.get("updatedAt") or agent["heartbeatAt"])
+        agent["isCaptain"] = 1 if agent.get("isCaptain") else 0
+        agent["memberId"] = _choose_stable_member_id(
+            agent.get("memberId", ""),
+            agent["agentName"],
+            agent["alias"],
+            used_ids,
+        )
+        used_ids.add(agent["memberId"])
+        agent["nodeId"] = agent["memberId"]
+        agent["identityKey"] = _build_identity_key(agent["agentName"], agent["alias"], agent["workspace"])
+        normalized_agents.append(agent)
+
+    with sqlite3.connect(AI_TEAM_DB) as conn:
+        conn.row_factory = sqlite3.Row
+        previous_captain = conn.execute(
+            "SELECT member_id FROM agents WHERE is_captain = 1 LIMIT 1"
+        ).fetchone()
+
+        _sync_live_task_records(conn, normalized_agents)
+
+        seen_identity_keys = []
+        for agent in normalized_agents:
+            seen_identity_keys.append(agent["identityKey"])
+            conn.execute(
+                """
+                INSERT INTO agents (
+                  member_id, identity_key, node_id, agent_name, alias, role, workspace, task,
+                  type, is_captain, status, heartbeat_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(identity_key) DO UPDATE SET
+                  node_id = excluded.node_id,
+                  member_id = excluded.member_id,
+                  agent_name = excluded.agent_name,
+                  alias = excluded.alias,
+                  role = excluded.role,
+                  workspace = excluded.workspace,
+                  task = excluded.task,
+                  type = excluded.type,
+                  is_captain = excluded.is_captain,
+                  status = excluded.status,
+                  heartbeat_at = excluded.heartbeat_at,
+                  updated_at = excluded.updated_at
+                """,
+                (
+                    agent["memberId"],
+                    agent["identityKey"],
+                    agent["nodeId"],
+                    agent["agentName"],
+                    agent["alias"],
+                    agent["role"],
+                    agent["workspace"],
+                    agent["task"],
+                    agent["type"],
+                    agent["isCaptain"],
+                    agent["status"],
+                    agent["heartbeatAt"],
+                    agent["updatedAt"],
+                ),
+            )
+
+        if seen_identity_keys:
+            placeholders = ", ".join("?" for _ in seen_identity_keys)
+            conn.execute(f"DELETE FROM agents WHERE identity_key NOT IN ({placeholders})", seen_identity_keys)
+        else:
+            conn.execute("DELETE FROM agents")
+
+        next_captain = conn.execute(
+            "SELECT member_id FROM agents WHERE is_captain = 1 LIMIT 1"
+        ).fetchone()
+        if (previous_captain["member_id"] if previous_captain else None) != (next_captain["member_id"] if next_captain else None) and next_captain:
+            conn.execute(
+                """
+                INSERT INTO captain_events (from_member_id, to_member_id, reason, operator)
+                VALUES (?, ?, ?, ?)
+                """,
+                (
+                    previous_captain["member_id"] if previous_captain else None,
+                    next_captain["member_id"],
+                    reason,
+                    operator,
+                ),
+            )
+
+        conn.execute(
+            """
+            INSERT INTO operation_logs (action, target_type, target_id, payload_json)
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                action,
+                "fleet",
+                next_captain["member_id"] if next_captain else None,
+                json.dumps(
+                    {
+                        "operator": operator,
+                        "reason": reason,
+                        "agents": [
+                            {
+                                "memberId": agent["memberId"],
+                                "agentName": agent["agentName"],
+                                "workspace": agent["workspace"],
+                                "isCaptain": bool(agent["isCaptain"]),
+                            }
+                            for agent in normalized_agents
+                        ],
+                        "payload": payload or {},
+                    },
+                    ensure_ascii=False,
+                ),
+            ),
+        )
+
+    captain_member_id = next((agent["memberId"] for agent in normalized_agents if agent["isCaptain"]), None)
+    return {
+        "ok": True,
+        "captain": captain_member_id,
+        "agents": normalized_agents,
+    }
+
+
+def _claim_ai_team_member(workspace: str, task: str, agent: str, alias: str, role: str, status: str = "[ 执行中 ] 活跃") -> dict:
+    normalized_workspace = str(Path(workspace).expanduser().resolve())
+    normalized_task = _sanitize_cell(task or "待分配任务")
+    normalized_agent = _normalize_agent(agent)
+    normalized_alias = _sanitize_cell(alias or normalized_agent)
+    normalized_role = _normalize_role(role or _infer_role_from_task(normalized_task))
+    heartbeat_at = _now_local()
+
+    state = _build_fleet_state_payload()
+    agents = [dict(item) for item in state.get("agents", [])]
+
+    target = next(
+        (
+            item for item in agents
+            if _strip_md(item.get("workspace")) == normalized_workspace
+            and _normalize_agent(item.get("agentName")) == normalized_agent
+            and _strip_md(item.get("alias")) == normalized_alias
+        ),
+        None,
+    )
+
+    same_workspace_rows = [item for item in agents if _strip_md(item.get("workspace")) == normalized_workspace]
+    parallel_rows = [item for item in same_workspace_rows if not target or item.get("memberId") != target.get("memberId")]
+    warnings = []
+    if parallel_rows:
+        warnings.append(
+            "同一路径已有其他模型在线: "
+            + "、".join(f"{item.get('agentName')}（{item.get('memberId')}）" for item in parallel_rows)
+            + "。已允许并行登记，请注意文件冲突。"
+        )
+
+    if not target:
+        target = {
+            "memberId": f"{normalized_alias}-1 ({normalized_agent})",
+            "nodeId": "",
+            "identityKey": "",
+            "agentName": normalized_agent,
+            "alias": normalized_alias,
+            "role": normalized_role,
+            "workspace": normalized_workspace,
+            "task": normalized_task,
+            "type": "active",
+            "isCaptain": 0,
+            "status": status,
+            "heartbeatAt": heartbeat_at,
+            "updatedAt": heartbeat_at,
+        }
+        agents.append(target)
+
+    target.update(
+        {
+            "agentName": normalized_agent,
+            "alias": normalized_alias,
+            "role": normalized_role,
+            "workspace": normalized_workspace,
+            "task": normalized_task,
+            "heartbeatAt": heartbeat_at,
+            "updatedAt": heartbeat_at,
+        }
+    )
+
+    has_captain = any(int(item.get("isCaptain") or 0) == 1 for item in agents)
+    if not has_captain or int(target.get("isCaptain") or 0) == 1:
+        for item in agents:
+            if item is target:
+                continue
+            item["isCaptain"] = 0
+            if item.get("type") != "offline":
+                item["type"] = "active"
+                item["status"] = "[ 执行中 ] 活跃"
+        target["isCaptain"] = 1
+        target["type"] = "active"
+        target["status"] = "[ 队长锁 ] 活跃"
+    else:
+        target["isCaptain"] = 0
+        target["type"] = _status_to_type(status)
+        target["status"] = status
+
+    result = _persist_agents(
+        agents,
+        operator=normalized_agent,
+        action="claim",
+        reason="fleet:claim",
+        payload={"workspace": normalized_workspace, "task": normalized_task, "role": normalized_role},
+    )
+    target_after = next((item for item in result["agents"] if item["identityKey"] == _build_identity_key(normalized_agent, normalized_alias, normalized_workspace)), None)
+    node_id = target_after["memberId"] if target_after else target["memberId"]
+    return {
+        **result,
+        "machineNumber": 0 if target_after and int(target_after["isCaptain"]) == 1 else _extract_member_index(node_id),
+        "nodeId": node_id,
+        "warnings": warnings,
+    }
+
+
+def _make_ai_team_captain(member_id: str, operator: str = "system", reason: str = "fleet:handover") -> dict:
+    normalized_member_id = _strip_md(member_id)
+    state = _build_fleet_state_payload()
+    agents = [dict(item) for item in state.get("agents", [])]
+    target = next((item for item in agents if _strip_md(item.get("memberId")) == normalized_member_id), None)
+    if not target:
+        raise ValueError(f"未找到目标节点: {member_id}")
+
+    previous_captain = next((item for item in agents if int(item.get("isCaptain") or 0) == 1), None)
+    for agent in agents:
+        if agent is target:
+            continue
+        if int(agent.get("isCaptain") or 0) == 1:
+            agent["isCaptain"] = 0
+            if agent.get("type") != "offline":
+                agent["type"] = "active"
+                agent["status"] = "[ 执行中 ] 活跃"
+            agent["updatedAt"] = _now_local()
+
+    target["isCaptain"] = 1
+    target["type"] = "active"
+    target["status"] = "[ 队长锁 ] 活跃"
+    target["updatedAt"] = _now_local()
+
+    result = _persist_agents(
+        agents,
+        operator=operator,
+        action="make-captain",
+        reason=reason,
+        payload={
+            "from": previous_captain.get("memberId") if previous_captain else None,
+            "to": normalized_member_id,
+        },
+    )
+    new_target = next((item for item in result["agents"] if _strip_md(item.get("identityKey")) == _strip_md(target.get("identityKey"))), target)
+    return {
+        **result,
+        "from": previous_captain.get("memberId") if previous_captain else None,
+        "to": new_target.get("memberId"),
+    }
+
+
+def _sync_project_registry(workspace: str, agent: str, role: str, task: str, node_id: str) -> dict | None:
+    cmd = [
+        "node",
+        "scripts/actions/project-registry.mjs",
+        "--workspace",
+        workspace,
+        "--agent",
+        agent,
+        "--role",
+        role,
+        "--task",
+        task,
+        "--node-id",
+        node_id,
+    ]
+    result = subprocess.run(cmd, cwd=str(BRAIN_ROOT), capture_output=True, text=True, timeout=30)
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or "project-registry 同步失败")
+    return json.loads(result.stdout.strip() or "{}")
+
+
+def _sync_fleet_dashboard() -> None:
+    cmd = ["node", "scripts/actions/sync-fleet-dashboard.mjs"]
+    result = subprocess.run(cmd, cwd=str(BRAIN_ROOT), capture_output=True, text=True, timeout=30)
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or "fleet dashboard 同步失败")
+
+
 # ─────────────────────────────────────────────
 # Tool 1: 读取路由协议（大脑宪法）
 # ─────────────────────────────────────────────
@@ -520,23 +952,70 @@ def fleet_claim(
         alias: 人格名称（Candy / 等）
         role: 节点角色（前端 / 后端）
     """
-    cmd = [
-        "pnpm", "run", "fleet:claim", "--",
-        "--workspace", workspace,
-        "--task", task,
-        "--agent", agent,
-        "--alias", alias,
-        "--role", role,
-    ]
     try:
-        result = subprocess.run(cmd, cwd=str(BRAIN_ROOT), capture_output=True, text=True, timeout=30)
-        if result.returncode != 0:
-            return f"挂牌失败（exit {result.returncode}）：\n{result.stderr.strip()}"
-        return f"✅ 挂牌成功！\n{result.stdout.strip()}"
-    except subprocess.TimeoutExpired:
-        return "超时：fleet:claim 命令执行超过 30 秒。"
+        normalized_workspace = str(Path(workspace).expanduser().resolve())
+        normalized_task = _sanitize_cell(task or "待分配任务")
+        normalized_agent = _normalize_agent(agent)
+        normalized_alias = _sanitize_cell(alias or normalized_agent)
+        normalized_role = _normalize_role(role or _infer_role_from_task(normalized_task))
+
+        result = _claim_ai_team_member(
+            workspace=normalized_workspace,
+            task=normalized_task,
+            agent=normalized_agent,
+            alias=normalized_alias,
+            role=normalized_role,
+        )
+
+        project_registry = None
+        warnings = list(result.get("warnings") or [])
+        try:
+            project_registry = _sync_project_registry(
+                workspace=normalized_workspace,
+                agent=normalized_agent,
+                role=normalized_role,
+                task=normalized_task,
+                node_id=result["nodeId"],
+            )
+        except Exception as error:
+            warnings.append(f"项目索引同步失败: {_sanitize_cell(error)}")
+
+        try:
+            _sync_fleet_dashboard()
+        except Exception as error:
+            warnings.append(f"看板数据同步失败: {_sanitize_cell(error)}")
+
+        active_task_id = ""
+        for item in result.get("agents") or []:
+            if item.get("memberId") == result["nodeId"]:
+                active_task_id = _strip_md(str(item.get("task", "")).split("｜")[0])
+                break
+
+        payload = {
+            "ok": True,
+            "machineNumber": result["machineNumber"],
+            "nodeId": result["nodeId"],
+            "agent": normalized_agent,
+            "role": normalized_role,
+            "workspace": normalized_workspace,
+            "task": normalized_task,
+            "activeTaskId": active_task_id,
+            "warnings": warnings,
+            "projectRegistry": None,
+            "dryRun": False,
+        }
+        if project_registry:
+            project = project_registry.get("project") or {}
+            files = project_registry.get("files") or {}
+            payload["projectRegistry"] = {
+                "name": project.get("name"),
+                "rootPath": project.get("rootPath"),
+                "lastWorkspace": project.get("lastWorkspace"),
+                "commandCenterFile": files.get("commandCenterFile"),
+            }
+        return f"✅ 挂牌成功！\n{json.dumps(payload, ensure_ascii=False, indent=2)}"
     except Exception as e:
-        return f"执行异常：{e}"
+        return f"挂牌失败：{e}"
 
 
 # ─────────────────────────────────────────────
@@ -549,16 +1028,24 @@ def fleet_handover(to_node: str) -> str:
     参数:
         to_node: 目标节点名称（例如 "Codex-3 (Codex)"）
     """
-    cmd = ["pnpm", "run", "fleet:handover", "--", "--to-node", to_node]
     try:
-        result = subprocess.run(cmd, cwd=str(BRAIN_ROOT), capture_output=True, text=True, timeout=30)
-        if result.returncode != 0:
-            return f"移交失败：\n{result.stderr.strip()}"
-        return f"✅ 队长移交完成！\n{result.stdout.strip()}"
-    except subprocess.TimeoutExpired:
-        return "超时：fleet:handover 命令执行超过 30 秒。"
+        result = _make_ai_team_captain(to_node, operator="system", reason="fleet:handover")
+        warnings = []
+        try:
+            _sync_fleet_dashboard()
+        except Exception as error:
+            warnings.append(f"看板数据同步失败: {_sanitize_cell(error)}")
+        payload = {
+            "ok": True,
+            "from": result["from"],
+            "to": result["to"],
+            "time": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            "warnings": warnings,
+            "dryRun": False,
+        }
+        return f"✅ 队长移交完成！\n{json.dumps(payload, ensure_ascii=False, indent=2)}"
     except Exception as e:
-        return f"执行异常：{e}"
+        return f"移交失败：{e}"
 
 
 # ─────────────────────────────────────────────
