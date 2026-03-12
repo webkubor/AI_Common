@@ -111,15 +111,21 @@ NODE_ID="$(echo "$CLAIM_JSON" | sed -n 's/.*"nodeId":[[:space:]]*"\([^"]*\)".*/\
 ACTIVE_TASK_ID="$(echo "$CLAIM_JSON" | sed -n 's/.*"activeTaskId":[[:space:]]*"\([^"]*\)".*/\1/p' | head -n1)"
 MACHINE_NUMBER="${MACHINE_NUMBER:-unknown}"
 NODE_ID="${NODE_ID:-Gemini-unknown}"
-QUEUE_PREFIX="[AI-TEAM][${NODE_ID}][#${MACHINE_NUMBER}]"
+if [[ "$MACHINE_NUMBER" =~ ^[0-9]+$ ]]; then
+  MACHINE_DISPLAY="$(printf "%02d" "$MACHINE_NUMBER")"
+else
+  MACHINE_DISPLAY="$MACHINE_NUMBER"
+fi
+DISPLAY_PREFIX="【CortexOS · Gemini ${MACHINE_DISPLAY}】"
 ACTIVE_TASK_ID="${ACTIVE_TASK_ID:-}"
 
-echo "✅ 已入队: ${QUEUE_PREFIX} workspace=${WORKSPACE} role=${ROLE} task=${TASK}"
+echo "✅ 已入队: ${DISPLAY_PREFIX} workspace=${WORKSPACE} role=${ROLE} task=${TASK}"
+echo "🧩 系统节点: ${NODE_ID} (#${MACHINE_NUMBER})"
 if [[ -n "$ACTIVE_TASK_ID" ]]; then
   echo "🧾 当前任务ID: ${ACTIVE_TASK_ID}"
 fi
 if [[ "$VERBOSE" == "1" ]]; then
-  echo "📍 入场前缀(参考): ${QUEUE_PREFIX}"
+  echo "📍 显示签名(参考): ${DISPLAY_PREFIX}"
   echo "🧠 启动模式: 直接进入 Gemini（不注入 \$start，默认依赖 ~/.gemini/GEMINI.md 长期记忆）"
   echo "📌 收工要求: 每次任务完成后调用 MCP Tool task_handoff_check(task_id=\"${ACTIVE_TASK_ID:-<task-id>}\", agent=\"Gemini\", summary=\"<一句话结果>\")，标记完成并检查未认领任务。"
   if [[ "$TASK" == "待分配任务" || "$ROLE" == "未分配" ]]; then

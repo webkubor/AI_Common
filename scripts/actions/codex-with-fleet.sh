@@ -100,11 +100,17 @@ NODE_ID="$(echo "$CLAIM_JSON" | sed -n 's/.*"nodeId":[[:space:]]*"\([^"]*\)".*/\
 ACTIVE_TASK_ID="$(echo "$CLAIM_JSON" | sed -n 's/.*"activeTaskId":[[:space:]]*"\([^"]*\)".*/\1/p' | head -n1)"
 MACHINE_NUMBER="${MACHINE_NUMBER:-unknown}"
 NODE_ID="${NODE_ID:-Codex-unknown}"
-QUEUE_PREFIX="[AI-TEAM][${NODE_ID}][#${MACHINE_NUMBER}]"
+if [[ "$MACHINE_NUMBER" =~ ^[0-9]+$ ]]; then
+  MACHINE_DISPLAY="$(printf "%02d" "$MACHINE_NUMBER")"
+else
+  MACHINE_DISPLAY="$MACHINE_NUMBER"
+fi
+DISPLAY_PREFIX="【CortexOS · Codex ${MACHINE_DISPLAY}】"
 ACTIVE_TASK_ID="${ACTIVE_TASK_ID:-}"
 
-echo "✅ 已入队: ${QUEUE_PREFIX} workspace=${WORKSPACE} role=${ROLE} task=${TASK}"
-echo "📍 入场前缀: ${QUEUE_PREFIX}"
+echo "✅ 已入队: ${DISPLAY_PREFIX} workspace=${WORKSPACE} role=${ROLE} task=${TASK}"
+echo "📍 显示签名: ${DISPLAY_PREFIX}"
+echo "🧩 系统节点: ${NODE_ID} (#${MACHINE_NUMBER})"
 if [[ -n "$ACTIVE_TASK_ID" ]]; then
   echo "🧾 当前任务ID: ${ACTIVE_TASK_ID}"
 fi
@@ -123,7 +129,7 @@ ${START_BLOCK}
 1. 确认路由文件：$ROOT_DIR/docs/router.md
 2. 确认编排板登记：${NODE_ID}（机号：${MACHINE_NUMBER}）
 3. 如与其他节点存在文件冲突风险，先给出冲突提示再执行
-4. 首次回复必须以此前缀开头：${QUEUE_PREFIX}
+4. 首次回复必须以此显示签名开头：${DISPLAY_PREFIX}
 5. 首次回复请报告：已挂载路由 + 当前机号 + 当前工作路径
 6. 若当前任务为“待分配任务”或角色为“未分配”，一旦拿到明确需求，立即回填：
    node "$ROOT_DIR/scripts/actions/fleet-claim.mjs" --workspace "${WORKSPACE}" --task "<明确任务>" --agent "Codex" --alias "Codex" --role "<前端|后端>"

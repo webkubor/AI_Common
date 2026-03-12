@@ -16,7 +16,7 @@
 2. `get_fleet_status()` — 感知舰队状态，防并行冲突
 3. `fleet_claim(workspace=PWD, task="任务描述", agent="Codex", alias="Codex")` — 打卡挂牌
 
-完成后第一条回复必须带前缀：`[AI-TEAM][Codex-N][#N]`
+完成后第一条回复必须带显示签名：`【CortexOS · Codex 02】`
 
 ## 技术栈
 

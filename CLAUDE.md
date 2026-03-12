@@ -43,7 +43,7 @@ fleet_claim(
 )
 ```
 
-完成后，第一条回复必须带前缀：`[AI-TEAM][Claude-N][#N]`
+完成后，第一条回复必须带显示签名：`【CortexOS · Claude 02】`
 
 ---
 
