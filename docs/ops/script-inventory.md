@@ -8,7 +8,7 @@
 
 1. `scripts/` 里每类脚本负责什么
 2. 它们的典型输出写到哪里
-3. 哪些是当前主线，哪些是早期个人脚本/遗留工具
+3. 哪些是当前主线，哪些是可选辅助工具
 
 关联治理：
 
@@ -57,15 +57,15 @@
 
 ### 4. `scripts/core/`
 
-这是早期“外部大脑自动运转内核”，现在仍有价值，但属于高权限脚本。
+这是自动运转内核，属于高权限脚本。
 
 | 脚本 | 作用 | 典型输出 |
 | --- | --- | --- |
 | `auto-pilot.js` | 自动维护总控：读缓冲、跑维护任务、检查 git diff、可自动 commit、可触发向量入库、发飞书/本机通知 | 写 `.memory/logs/*.md`、`.memory/cache/ai_team_status.local.json`、`.last_notif.json`，并调用 `error-retro` / `fleet-cleanup` / `memory:index` |
 | `sentinel.js` | 日志与缓冲区原子操作 | 写 `.memory/logs/*.md`、`.memory/logs/raw/*.md`、`.context_buffer.json` |
-| `kernel.mjs` | 早期“小烛内核”能力汇总 | 被 `xiaozhu_chat.mjs` 调用，负责读身份、秘钥、记忆 |
+| `kernel.mjs` | “小烛内核”能力汇总 | 被 `xiaozhu_chat.mjs` 调用，负责读身份、秘钥、记忆 |
 | `init-owner-profile.mjs` | 初始化主人人格档案 | 写 owner/profile 相关基础资料 |
-| `init-project.sh` | 早期项目初始化脚本 | 生成项目骨架或模板输出 |
+| `init-project.sh` | 项目初始化脚本 | 生成项目骨架或模板输出 |
 
 ### 5. `scripts/maintenance/`
 
@@ -81,7 +81,7 @@
 | `mcp-guard.mjs` | MCP 守护检查 | 控制台报告 |
 | `verify-clean.js` | 工作区干净度检查 | 控制台报告 |
 | `keep-alive.sh` | 常驻保活脚本 | 日志写到 `.memory/logs/daemon-status.log` 一类路径 |
-| `cleanup-docs.js` | 老文档清理脚本 | 控制台操作建议；偏历史脚本 |
+| `cleanup-docs.js` | 文档清理脚本 | 控制台操作建议 |
 | `analyze-docs-structure.js` | docs 结构分析与归档建议 | 控制台分析报告 |
 | `skill-health-check.sh` | Skill 健康巡检 | 控制台报告 |
 
@@ -107,7 +107,7 @@
 | `sync-skills-management.mjs` | 同步 skills 管理数据 | 刷新 skills 管理结果 |
 | `rag_probe.sh` | RAG 探针，对同一查询同时跑语义检索和物理检索 | 写 `.memory/rag_logs/*_rag_probe.md` |
 | `up.sh` | 图片上传路由器，转 GitHub 或 R2 | 上传结果输出到控制台 |
-| `xiaozhu_chat.mjs` | 早期终端版“小烛 CLI” | 控制台交互；调用 kernel、云端模型与本地记忆 |
+| `xiaozhu_chat.mjs` | 终端版“小烛 CLI” | 控制台交互；调用 kernel、云端模型与本地记忆 |
 
 ### 8. `scripts/wechat/`
 
@@ -120,17 +120,17 @@
 | `preview.mjs` | 本地预览文章 HTML | 写 `tmp/wechat_preview.html` |
 | `utils.mjs` | 微信 token、正文图、封面图、草稿上传工具 | 被 `push*.mjs` 调用，向微信 API 发请求 |
 
-## 二、你最开始写的“个人脚本”
+## 二、可选辅助脚本
 
-这批更像早期个人工作流外挂，不是现在的系统主线。
+这批属于个人效率或单点场景辅助，不属于 CortexOS 主链。
 
 | 脚本 | 作用 | 当前判断 |
 | --- | --- | --- |
 | `g.sh` | Gemini 调用包装器，遇到 quota 自动切换账号重试 | 个人效率工具，仍可用，但不属于 CortexOS 主链 |
 | `gemini_manager.sh` | 保存/切换 Gemini 多账号配置 | 个人账号管理工具，依赖 `memory/secrets/gemini_profiles`；当前机器默认物理路径为 `~/Documents/memory/secrets/gemini_profiles` |
-| `log.sh` | 写 Markdown 操作日志表格 | 早期日志系统，输出到 `docs/operation-logs/`，现在不是主线日志链路 |
+| `log.sh` | 写 Markdown 操作日志表格 | 输出到 `docs/operation-logs/`，不属于主线日志链路 |
 | `generate_wallpaper.py` | 调 Imagen 生成测试壁纸 | 一次性/实验脚本 |
-| `move-files.js` | 早期 docs 搬运建议器 | 历史整理脚本，非日常主线 |
+| `move-files.js` | docs 搬运建议器 | 结构整理辅助脚本，非日常主线 |
 
 ## 三、主线输出路径总表
 
