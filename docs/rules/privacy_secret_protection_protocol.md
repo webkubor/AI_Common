@@ -7,7 +7,8 @@
 
 ## 2. 存储策略（外置）
 
-- 默认外置目录：`~/Documents/memory/secrets`
+- 逻辑目录：`memory/secrets/`
+- 当前机器默认物理路径：`~/Documents/memory/secrets`
 - 可覆盖环境变量：`CORTEXOS_SECRET_HOME=/你的私有路径`
 - 原则：
   - 私钥只存在外置目录，不进入 Git 仓库
@@ -21,7 +22,7 @@
 推荐做法：
 
 1. 主工程 Vault：`~/Documents/CortexOS`
-2. 私钥 Vault：`~/Documents/memory/secrets`
+2. 私钥 Vault：`memory/secrets/`（当前机器默认物理路径为 `~/Documents/memory/secrets`）
 3. 在 MCP 客户端为两个 Vault 分别配置独立 server（按需启用）
 
 Codex 示例（`~/.codex/config.toml`）：
@@ -41,16 +42,17 @@ args = [ "-y", "@mauricio.wolff/mcp-obsidian@latest", "~/Documents/memory/secret
 强烈建议直接使用项目内模板文件，不再增加额外生成脚本学习成本。
 
 ```bash
-mkdir -p ~/Documents/memory/secrets
-cp docs/secrets/_templates/github.md ~/Documents/memory/secrets/github.md
-cp docs/secrets/_templates/gitlab.md ~/Documents/memory/secrets/gitlab.md
-cp docs/secrets/_templates/wechat.md ~/Documents/memory/secrets/wechat.md
+export MEMORY_SECRETS_DIR="${CORTEXOS_SECRET_HOME:-$HOME/Documents/memory/secrets}"
+mkdir -p "$MEMORY_SECRETS_DIR"
+cp docs/secrets/_templates/github.md "$MEMORY_SECRETS_DIR/github.md"
+cp docs/secrets/_templates/gitlab.md "$MEMORY_SECRETS_DIR/gitlab.md"
+cp docs/secrets/_templates/wechat.md "$MEMORY_SECRETS_DIR/wechat.md"
 ```
 
 说明：
 
 - 项目模板目录：`docs/secrets/_templates/`
-- 外置真实凭证目录：`~/Documents/memory/secrets`
+- 外置真实凭证目录：`memory/secrets/`（当前机器默认映射到 `~/Documents/memory/secrets`）
 - 模板可提交，真实秘钥不可提交
 
 ## 5. 最低模板要求

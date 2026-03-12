@@ -72,7 +72,7 @@ pnpm run fleet:handover -- --to-workspace "<路径>" --to-agent "Claude"
 | :--- | :--- | :--- | :--- |
 | **王爷知识资产** | `~/Documents/memory/` | 王爷所有 | ✅ 所有 Agent 均可读取 |
 | **小烛私有记忆** | `CortexOS/.memory/` | CortexOS 专属 | ⚠️ 仅 CortexOS Agent 写入 |
-| **高敏凭证** | `~/Documents/memory/secrets/` | 王爷所有 | 🔒 仅通过 `read_secret()` 访问 |
+| **高敏凭证** | `memory/secrets/` | 王爷所有 | 🔒 仅通过 `read_secret()` 访问 |
 
 **通过 obsidian MCP 读取王爷知识库：**
 所有 Agent 的 obsidian MCP 均已指向 `~/Documents/memory/`，可直接语义搜索王爷的知识、项目、复盘内容。
@@ -92,7 +92,9 @@ pnpm run fleet:handover -- --to-workspace "<路径>" --to-agent "Claude"
 | 助手项目索引 | `$CODEX_HOME/.memory/projects/index.md` | 小烛维护的项目索引（不写入用户 memory） |
 | 助手技能索引 | `$CODEX_HOME/.memory/skills/index.md` | 小烛维护的 skills 索引 |
 | 协作指挥中心 | `$CODEX_HOME/.memory/plans/projects/*-command-center.md` | 多 Agent 项目沟通中枢 |
-| 高敏凭证 | `~/Documents/memory/secrets/` | 私钥/Token（不进 Git） |
+| 高敏凭证 | `memory/secrets/` | 私钥/Token（不进 Git） |
+
+> 当前机器默认将 `memory/secrets/` 解析到 `~/Documents/memory/secrets/`。如需改动，使用 `CORTEXOS_SECRET_HOME`。
 
 ### 项目文档路由
 

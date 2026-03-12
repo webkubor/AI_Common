@@ -11,7 +11,7 @@
 - **GitHub**: 读取外置秘钥库 `github.md`，优先使用 `gh` CLI。
 - **GitLab**: 读取外置秘钥库 `gitlab.md`，优先使用 `glab` CLI。
 - **WeChat**: 读取外置秘钥库 `wechat.md`，调用 `wechat-writer` 技能。
-- **统一路径规则**: 默认 `~/Documents/memory/secrets`，或由 `CORTEXOS_SECRET_HOME` 指定。
+- **统一路径规则**: 文档统一使用逻辑路径 `memory/secrets/`；当前机器默认物理路径为 `~/Documents/memory/secrets`，也可由 `CORTEXOS_SECRET_HOME` 覆盖。
 
 ## 3. 📦 发布与质量审计 (Release SOP)
 
