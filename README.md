@@ -18,6 +18,14 @@
 
 > CortexOS 不是聊天壳子，而是一套把规则、项目、日志、协作状态锚定在本地磁盘上的个人外部大脑。
 
+## Project Map
+
+- [CortexOS](https://github.com/webkubor/CortexOS): local-first AI memory system and multi-agent control plane.
+- [Prompt Lab](https://github.com/webkubor/prompt-lab): AI image workflow guides, prompt systems, and creative references.
+- [nanobanana-plus](https://github.com/webkubor/nanobanana-plus): Gemini CLI extension for image generation with per-call model switching.
+- [Bloom](https://github.com/webkubor/typora-Bloom-theme): a writing-focused Typora theme shaped by calm typography and long-form reading.
+- [Selected Private Products](https://github.com/webkubor/webkubor#selected-private-products): DreamFit, Boiling Snow, and other production systems that stay private while connecting back to this public ecosystem.
+
 ## 它解决什么问题
 
 - AI 上下文易失：会话结束后，规则、决策、待办容易蒸发。
