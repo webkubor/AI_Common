@@ -5,6 +5,24 @@
 
 ---
 
+## [v5.8.0] — 2026-03-13 「规则系统收口 · MCP 热路径 Python 化」
+
+### 🎯 变更背景 (Why)
+
+- **规则收口**：随着 Agent 增多，原散落在 `docs/rules/` 的约束需要更强的一致性入口。
+- **性能飞跃**：MCP Server 的高频调用路径（claim, status, context_brief）全面转向 Python/FastMCP 优化，减少 Node.js 脚本启动开销。
+- **Aureate 审美同步**：README 升级至金/黑 (Aureate) 视觉风格，对齐项目高端定位。
+
+### 🚀 新增 (Added)
+
+- **MCP 工具补全**：`mcp_server/server.py` 现在包含 12 个完整工具，覆盖从冷启动到任务移交的全流程。
+- **记忆分层显式化**：在文档中明确 `~/Documents/memory/` (知识) 与 `.memory/` (运行) 的物理隔离边界。
+
+### 🔧 变更 (Changed)
+
+- **README 深度重构**：从描述性文案升级为“中枢操作手册”，补全目录映射与快速启动链路。
+- **版本线升级**：全站版本标记对齐至 `v5.8.0`。
+
 ## [Unreleased] — 2026-03-11 「AI Team 运行态数据库化（计划归入 v5.7.1）」
 
 ### 🎯 迁移原因 (Why)
