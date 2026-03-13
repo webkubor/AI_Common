@@ -935,16 +935,83 @@ async function makeCaptain(member) {
 <style scoped>
 /* 🔴 核心：现代高奢 Aether 设计系统 (Aureate Void) */
 .aether-nexus {
+  /* 🎨 Aureate Void Color System */
+  --c-aureate-base: #f5c87b;
+  --c-aureate-dim: #8b7347;
+  --c-aureate-glow: #ffdb9e;
+  --c-border: rgba(245, 200, 123, 0.14);
+  --c-bg-glass: rgba(14, 18, 26, 0.88);
+
   position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   color: #f8fafc;
-  background:
-    radial-gradient(circle at top left, rgba(245, 200, 123, 0.08), transparent 24%),
-    radial-gradient(circle at top right, rgba(96, 165, 250, 0.08), transparent 20%),
-    linear-gradient(180deg, #040507 0%, #070a10 100%);
+  background: #040507;
   overflow: hidden;
+}
+
+.aether-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(circle at top left, rgba(245, 200, 123, 0.08), transparent 24%),
+              radial-gradient(circle at top right, rgba(96, 165, 250, 0.08), transparent 20%);
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.12;
+  z-index: 2;
+  animation: blob-float 20s infinite alternate ease-in-out;
+}
+
+.b1 {
+  width: 600px;
+  height: 600px;
+  background: var(--c-aureate-base);
+  top: -100px;
+  left: -100px;
+}
+
+.b2 {
+  width: 500px;
+  height: 500px;
+  background: #60a5fa;
+  bottom: -100px;
+  right: -100px;
+  animation-delay: -5s;
+}
+
+.b3 {
+  width: 400px;
+  height: 400px;
+  background: var(--c-aureate-glow);
+  top: 40%;
+  left: 30%;
+  opacity: 0.08;
+  animation-delay: -10s;
+}
+
+.aether-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0.15;
+  background-image: 
+    radial-gradient(rgba(245, 200, 123, 0.15) 1px, transparent 1px),
+    linear-gradient(to right, rgba(245, 200, 123, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 200, 123, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px, 120px 120px, 120px 120px;
+}
+
+@keyframes blob-float {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
 }
 
 .aether-hud {
@@ -1395,6 +1462,23 @@ async function makeCaptain(member) {
 .m-path {
   color: rgba(255, 255, 255, 0.28);
   font-size: 10px;
+}
+
+/* 💠 分组空状态 (Section Empty State) */
+.mission-section-empty {
+  padding: 16px 14px;
+  border: 1px dashed rgba(245, 200, 123, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.24);
+  font-size: 11px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.mission-section-empty:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(245, 200, 123, 0.22);
 }
 
 /* 🏷️ 任务标签与状态 (Badges & Status) */
