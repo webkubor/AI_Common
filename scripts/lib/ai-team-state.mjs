@@ -60,7 +60,7 @@ function buildTaskQueue(db) {
       updated_at AS updatedAt
     FROM tasks
     ORDER BY completed ASC, priority_rank ASC, updated_at DESC, task_id ASC
-    LIMIT 100
+    LIMIT 5000
   `).all()
 
   return rows.map((task, index) => ({
@@ -157,7 +157,7 @@ function findExistingOpenTask(db, { taskId = '', title = '', memberId = '', agen
   ) || null
 }
 
-function buildMemberRecentTasks(db, agent, limit = 6) {
+function buildMemberRecentTasks(db, agent, limit = 50) {
   const rows = db.prepare(`
     SELECT
       task_id AS taskId,
