@@ -9,7 +9,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const projectRoot = path.join(__dirname, '../../')
 
-const outJsonFile = path.join(os.homedir(), 'Documents', 'memory', 'skills_inventory.json')
+const codexHome = process.env.CODEX_HOME || path.join(os.homedir(), '.codex')
+const outJsonFile = path.join(codexHome, '.memory', 'skills_inventory.json')
 const localSkillsRoot = path.join(os.homedir(), 'Desktop/skills')
 const localSkillsRootDisplay = '~/Desktop/skills'
 const localSkillsRootCommand = '$HOME/Desktop/skills'

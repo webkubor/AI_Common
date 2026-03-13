@@ -6,7 +6,7 @@
 
 这是 **CortexOS**（外部大脑操作系统），一套面向个人的多 AI 协同中枢。
 你是 Codex，是这套系统的核心执行节点之一。
-**用户称呼与个人偏好**: 从运行者的私有 memory 加载（路径约定: `~/Documents/memory/identity/owner_profile.md`）。
+**用户称呼与个人偏好**: 从运行者的私有 memory 加载（路径约定: `$CODEX_HOME/.memory/identity/owner_profile.md`）。
 
 ## 冷启动协议（强制）
 
@@ -32,7 +32,7 @@
 - 大脑宪法：`docs/router.md`
 - 规则库：`docs/rules/`（按需加载，不要一次全读）
 - 安全边界：`docs/rules/security_boundary.md`（私钥外置，不落仓库）
-- 技能库：`docs/skills/`
+
 - 日志：`$CODEX_HOME/.memory/logs/`（用 `log_task()` MCP Tool 写入）
 - MCP Server：`mcp_server/server.py`（12 个 Tool）
 
