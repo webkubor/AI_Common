@@ -606,7 +606,8 @@ async function makeCaptain(member) {
           <div class="hud-main-title">星际舰队中枢</div>
           <span class="hud-version-badge">{{ displayVersion }}</span>
         </div>
-        <div class="hud-subtitle">本地舰队协同 · {{ data.active }}/{{ data.total }} 在线节点 · {{ data.missions.length }} 条任务</div>
+        <div class="hud-subtitle">本地舰队协同 · {{ data.active }}/{{ data.total }} 在线节点 · {{ data.missions.length }} 条任务
+        </div>
       </div>
       <div class="hud-center">
         <div class="live-status">
@@ -627,7 +628,8 @@ async function makeCaptain(member) {
         </div>
         <button class="hud-settings-trigger" @click="toggleSettingsPanel" title="设置与状态">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M12 3.75a2.25 2.25 0 0 1 2.23 1.94l.08.56a1.8 1.8 0 0 0 1.37 1.46l.55.14a2.25 2.25 0 0 1 1.49 3.2l-.27.5a1.8 1.8 0 0 0 .2 1.99l.36.43a2.25 2.25 0 0 1-1.59 3.72l-.56.04a1.8 1.8 0 0 0-1.66 1.12l-.22.52a2.25 2.25 0 0 1-4.16 0l-.22-.52a1.8 1.8 0 0 0-1.66-1.12l-.56-.04a2.25 2.25 0 0 1-1.59-3.72l.36-.43a1.8 1.8 0 0 0 .2-1.99l-.27-.5a2.25 2.25 0 0 1 1.49-3.2l.55-.14a1.8 1.8 0 0 0 1.37-1.46l.08-.56A2.25 2.25 0 0 1 12 3.75Z" />
+            <path
+              d="M12 3.75a2.25 2.25 0 0 1 2.23 1.94l.08.56a1.8 1.8 0 0 0 1.37 1.46l.55.14a2.25 2.25 0 0 1 1.49 3.2l-.27.5a1.8 1.8 0 0 0 .2 1.99l.36.43a2.25 2.25 0 0 1-1.59 3.72l-.56.04a1.8 1.8 0 0 0-1.66 1.12l-.22.52a2.25 2.25 0 0 1-4.16 0l-.22-.52a1.8 1.8 0 0 0-1.66-1.12l-.56-.04a2.25 2.25 0 0 1-1.59-3.72l.36-.43a1.8 1.8 0 0 0 .2-1.99l-.27-.5a2.25 2.25 0 0 1 1.49-3.2l.55-.14a1.8 1.8 0 0 0 1.37-1.46l.08-.56A2.25 2.25 0 0 1 12 3.75Z" />
             <circle cx="12" cy="12" r="2.7" />
           </svg>
         </button>
@@ -670,37 +672,31 @@ async function makeCaptain(member) {
               </div>
             </div>
 
-            <section v-for="section in missionSections" :key="section.key" class="mission-section" :class="{ 'is-collapsed': collapsedSections[section.key] }">
+            <section v-for="section in missionSections" :key="section.key" class="mission-section"
+              :class="{ 'is-collapsed': collapsedSections[section.key] }">
               <div class="mission-section-header clickable" @click="toggleSection(section.key)">
                 <div class="msh-left">
-                  <svg class="msh-chevron" :class="{ 'is-active': !collapsedSections[section.key] }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <svg class="msh-chevron" :class="{ 'is-active': !collapsedSections[section.key] }" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M9 18l6-6-6-6" />
                   </svg>
                   <span class="mission-section-title">{{ section.title }}</span>
                 </div>
                 <span class="mission-section-count">{{ section.items.length }}</span>
               </div>
-              
+
               <transition name="section-fade">
                 <div v-if="!collapsedSections[section.key]" class="mission-section-items">
                   <div v-if="section.items.length === 0" class="mission-section-empty">
                     当前没有{{ section.title }}任务
                   </div>
-                  <div
-                    v-for="(task, idx) in section.items"
-                    :key="task.id"
-                    class="mission-glass-card compact"
-                    :style="{ '--delay': idx * 0.05 + 's' }"
-                    @mouseenter="showMissionTooltip($event, task)"
-                    @mouseleave="hideMissionTooltip"
-                  >
+                  <div v-for="(task, idx) in section.items" :key="task.id" class="mission-glass-card compact"
+                    :style="{ '--delay': idx * 0.05 + 's' }" @mouseenter="showMissionTooltip($event, task)"
+                    @mouseleave="hideMissionTooltip">
                     <div class="card-edge"></div>
                     <div class="m-main">
                       <div class="m-title-row">
-                        <span
-                          class="m-priority-indicator"
-                          :class="priorityClass(task.priority)"
-                        ></span>
+                        <span class="m-priority-indicator" :class="priorityClass(task.priority)"></span>
                         <p class="m-title">{{ task.title }}</p>
                       </div>
                       <div class="m-meta-row">
@@ -709,13 +705,8 @@ async function makeCaptain(member) {
                         <span class="m-divider"></span>
                         <span class="m-owner-tag text-ellipsis" :title="task.owner">{{ task.owner }}</span>
                         <div class="m-actions">
-                          <button
-                            v-if="canDeleteMission(task)"
-                            class="mission-delete-mini"
-                            :disabled="deletingTaskId === task.taskId"
-                            @click.stop="removeTask(task)"
-                            title="删除"
-                          >
+                          <button v-if="canDeleteMission(task)" class="mission-delete-mini"
+                            :disabled="deletingTaskId === task.taskId" @click.stop="removeTask(task)" title="删除">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                               <path d="M18 6L6 18M6 6l12 12" />
                             </svg>
@@ -730,7 +721,7 @@ async function makeCaptain(member) {
                 </div>
               </transition>
             </section>
-            
+
             <div v-if="data.missions.length === 0" class="mission-empty-state">
               <div>当前任务池为空</div>
               <div>点击左上角 + 发布任务</div>
@@ -741,16 +732,9 @@ async function makeCaptain(member) {
         <!-- 4. Agent 矩阵 (The Glass Matrix) -->
         <main class="neural-matrix">
           <div class="matrix-grid">
-            <AgentNode
-              v-for="(member, idx) in currentMembers" :key="member.member"
-              :member="member"
-              :idx="idx"
-              :completing-task-id="completingTaskId"
-              @add-task="openTaskCreator"
-              @make-captain="makeCaptain"
-              @kick-out="removeMember"
-              @complete-task="completeMemberTask"
-            />
+            <AgentNode v-for="(member, idx) in currentMembers" :key="member.member" :member="member" :idx="idx"
+              :completing-task-id="completingTaskId" @add-task="openTaskCreator" @make-captain="makeCaptain"
+              @kick-out="removeMember" @complete-task="completeMemberTask" />
           </div>
         </main>
       </div>
@@ -784,12 +768,7 @@ async function makeCaptain(member) {
           </div>
 
           <div class="settings-health-grid">
-            <article
-              v-for="item in healthChecks"
-              :key="item.key"
-              class="settings-health-card"
-              :class="item.status"
-            >
+            <article v-for="item in healthChecks" :key="item.key" class="settings-health-card" :class="item.status">
               <div class="settings-health-top">
                 <span class="settings-health-dot"></span>
                 <span class="settings-health-name">{{ item.label }}</span>
@@ -806,7 +785,8 @@ async function makeCaptain(member) {
           <div class="task-creator-header">
             <div>
               <div class="task-creator-kicker">任务发布</div>
-              <h3>{{ taskCreatorTargetMember ? `给 ${taskCreatorTargetMember.alias || taskCreatorTargetMember.member} 新增任务` : '发布到真实任务池' }}</h3>
+              <h3>{{ taskCreatorTargetMember ? `给 ${taskCreatorTargetMember.alias || taskCreatorTargetMember.member}
+                新增任务` : '发布到真实任务池' }}</h3>
             </div>
             <button class="task-creator-close" @click="closeTaskCreator" title="关闭">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -816,33 +796,29 @@ async function makeCaptain(member) {
           </div>
 
           <!-- Invisible backdrop to close dropdowns -->
-          <div v-if="isWorkspaceSelectOpen || isPrioritySelectOpen" class="dropdown-backdrop" @click="closeDropdowns"></div>
+          <div v-if="isWorkspaceSelectOpen || isPrioritySelectOpen" class="dropdown-backdrop" @click="closeDropdowns">
+          </div>
 
           <label class="task-field">
             <span class="task-field-label">任务标题</span>
-            <input
-              v-model="createTaskForm.title"
-              type="text"
-              class="task-field-input"
-              placeholder="输入任务标题"
-              @keyup.enter="submitTask"
-            />
+            <input v-model="createTaskForm.title" type="text" class="task-field-input" placeholder="输入任务标题"
+              @keyup.enter="submitTask" />
           </label>
 
           <div class="task-field">
             <span class="task-field-label">工作区</span>
             <div class="custom-select-container">
-              <div class="task-field-input custom-select-trigger" :class="{ 'is-open': isWorkspaceSelectOpen }" @click="isWorkspaceSelectOpen = !isWorkspaceSelectOpen; isPrioritySelectOpen = false">
-                <span class="cs-value text-ellipsis">{{ currentWorkspaceName ? `${currentWorkspaceName} ｜ ${createTaskForm.workspace}` : (loadingWorkspaces ? '正在加载激活工作区...' : '请选择工作区') }}</span>
+              <div class="task-field-input custom-select-trigger" :class="{ 'is-open': isWorkspaceSelectOpen }"
+                @click="isWorkspaceSelectOpen = !isWorkspaceSelectOpen; isPrioritySelectOpen = false">
+                <span class="cs-value text-ellipsis">{{ currentWorkspaceName ? `${currentWorkspaceName} ｜
+                  ${createTaskForm.workspace}` : (loadingWorkspaces ? '正在加载激活工作区...' : '请选择工作区') }}</span>
               </div>
               <transition name="dropdown">
                 <div class="custom-options-panel" v-if="isWorkspaceSelectOpen">
-                  <div class="custom-option"
-                    v-for="workspace in workspaceOptions"
+                  <div class="custom-option" v-for="workspace in workspaceOptions"
                     :key="workspace.workspace || workspace.rootPath"
                     :class="{ 'is-selected': createTaskForm.workspace === (workspace.workspace || workspace.rootPath) }"
-                    @click="createTaskForm.workspace = workspace.workspace || workspace.rootPath; isWorkspaceSelectOpen = false"
-                  >
+                    @click="createTaskForm.workspace = workspace.workspace || workspace.rootPath; isWorkspaceSelectOpen = false">
                     <div class="co-name">{{ workspace.name }}</div>
                     <div class="co-path text-ellipsis">{{ workspace.workspace || workspace.rootPath }}</div>
                   </div>
@@ -858,17 +834,15 @@ async function makeCaptain(member) {
           <div class="task-field">
             <span class="task-field-label">优先级</span>
             <div class="custom-select-container">
-              <div class="task-field-input custom-select-trigger" :class="{ 'is-open': isPrioritySelectOpen }" @click="isPrioritySelectOpen = !isPrioritySelectOpen; isWorkspaceSelectOpen = false">
+              <div class="task-field-input custom-select-trigger" :class="{ 'is-open': isPrioritySelectOpen }"
+                @click="isPrioritySelectOpen = !isPrioritySelectOpen; isWorkspaceSelectOpen = false">
                 <span class="cs-value">{{ createTaskForm.priority }}</span>
               </div>
               <transition name="dropdown">
                 <div class="custom-options-panel slim-panel" v-if="isPrioritySelectOpen">
-                  <div class="custom-option center-item"
-                    v-for="p in ['高', '中', '低']"
-                    :key="p"
+                  <div class="custom-option center-item" v-for="p in ['高', '中', '低']" :key="p"
                     :class="{ 'is-selected': createTaskForm.priority === p }"
-                    @click="createTaskForm.priority = p; isPrioritySelectOpen = false"
-                  >
+                    @click="createTaskForm.priority = p; isPrioritySelectOpen = false">
                     {{ p }}
                   </div>
                 </div>
@@ -903,20 +877,20 @@ async function makeCaptain(member) {
     <transition name="tooltip-fade">
       <div v-if="hoveredMission" class="global-mission-tooltip" :style="missionTooltipStyle">
         <h4 class="gmt-title">{{ hoveredMission.title }}</h4>
-        
+
         <div class="gmt-meta-item" v-if="hoveredMission.workspace">
           <span class="gmt-label">工作路径</span>
           <span class="gmt-value">{{ hoveredMission.workspace }}</span>
         </div>
-        
+
         <div class="gmt-meta-divider"></div>
-        
+
         <div class="gmt-owner-row">
           <div class="gmt-meta-item">
             <span class="gmt-label">所有者</span>
             <span class="gmt-value">{{ hoveredMission.owner }}</span>
           </div>
-          
+
           <div class="gmt-meta-item" v-if="hoveredMission.assigneeAgent || hoveredMission.assigneeRole">
             <span class="gmt-label">执行方</span>
             <span class="gmt-value">{{ [hoveredMission.assigneeAgent, hoveredMission.assigneeRole].filter(Boolean).join(' / ') }}</span>
@@ -956,7 +930,7 @@ async function makeCaptain(member) {
   inset: 0;
   z-index: 1;
   background: radial-gradient(circle at top left, rgba(245, 200, 123, 0.08), transparent 24%),
-              radial-gradient(circle at top right, rgba(96, 165, 250, 0.08), transparent 20%);
+    radial-gradient(circle at top right, rgba(96, 165, 250, 0.08), transparent 20%);
 }
 
 .blob {
@@ -1000,7 +974,7 @@ async function makeCaptain(member) {
   inset: 0;
   z-index: 3;
   opacity: 0.15;
-  background-image: 
+  background-image:
     radial-gradient(rgba(245, 200, 123, 0.15) 1px, transparent 1px),
     linear-gradient(to right, rgba(245, 200, 123, 0.02) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(245, 200, 123, 0.02) 1px, transparent 1px);
@@ -1008,10 +982,21 @@ async function makeCaptain(member) {
 }
 
 @keyframes blob-float {
-  0% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-  100% { transform: translate(0, 0) scale(1); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
 }
 
 .aether-hud {
@@ -1371,9 +1356,20 @@ async function makeCaptain(member) {
   flex-shrink: 0;
 }
 
-.m-priority-indicator.is-high { background: #ff6b6b; box-shadow: 0 0 8px rgba(255, 107, 107, 0.4); }
-.m-priority-indicator.is-medium { background: #f5c87b; box-shadow: 0 0 8px rgba(245, 200, 123, 0.3); }
-.m-priority-indicator.is-low { background: #4dd4ac; box-shadow: 0 0 8px rgba(77, 212, 172, 0.3); }
+.m-priority-indicator.is-high {
+  background: #ff6b6b;
+  box-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+}
+
+.m-priority-indicator.is-medium {
+  background: #f5c87b;
+  box-shadow: 0 0 8px rgba(245, 200, 123, 0.3);
+}
+
+.m-priority-indicator.is-low {
+  background: #4dd4ac;
+  box-shadow: 0 0 8px rgba(77, 212, 172, 0.3);
+}
 
 .m-title {
   margin: 0;
@@ -1408,9 +1404,20 @@ async function makeCaptain(member) {
   border-radius: 4px;
 }
 
-.m-status-text.working { color: #7fb2ff; background: rgba(48, 103, 197, 0.15); }
-.m-status-text.pending { color: #f5c87b; background: rgba(245, 200, 123, 0.1); }
-.m-status-text.done { color: #5ee0a1; background: rgba(94, 224, 161, 0.1); }
+.m-status-text.working {
+  color: #7fb2ff;
+  background: rgba(48, 103, 197, 0.15);
+}
+
+.m-status-text.pending {
+  color: #f5c87b;
+  background: rgba(245, 200, 123, 0.1);
+}
+
+.m-status-text.done {
+  color: #5ee0a1;
+  background: rgba(94, 224, 161, 0.1);
+}
 
 .m-divider {
   width: 1px;
@@ -1825,13 +1832,27 @@ async function makeCaptain(member) {
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; backdrop-filter: blur(0px); }
-  100% { opacity: 1; backdrop-filter: blur(14px); }
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(14px);
+  }
 }
 
 @keyframes scaleUp {
-  0% { transform: scale(0.95) translateY(10px); opacity: 0; }
-  100% { transform: scale(1) translateY(0); opacity: 1; }
+  0% {
+    transform: scale(0.95) translateY(10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
 
 .task-creator-header {
@@ -2245,7 +2266,8 @@ async function makeCaptain(member) {
   border: 1px solid rgba(245, 200, 123, 0.3);
   border-radius: 14px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-  pointer-events: none; /* Let mouse pass through to underlying card */
+  pointer-events: none;
+  /* Let mouse pass through to underlying card */
   display: flex;
   flex-direction: column;
 }
