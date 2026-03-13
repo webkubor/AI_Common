@@ -69,6 +69,27 @@ const currentWorkspaceName = computed(() => {
   const current = workspaceOptions.value.find((item) => item.workspace === createTaskForm.value.workspace);
   return current?.name || "";
 });
+const missionStats = computed(() => {
+  const missions = data.value.missions;
+  const pending = missions.filter(t => String(t.status).trim() !== '已完成');
+  return {
+    total: missions.length,
+    pending: pending.length,
+    high: pending.filter(t => normalizePriorityLabel(t.priority) === '高').length,
+    unclaimed: missions.filter(t => String(t.owner).trim() === '待分配').length
+  };
+});
+
+const collapsedSections = ref({
+  pending: false,
+  working: false,
+  done: true
+});
+
+function toggleSection(key) {
+  collapsedSections.value[key] = !collapsedSections.value[key];
+}
+
 const missionSections = computed(() => {
   const groups = [
     { key: "pending", title: "待启动", items: [] },
@@ -626,66 +647,88 @@ async function makeCaptain(member) {
             </button>
           </div>
           <div class="flow-container">
-            <section v-for="section in missionSections" :key="section.key" class="mission-section">
-              <div class="mission-section-header">
-                <span class="mission-section-title">{{ section.title }}</span>
+            <!-- 任务池汇总看板 -->
+            <div class="mission-stats-bar">
+              <div class="stat-item" title="全部任务">
+                <span class="stat-label">总计</span>
+                <span class="stat-value">{{ missionStats.total }}</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item" title="待完成 (未完成任务)">
+                <span class="stat-label">待完成</span>
+                <span class="stat-value">{{ missionStats.pending }}</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item" title="高优先待完成">
+                <span class="stat-label">高优</span>
+                <span class="stat-value is-high">{{ missionStats.high }}</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item" title="未认领任务">
+                <span class="stat-label">未认领</span>
+                <span class="stat-value">{{ missionStats.unclaimed }}</span>
+              </div>
+            </div>
+
+            <section v-for="section in missionSections" :key="section.key" class="mission-section" :class="{ 'is-collapsed': collapsedSections[section.key] }">
+              <div class="mission-section-header clickable" @click="toggleSection(section.key)">
+                <div class="msh-left">
+                  <svg class="msh-chevron" :class="{ 'is-active': !collapsedSections[section.key] }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                  <span class="mission-section-title">{{ section.title }}</span>
+                </div>
                 <span class="mission-section-count">{{ section.items.length }}</span>
               </div>
-              <div v-if="section.items.length === 0" class="mission-section-empty">
-                当前没有{{ section.title }}任务
-              </div>
-              <div
-                v-for="(task, idx) in section.items"
-                :key="task.id"
-                class="mission-glass-card"
-                :style="{ '--delay': idx * 0.1 + 's' }"
-                @mouseenter="showMissionTooltip($event, task)"
-                @mouseleave="hideMissionTooltip"
-              >
-                <div class="card-edge"></div>
-                <div class="m-top">
-                  <div class="m-top-left">
-                    <span class="m-id">{{ task.id }}</span>
-                    <span
-                      class="m-priority-orb"
-                      :class="priorityClass(task.priority)"
-                      :title="'优先级 ' + normalizePriorityLabel(task.priority)"
-                    ></span>
+              
+              <transition name="section-fade">
+                <div v-if="!collapsedSections[section.key]" class="mission-section-items">
+                  <div v-if="section.items.length === 0" class="mission-section-empty">
+                    当前没有{{ section.title }}任务
                   </div>
-                  <div class="m-top-actions">
-                    <button
-                      v-if="canDeleteMission(task)"
-                      class="mission-delete-btn"
-                      :disabled="deletingTaskId === task.taskId"
-                      @click="removeTask(task)"
-                      title="删除待启动任务"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 6h18" />
-                        <path d="M8 6V4h8v2" />
-                        <path d="M19 6l-1 14H6L5 6" />
-                        <path d="M10 11v6M14 11v6" />
-                      </svg>
-                    </button>
-                    <div class="m-status-badge" :class="missionStatusClass(task.status)">
-                      <span class="status-dot"></span>
-                      {{ task.status }}
+                  <div
+                    v-for="(task, idx) in section.items"
+                    :key="task.id"
+                    class="mission-glass-card compact"
+                    :style="{ '--delay': idx * 0.05 + 's' }"
+                    @mouseenter="showMissionTooltip($event, task)"
+                    @mouseleave="hideMissionTooltip"
+                  >
+                <div class="card-edge"></div>
+                <div class="m-main">
+                  <div class="m-title-row">
+                    <span
+                      class="m-priority-indicator"
+                      :class="priorityClass(task.priority)"
+                    ></span>
+                    <p class="m-title">{{ task.title }}</p>
+                  </div>
+                  <div class="m-meta-row">
+                    <span class="m-id-tag">{{ task.id }}</span>
+                    <span class="m-status-text" :class="missionStatusClass(task.status)">{{ task.status }}</span>
+                    <span class="m-divider"></span>
+                    <span class="m-owner-tag text-ellipsis" :title="task.owner">{{ task.owner }}</span>
+                    <div class="m-actions">
+                      <button
+                        v-if="canDeleteMission(task)"
+                        class="mission-delete-mini"
+                        :disabled="deletingTaskId === task.taskId"
+                        @click.stop="removeTask(task)"
+                        title="删除"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
+                  <div class="m-sub-meta" v-if="task.workspace">
+                    <span class="m-path text-ellipsis">{{ task.workspace.replace(/\/Users\/[^\/]+/, '~') }}</span>
+                  </div>
                 </div>
-                <p class="m-title">{{ task.title }}</p>
-                <div class="m-owner">
-                  <span class="text-ellipsis owner-name" :title="task.owner">{{ task.owner }}</span>
-                  <span v-if="(task.assigneeAgent || task.assigneeRole) && (task.assigneeAgent !== task.owner)" class="m-owner-meta text-ellipsis" :title="[task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ')">
-                    {{ [task.assigneeAgent, task.assigneeRole].filter(Boolean).join(' / ') }}
-                  </span>
-                  <span v-else-if="task.assigneeRole" class="m-owner-meta text-ellipsis" :title="task.assigneeRole">
-                    {{ task.assigneeRole }}
-                  </span>
-                </div>
-                <div v-if="task.workspace" class="m-workspace" :title="'工作路径 ' + task.workspace">工作路径 {{ task.workspace }}</div>
-                <div v-if="task.publishedAt" class="m-published-at text-ellipsis" :title="'发布时间 ' + task.publishedAt">发布时间 {{ task.publishedAt }}</div>
               </div>
+            </div>
+          </transition>
             </section>
             <div v-if="data.missions.length === 0" class="mission-empty-state">
               <div>当前任务池为空</div>
@@ -1131,7 +1174,7 @@ async function makeCaptain(member) {
 .flow-container {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -1142,222 +1185,126 @@ async function makeCaptain(member) {
 .mission-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  transition: all 0.3s ease;
 }
 
 .mission-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 0 4px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
-.mission-section-title {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.74);
+.mission-section-header.clickable {
+  cursor: pointer;
 }
 
-.mission-section-count {
-  min-width: 24px;
-  height: 24px;
-  padding: 0 8px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.72);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.mission-section-header.clickable:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.mission-section-empty {
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px dashed rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.02);
-  color: rgba(255, 255, 255, 0.38);
-  font-size: 12px;
-}
-
-.mission-glass-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: linear-gradient(180deg, rgba(20, 24, 32, 0.82), rgba(12, 15, 20, 0.9));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 12px 30px rgba(0, 0, 0, 0.24);
-}
-
-.card-edge {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(135deg, rgba(245, 200, 123, 0.14), transparent 30%, transparent 70%, rgba(245, 200, 123, 0.08));
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  padding: 1px;
-}
-
-.m-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.m-top-left,
-.m-top-actions {
+.msh-left {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.m-id {
-  display: inline-flex;
-  align-items: center;
-  height: 24px;
-  padding: 0 9px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.m-priority-orb {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.02);
-}
-
-.m-priority-orb.is-high {
-  background: #ff6b6b;
-  box-shadow: 0 0 12px rgba(255, 107, 107, 0.35);
-}
-
-.m-priority-orb.is-medium {
-  background: #f5c87b;
-  box-shadow: 0 0 12px rgba(245, 200, 123, 0.28);
-}
-
-.m-priority-orb.is-low {
-  background: #4dd4ac;
-  box-shadow: 0 0 12px rgba(77, 212, 172, 0.28);
-}
-
-.mission-delete-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid rgba(255, 107, 107, 0.24);
-  border-radius: 10px;
-  background: rgba(255, 107, 107, 0.08);
-  color: #ff8d8d;
-  cursor: pointer;
-}
-
-.mission-delete-btn svg {
+.msh-chevron {
   width: 14px;
   height: 14px;
+  color: rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: rotate(0deg);
 }
 
-.mission-delete-btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
+.msh-chevron.is-active {
+  transform: rotate(90deg);
+  color: var(--c-aureate-dim);
 }
 
-.m-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.84);
+.mission-section-title {
+  color: #888;
   font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.m-status-badge .status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: currentColor;
+.mission-section-count {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1px 4px;
+  border-radius: 4px;
 }
 
-.m-status-badge.working {
-  color: #7fb2ff;
-  background: rgba(48, 103, 197, 0.14);
-  border-color: rgba(48, 103, 197, 0.25);
-}
-
-.m-status-badge.pending {
-  color: #f5c87b;
-  background: rgba(245, 200, 123, 0.1);
-  border-color: rgba(245, 200, 123, 0.22);
-}
-
-.m-status-badge.done {
-  color: #5ee0a1;
-  background: rgba(94, 224, 161, 0.1);
-  border-color: rgba(94, 224, 161, 0.22);
-}
-
-.m-title {
-  margin: 0;
-  color: #f2f4f8;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.m-owner {
+.mission-section-items {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 12px;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.m-owner-meta,
-.m-workspace,
-.m-published-at {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 11px;
-  line-height: 1.5;
+/* 📊 统计看板 */
+.mission-stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 12px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  margin-bottom: 4px;
 }
 
-.flow-container::-webkit-scrollbar {
-  width: 8px;
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
 }
 
-.flow-container::-webkit-scrollbar-track {
-  background: transparent;
+.stat-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
 }
 
-.flow-container::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: rgba(245, 200, 123, 0.14);
-  border: 2px solid transparent;
-  background-clip: padding-box;
+.stat-value {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-.flow-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(245, 200, 123, 0.28);
-  background-clip: padding-box;
+.stat-value.is-high {
+  color: #ff6b6b;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+}
+
+.stat-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* 动画系统 */
+.section-fade-enter-active,
+.section-fade-leave-active {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 2000px;
+  overflow: hidden;
+}
+
+.section-fade-enter-from,
+.section-fade-leave-to {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-10px);
 }
 
 .mission-empty-state {
